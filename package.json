@@ -19,6 +19,7 @@
     "audit": "node scripts/dependency-scan.mjs",
     "license:check": "node scripts/license-check.mjs",
     "contract:check": "node scripts/check-openapi-contract.mjs",
+    "contract:document": "node scripts/document-undocumented-operations.mjs",
     "sbom": "node scripts/generate-sbom.mjs",
     "quality:evaluate": "node scripts/quality-gate-evaluate.mjs",
     "gate": "npm run lint && npm run typecheck && npm run test:coverage && npm run security && npm run audit && npm run license:check && npm run sbom && npm run quality:evaluate"

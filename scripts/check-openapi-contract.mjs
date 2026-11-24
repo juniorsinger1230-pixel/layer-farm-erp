@@ -9,6 +9,7 @@ const mappingPath = resolve(root, options.mapping ?? '../../../SRS_需求规格�
 const appPath = resolve(root, options.app ?? 'apps/api/src/app.ts');
 const resourcesPath = resolve(root, options.resources ?? 'packages/domain/src/generated/resources.ts');
 const policyPath = resolve(root, options.policy ?? 'packages/domain/src/generated/resource-route-policy.ts');
+const contractProcessPath = resolve(root, options.contractProcess ?? 'packages/domain/src/contract-process.ts');
 const outputPath = resolve(root, options.out ?? 'openapi-contract-check-result.json');
 
 const httpMethods = new Set(['get', 'post', 'put', 'patch', 'delete', 'head', 'options', 'trace']);
@@ -17,6 +18,7 @@ const mappingDocument = JSON.parse(readFileSync(mappingPath, 'utf8'));
 const appSource = readFileSync(appPath, 'utf8');
 const resourcesSource = readFileSync(resourcesPath, 'utf8');
 const policySource = readFileSync(policyPath, 'utf8');
+const contractProcessSource = readFileSync(contractProcessPath, 'utf8');
 
 const resourceRegex = /\{\s*"table":\s*"([^"]+)"[\s\S]*?"path":\s*"([^"]+)"[\s\S]*?"module":\s*"([^"]+)"[\s\S]*?"permission":\s*"([^"]+)"[\s\S]*?"companyScope":\s*(true|false)[\s\S]*?"contractPath":\s*(true|false)\s*\}/g;
 const resources = [...resourcesSource.matchAll(resourceRegex)].map((match) => ({
@@ -92,6 +94,44 @@ for (const policy of routePolicies) {
   }
   if (policy.allowedMethods.includes('PATCH')) {
     addOperation('PATCH', `${policy.path}/:id`, source);
+  }
+}
+
+const readOnlyProcessPaths = new Set([
+  '/api/v1/fin/batch-cost-cards',
+  '/api/v1/fin/financial-reconciliation-reports',
+  '/api/v1/rpt/management-dashboard',
+  '/api/v1/rpt/production-reports',
+  '/api/v1/rpt/inventory-purchase-reports',
+  '/api/v1/rpt/sales-finance-reports',
+  '/api/v1/trace/batch-end-to-end-trace',
+]);
+const contractProcessRegex = /\{[\s\S]*?requirementId: '([^']+)'[\s\S]*?path: '([^']+)'[\s\S]*?\}/g;
+const contractProcessPolicies = [...contractProcessSource.matchAll(contractProcessRegex)]
+  .map((match) => ({
+    requirementId: match[1],
+    path: match[2],
+    readOnly: readOnlyProcessPaths.has(match[2]),
+    collectionAlreadyRegistered: match[0].includes('collectionAlreadyRegistered: true'),
+    line: lineAt(contractProcessSource, match.index),
+  }))
+  .filter((item) => item.path.startsWith('/api/v1/'));
+
+for (const processPolicy of contractProcessPolicies) {
+  const source = {
+    type: 'contract-process',
+    file: contractProcessPath,
+    line: processPolicy.line,
+    requirementId: processPolicy.requirementId,
+  };
+  if (!processPolicy.collectionAlreadyRegistered) {
+    addOperation('GET', processPolicy.path, source);
+    if (!processPolicy.readOnly) addOperation('POST', processPolicy.path, source);
+  }
+  addOperation('GET', `${processPolicy.path}/:id`, source);
+  if (!processPolicy.readOnly) {
+    addOperation('PATCH', `${processPolicy.path}/:id`, source);
+    addOperation('POST', `${processPolicy.path}/:id/actions`, source);
   }
 }
 
