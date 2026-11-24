@@ -29,7 +29,7 @@ for (const [path, meta] of Object.entries(lock.packages)) {
     ? manifest.license.map((item) => item.type ?? String(item))
     : [typeof manifest.license === 'object' ? manifest.license?.type : manifest.license ?? manifest.licenses];
   const licenseFile = join(root, path, 'LICENSE');
-  if (licenses.flat().filter(Boolean).length === 0 && existsSync(licenseFile) && readFileSync(licenseFile, 'utf8').startsWith('MIT License')) licenses = ['MIT'];
+  if (licenses.flat().filter(Boolean).length === 0 && existsSync(licenseFile) && /^(The )?MIT License/.test(readFileSync(licenseFile, 'utf8'))) licenses = ['MIT'];
   for (const license of licenses.flat().filter(Boolean)) {
     if (!isAllowedExpression(license)) findings.push({ package: `${manifest.name}@${manifest.version}`, license });
   }

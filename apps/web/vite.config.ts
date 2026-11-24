@@ -11,9 +11,11 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (!id.includes('/node_modules/')) return undefined;
-          if (/\/node_modules\/(react|react-dom|scheduler)\//.test(id)) return 'react';
+          if (/\/node_modules\/(react|react-dom|react-router|scheduler)\//.test(id)) return 'react';
           if (id.includes('/node_modules/antd/')) return 'antd';
-          if (/\/node_modules\/(rc-|@rc-component\/|@ant-design\/|dayjs\/)/.test(id)) return 'ui-runtime';
+          if (/\/node_modules\/(@ant-design\/plots|@antv\/)/.test(id)) return 'charts';
+          if (/\/node_modules\/(antd-mobile|antd-mobile-icons)\//.test(id)) return 'mobile';
+          if (/\/node_modules\/(rc-|@rc-component\/|@ant-design\/)/.test(id)) return 'ui-runtime';
           return 'vendor';
         },
       },

@@ -1,0 +1,2094 @@
+{
+  "org-001": {
+    "pageId": "org-001",
+    "requirementId": "SRS-FR-ORG-001",
+    "readRoles": [
+      "SYSTEM_ADMIN",
+      "SYSTEM_EXECUTIVE"
+    ],
+    "writeRoles": [
+      "SYSTEM_ADMIN"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J02"
+    ],
+    "mappingBasis": "系统管理员 / 系统管理员、CEO、部门负责人"
+  },
+  "org-002": {
+    "pageId": "org-002",
+    "requirementId": "SRS-FR-ORG-002",
+    "readRoles": [
+      "SYSTEM_ADMIN",
+      "SYSTEM_EXECUTIVE"
+    ],
+    "writeRoles": [
+      "SYSTEM_ADMIN"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J02"
+    ],
+    "mappingBasis": "系统管理员 / 系统管理员、人事、行政、部门负责人"
+  },
+  "org-003": {
+    "pageId": "org-003",
+    "requirementId": "SRS-FR-ORG-003",
+    "readRoles": [
+      "SYSTEM_ADMIN",
+      "SYSTEM_EXECUTIVE"
+    ],
+    "writeRoles": [
+      "SYSTEM_ADMIN"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J02"
+    ],
+    "mappingBasis": "系统管理员 / 系统管理员、CEO"
+  },
+  "org-004": {
+    "pageId": "org-004",
+    "requirementId": "SRS-FR-ORG-004",
+    "readRoles": [
+      "SYSTEM_ADMIN",
+      "SYSTEM_EXECUTIVE"
+    ],
+    "writeRoles": [
+      "SYSTEM_ADMIN"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J02"
+    ],
+    "mappingBasis": "系统管理员 / 系统管理员、部门负责人"
+  },
+  "org-005": {
+    "pageId": "org-005",
+    "requirementId": "SRS-FR-ORG-005",
+    "readRoles": [
+      "SYSTEM_ADMIN",
+      "SYSTEM_EXECUTIVE"
+    ],
+    "writeRoles": [
+      "SYSTEM_ADMIN"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J02"
+    ],
+    "mappingBasis": "系统管理员 / 系统管理员、业务负责人"
+  },
+  "org-006": {
+    "pageId": "org-006",
+    "requirementId": "SRS-FR-ORG-006",
+    "readRoles": [
+      "SYSTEM_ADMIN",
+      "SYSTEM_EXECUTIVE"
+    ],
+    "writeRoles": [
+      "SYSTEM_ADMIN"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J02",
+      "J20"
+    ],
+    "mappingBasis": "系统管理员 / 系统管理员、CEO、部门负责人"
+  },
+  "farm-001": {
+    "pageId": "farm-001",
+    "requirementId": "SRS-FR-FARM-001",
+    "readRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_EXECUTIVE"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-FIELD-H5"
+    ],
+    "journeyIds": [
+      "J03"
+    ],
+    "mappingBasis": "CEO / CEO、财务、外联秘书"
+  },
+  "farm-002": {
+    "pageId": "farm-002",
+    "requirementId": "SRS-FR-FARM-002",
+    "readRoles": [
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_LEADER"
+    ],
+    "environmentIds": [
+      "ENV-WAREHOUSE",
+      "ENV-FIELD-H5",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J05"
+    ],
+    "mappingBasis": "育雏组长 / 育雏组长、养殖工"
+  },
+  "farm-003": {
+    "pageId": "farm-003",
+    "requirementId": "SRS-FR-FARM-003",
+    "readRoles": [
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_LEADER"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-FIELD-H5"
+    ],
+    "journeyIds": [
+      "J03"
+    ],
+    "mappingBasis": "养殖组长 / 养殖组长、设备工程、系统管理员"
+  },
+  "farm-004": {
+    "pageId": "farm-004",
+    "requirementId": "SRS-FR-FARM-004",
+    "readRoles": [
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_PROCUREMENT_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-WAREHOUSE",
+      "ENV-FIELD-H5",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J05"
+    ],
+    "mappingBasis": "采购秘书 / 采购秘书、育雏组长、兽医"
+  },
+  "farm-005": {
+    "pageId": "farm-005",
+    "requirementId": "SRS-FR-FARM-005",
+    "readRoles": [
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_WORKER"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE"
+    ],
+    "journeyIds": [
+      "J06"
+    ],
+    "mappingBasis": "育雏工 / 育雏工、育雏组长"
+  },
+  "farm-006": {
+    "pageId": "farm-006",
+    "requirementId": "SRS-FR-FARM-006",
+    "readRoles": [
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_WORKER"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE"
+    ],
+    "journeyIds": [
+      "J06"
+    ],
+    "mappingBasis": "育雏工 / 育雏工、育雏组长"
+  },
+  "farm-007": {
+    "pageId": "farm-007",
+    "requirementId": "SRS-FR-FARM-007",
+    "readRoles": [
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_LEADER"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5"
+    ],
+    "journeyIds": [
+      "J08"
+    ],
+    "mappingBasis": "育雏组长 / 育雏组长、育雏工、兽医"
+  },
+  "farm-008": {
+    "pageId": "farm-008",
+    "requirementId": "SRS-FR-FARM-008",
+    "readRoles": [
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_WORKER"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5"
+    ],
+    "journeyIds": [
+      "J08"
+    ],
+    "mappingBasis": "育雏工 / 育雏工、育雏组长"
+  },
+  "farm-009": {
+    "pageId": "farm-009",
+    "requirementId": "SRS-FR-FARM-009",
+    "readRoles": [
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_LEADER"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5"
+    ],
+    "journeyIds": [
+      "J08"
+    ],
+    "mappingBasis": "养殖组长 / 养殖组长、养殖工、兽医"
+  },
+  "farm-010": {
+    "pageId": "farm-010",
+    "requirementId": "SRS-FR-FARM-010",
+    "readRoles": [
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_WORKER"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J10"
+    ],
+    "mappingBasis": "养殖工 / 养殖工、养殖组长、物流人员"
+  },
+  "farm-011": {
+    "pageId": "farm-011",
+    "requirementId": "SRS-FR-FARM-011",
+    "readRoles": [
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_WORKER"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE"
+    ],
+    "journeyIds": [
+      "J09"
+    ],
+    "mappingBasis": "养殖工 / 养殖工、分拣工、入库组长"
+  },
+  "farm-012": {
+    "pageId": "farm-012",
+    "requirementId": "SRS-FR-FARM-012",
+    "readRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_EXECUTIVE"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE",
+      "ENV-FIELD-H5"
+    ],
+    "journeyIds": [
+      "J13"
+    ],
+    "mappingBasis": "CEO / CEO、财务、销售、养殖、兽医"
+  },
+  "vet-001": {
+    "pageId": "vet-001",
+    "requirementId": "SRS-FR-VET-001",
+    "readRoles": [
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_VETERINARIAN"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE"
+    ],
+    "journeyIds": [
+      "J07"
+    ],
+    "mappingBasis": "兽医 / 兽医、系统管理员"
+  },
+  "vet-002": {
+    "pageId": "vet-002",
+    "requirementId": "SRS-FR-VET-002",
+    "readRoles": [
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_VETERINARIAN"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE"
+    ],
+    "journeyIds": [
+      "J07"
+    ],
+    "mappingBasis": "兽医 / 兽医、养殖组长"
+  },
+  "vet-003": {
+    "pageId": "vet-003",
+    "requirementId": "SRS-FR-VET-003",
+    "readRoles": [
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_VETERINARIAN"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE"
+    ],
+    "journeyIds": [
+      "J07"
+    ],
+    "mappingBasis": "兽医 / 兽医、养殖组长、养殖工"
+  },
+  "vet-004": {
+    "pageId": "vet-004",
+    "requirementId": "SRS-FR-VET-004",
+    "readRoles": [
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_VETERINARIAN"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE"
+    ],
+    "journeyIds": [
+      "J07"
+    ],
+    "mappingBasis": "兽医 / 兽医、采购秘书、仓管"
+  },
+  "vet-005": {
+    "pageId": "vet-005",
+    "requirementId": "SRS-FR-VET-005",
+    "readRoles": [
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_VETERINARIAN"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE"
+    ],
+    "journeyIds": [
+      "J07"
+    ],
+    "mappingBasis": "兽医 / 兽医、养殖组长"
+  },
+  "vet-006": {
+    "pageId": "vet-006",
+    "requirementId": "SRS-FR-VET-006",
+    "readRoles": [
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_VETERINARIAN"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "兽医 / 兽医、销售、仓储"
+  },
+  "vet-007": {
+    "pageId": "vet-007",
+    "requirementId": "SRS-FR-VET-007",
+    "readRoles": [
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_VETERINARIAN"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "兽医 / 兽医、销售、物流"
+  },
+  "vet-008": {
+    "pageId": "vet-008",
+    "requirementId": "SRS-FR-VET-008",
+    "readRoles": [
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_VETERINARIAN"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE"
+    ],
+    "journeyIds": [
+      "J07"
+    ],
+    "mappingBasis": "兽医 / 兽医、养殖组长"
+  },
+  "proc-001": {
+    "pageId": "proc-001",
+    "requirementId": "SRS-FR-PROC-001",
+    "readRoles": [
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_VETERINARIAN"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-GOVERNANCE",
+      "ENV-PRINT"
+    ],
+    "journeyIds": [
+      "J04"
+    ],
+    "mappingBasis": "兽医 / 兽医、养殖组长、采购秘书、CEO"
+  },
+  "proc-002": {
+    "pageId": "proc-002",
+    "requirementId": "SRS-FR-PROC-002",
+    "readRoles": [
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_PROCUREMENT_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-GOVERNANCE",
+      "ENV-PRINT"
+    ],
+    "journeyIds": [
+      "J04"
+    ],
+    "mappingBasis": "采购秘书 / 采购秘书、CEO"
+  },
+  "proc-003": {
+    "pageId": "proc-003",
+    "requirementId": "SRS-FR-PROC-003",
+    "readRoles": [
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_PROCUREMENT_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-GOVERNANCE",
+      "ENV-PRINT"
+    ],
+    "journeyIds": [
+      "J04"
+    ],
+    "mappingBasis": "采购秘书 / 采购秘书、兽医、财务"
+  },
+  "proc-004": {
+    "pageId": "proc-004",
+    "requirementId": "SRS-FR-PROC-004",
+    "readRoles": [
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_LEADER"
+    ],
+    "environmentIds": [
+      "ENV-WAREHOUSE",
+      "ENV-FIELD-H5",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J05"
+    ],
+    "mappingBasis": "入库组长 / 入库组长、采购秘书、财务"
+  },
+  "proc-005": {
+    "pageId": "proc-005",
+    "requirementId": "SRS-FR-PROC-005",
+    "readRoles": [
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_PROCUREMENT_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-GOVERNANCE",
+      "ENV-PRINT"
+    ],
+    "journeyIds": [
+      "J04"
+    ],
+    "mappingBasis": "采购秘书 / 采购秘书、兽医、仓储、财务"
+  },
+  "proc-006": {
+    "pageId": "proc-006",
+    "requirementId": "SRS-FR-PROC-006",
+    "readRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_EXECUTIVE"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-GOVERNANCE",
+      "ENV-PRINT"
+    ],
+    "journeyIds": [
+      "J04",
+      "J20"
+    ],
+    "mappingBasis": "CEO / CEO、采购秘书、业务负责人"
+  },
+  "inv-001": {
+    "pageId": "inv-001",
+    "requirementId": "SRS-FR-INV-001",
+    "readRoles": [
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_PROCUREMENT_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-GOVERNANCE",
+      "ENV-PRINT"
+    ],
+    "journeyIds": [
+      "J04"
+    ],
+    "mappingBasis": "采购秘书 / 采购秘书、仓管、兽医"
+  },
+  "inv-002": {
+    "pageId": "inv-002",
+    "requirementId": "SRS-FR-INV-002",
+    "readRoles": [
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE"
+    ],
+    "journeyIds": [
+      "J09"
+    ],
+    "mappingBasis": "仓管 / 仓管、入库、出库组长"
+  },
+  "inv-003": {
+    "pageId": "inv-003",
+    "requirementId": "SRS-FR-INV-003",
+    "readRoles": [
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_LEADER"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE"
+    ],
+    "journeyIds": [
+      "J09"
+    ],
+    "mappingBasis": "入库组长 / 入库组长、仓管"
+  },
+  "inv-004": {
+    "pageId": "inv-004",
+    "requirementId": "SRS-FR-INV-004",
+    "readRoles": [
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_LEADER"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "出库组长 / 出库组长、仓管、领用人员"
+  },
+  "inv-005": {
+    "pageId": "inv-005",
+    "requirementId": "SRS-FR-INV-005",
+    "readRoles": [
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_LEADER"
+    ],
+    "environmentIds": [
+      "ENV-WAREHOUSE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J14"
+    ],
+    "mappingBasis": "仓管 / 仓管、入库、出库组长"
+  },
+  "inv-006": {
+    "pageId": "inv-006",
+    "requirementId": "SRS-FR-INV-006",
+    "readRoles": [
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_LEADER"
+    ],
+    "environmentIds": [
+      "ENV-WAREHOUSE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J14"
+    ],
+    "mappingBasis": "仓管 / 仓管、财务、业务负责人"
+  },
+  "inv-007": {
+    "pageId": "inv-007",
+    "requirementId": "SRS-FR-INV-007",
+    "readRoles": [
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FARM_LEADER"
+    ],
+    "environmentIds": [
+      "ENV-WAREHOUSE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J14"
+    ],
+    "mappingBasis": "仓管 / 仓管、出库组长、采购"
+  },
+  "inv-008": {
+    "pageId": "inv-008",
+    "requirementId": "SRS-FR-INV-008",
+    "readRoles": [
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [],
+    "environmentIds": [
+      "ENV-WAREHOUSE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J14"
+    ],
+    "mappingBasis": "仓管 / 仓管、采购秘书"
+  },
+  "sales-001": {
+    "pageId": "sales-001",
+    "requirementId": "SRS-FR-SALES-001",
+    "readRoles": [
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_SALES_MANAGER"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "销售经理 / 销售经理、销售秘书、财务"
+  },
+  "sales-002": {
+    "pageId": "sales-002",
+    "requirementId": "SRS-FR-SALES-002",
+    "readRoles": [
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_SALES_MANAGER"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "销售经理 / 销售经理、财务、CEO"
+  },
+  "sales-003": {
+    "pageId": "sales-003",
+    "requirementId": "SRS-FR-SALES-003",
+    "readRoles": [
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_SALES_MANAGER"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "销售经理 / 销售经理、销售秘书"
+  },
+  "sales-004": {
+    "pageId": "sales-004",
+    "requirementId": "SRS-FR-SALES-004",
+    "readRoles": [
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_SALES_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "销售 / 销售、财务、CEO"
+  },
+  "sales-005": {
+    "pageId": "sales-005",
+    "requirementId": "SRS-FR-SALES-005",
+    "readRoles": [
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_SALES_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "销售 / 销售、出库组长、仓管"
+  },
+  "sales-006": {
+    "pageId": "sales-006",
+    "requirementId": "SRS-FR-SALES-006",
+    "readRoles": [
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_SALES_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY"
+    ],
+    "journeyIds": [
+      "J12"
+    ],
+    "mappingBasis": "销售 / 销售、仓储、财务"
+  },
+  "sales-007": {
+    "pageId": "sales-007",
+    "requirementId": "SRS-FR-SALES-007",
+    "readRoles": [
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_SALES_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE",
+      "ENV-FIELD-H5"
+    ],
+    "journeyIds": [
+      "J13"
+    ],
+    "mappingBasis": "销售 / 销售、兽医、财务、物流"
+  },
+  "log-001": {
+    "pageId": "log-001",
+    "requirementId": "SRS-FR-LOG-001",
+    "readRoles": [
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_DRIVER",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_DELIVERY_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "物流 / 物流、司机、设备工程"
+  },
+  "log-002": {
+    "pageId": "log-002",
+    "requirementId": "SRS-FR-LOG-002",
+    "readRoles": [
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_DRIVER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_DELIVERY_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "物流负责人 / 物流负责人、司机、配送员"
+  },
+  "log-003": {
+    "pageId": "log-003",
+    "requirementId": "SRS-FR-LOG-003",
+    "readRoles": [
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_DRIVER"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "司机 / 司机、配送员、出库组长"
+  },
+  "log-004": {
+    "pageId": "log-004",
+    "requirementId": "SRS-FR-LOG-004",
+    "readRoles": [
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_DRIVER"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "司机 / 司机、配送员"
+  },
+  "log-005": {
+    "pageId": "log-005",
+    "requirementId": "SRS-FR-LOG-005",
+    "readRoles": [
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_DRIVER"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "司机 / 司机、配送员、销售、仓储"
+  },
+  "log-006": {
+    "pageId": "log-006",
+    "requirementId": "SRS-FR-LOG-006",
+    "readRoles": [
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_DRIVER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_DELIVERY_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "物流负责人 / 物流负责人、司机、配送员"
+  },
+  "fin-001": {
+    "pageId": "fin-001",
+    "requirementId": "SRS-FR-FIN-001",
+    "readRoles": [
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FINANCE_MANAGER"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-GOVERNANCE",
+      "ENV-PRINT"
+    ],
+    "journeyIds": [
+      "J04"
+    ],
+    "mappingBasis": "财务经理 / 财务经理、财务秘书、会计、授权审批人、出纳"
+  },
+  "fin-002": {
+    "pageId": "fin-002",
+    "requirementId": "SRS-FR-FIN-002",
+    "readRoles": [
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FINANCE_MANAGER"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "财务经理 / 财务经理、财务秘书、销售"
+  },
+  "fin-003": {
+    "pageId": "fin-003",
+    "requirementId": "SRS-FR-FIN-003",
+    "readRoles": [
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FINANCE_MANAGER"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-GOVERNANCE",
+      "ENV-PRINT"
+    ],
+    "journeyIds": [
+      "J04"
+    ],
+    "mappingBasis": "财务经理 / 财务经理、财务秘书、CEO、会计、授权审批人、出纳"
+  },
+  "fin-004": {
+    "pageId": "fin-004",
+    "requirementId": "SRS-FR-FIN-004",
+    "readRoles": [
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FINANCE_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "财务秘书 / 财务秘书、财务经理"
+  },
+  "fin-005": {
+    "pageId": "fin-005",
+    "requirementId": "SRS-FR-FIN-005",
+    "readRoles": [
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FINANCE_MANAGER"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE",
+      "ENV-FIELD-H5"
+    ],
+    "journeyIds": [
+      "J13"
+    ],
+    "mappingBasis": "财务经理 / 财务经理、财务秘书"
+  },
+  "fin-006": {
+    "pageId": "fin-006",
+    "requirementId": "SRS-FR-FIN-006",
+    "readRoles": [
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE",
+      "ENV-FIELD-H5"
+    ],
+    "journeyIds": [
+      "J13"
+    ],
+    "mappingBasis": "财务经理 / 财务经理、财务秘书"
+  },
+  "fin-007": {
+    "pageId": "fin-007",
+    "requirementId": "SRS-FR-FIN-007",
+    "readRoles": [
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FINANCE_MANAGER"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE",
+      "ENV-FIELD-H5"
+    ],
+    "journeyIds": [
+      "J13"
+    ],
+    "mappingBasis": "财务经理 / 财务经理、CEO"
+  },
+  "fin-008": {
+    "pageId": "fin-008",
+    "requirementId": "SRS-FR-FIN-008",
+    "readRoles": [
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE",
+      "ENV-FIELD-H5"
+    ],
+    "journeyIds": [
+      "J13"
+    ],
+    "mappingBasis": "财务经理 / 财务经理、财务秘书"
+  },
+  "fin-009": {
+    "pageId": "fin-009",
+    "requirementId": "SRS-FR-FIN-009",
+    "readRoles": [
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FINANCE_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-GOVERNANCE",
+      "ENV-PRINT"
+    ],
+    "journeyIds": [
+      "J04"
+    ],
+    "mappingBasis": "会计 / 财务经理、授权审批人"
+  },
+  "fin-010": {
+    "pageId": "fin-010",
+    "requirementId": "SRS-FR-FIN-010",
+    "readRoles": [
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FINANCE_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-GOVERNANCE",
+      "ENV-PRINT"
+    ],
+    "journeyIds": [
+      "J04"
+    ],
+    "mappingBasis": "出纳 / 会计、财务经理、授权审批人"
+  },
+  "eqp-001": {
+    "pageId": "eqp-001",
+    "requirementId": "SRS-FR-EQP-001",
+    "readRoles": [
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_ENGINEERING_LEAD"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J15"
+    ],
+    "mappingBasis": "电修领导 / 电修领导、维修工"
+  },
+  "eqp-002": {
+    "pageId": "eqp-002",
+    "requirementId": "SRS-FR-EQP-002",
+    "readRoles": [
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_ENGINEERING_LEAD"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J15"
+    ],
+    "mappingBasis": "电修领导 / 电修领导、维修工"
+  },
+  "eqp-003": {
+    "pageId": "eqp-003",
+    "requirementId": "SRS-FR-EQP-003",
+    "readRoles": [
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_MAINTENANCE"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J15"
+    ],
+    "mappingBasis": "维修工 / 维修工、电修领导"
+  },
+  "eqp-004": {
+    "pageId": "eqp-004",
+    "requirementId": "SRS-FR-EQP-004",
+    "readRoles": [
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_SECURITY",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_MAINTENANCE"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J15"
+    ],
+    "mappingBasis": "维修工 / 维修工、电修领导、业务部门"
+  },
+  "eqp-005": {
+    "pageId": "eqp-005",
+    "requirementId": "SRS-FR-EQP-005",
+    "readRoles": [
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_ENGINEERING_LEAD"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-WAREHOUSE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J15"
+    ],
+    "mappingBasis": "电修领导 / 电修领导、维修工、仓管"
+  },
+  "rpt-001": {
+    "pageId": "rpt-001",
+    "requirementId": "SRS-FR-RPT-001",
+    "readRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J18"
+    ],
+    "mappingBasis": "CEO / CEO、管理层"
+  },
+  "rpt-002": {
+    "pageId": "rpt-002",
+    "requirementId": "SRS-FR-RPT-002",
+    "readRoles": [
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J18"
+    ],
+    "mappingBasis": "养殖负责人 / 养殖负责人、兽医、组长"
+  },
+  "rpt-003": {
+    "pageId": "rpt-003",
+    "requirementId": "SRS-FR-RPT-003",
+    "readRoles": [
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J18"
+    ],
+    "mappingBasis": "仓储 / 仓储、采购、财务"
+  },
+  "rpt-004": {
+    "pageId": "rpt-004",
+    "requirementId": "SRS-FR-RPT-004",
+    "readRoles": [
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J18"
+    ],
+    "mappingBasis": "销售 / 销售、财务、CEO"
+  },
+  "rpt-005": {
+    "pageId": "rpt-005",
+    "requirementId": "SRS-FR-RPT-005",
+    "readRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_SECURITY",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_SECURITY"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J18"
+    ],
+    "mappingBasis": "各业务角色 / 各业务角色、系统管理员"
+  },
+  "print-001": {
+    "pageId": "print-001",
+    "requirementId": "SRS-FR-PRINT-001",
+    "readRoles": [
+      "SYSTEM_ADMIN",
+      "SYSTEM_EXECUTIVE"
+    ],
+    "writeRoles": [
+      "SYSTEM_ADMIN"
+    ],
+    "environmentIds": [
+      "ENV-PRINT",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J17"
+    ],
+    "mappingBasis": "系统管理员 / 系统管理员、业务负责人"
+  },
+  "print-002": {
+    "pageId": "print-002",
+    "requirementId": "SRS-FR-PRINT-002",
+    "readRoles": [
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_SALES_STAFF"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-PRINT",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J11"
+    ],
+    "mappingBasis": "销售 / 销售、财务、司机、配送员"
+  },
+  "print-003": {
+    "pageId": "print-003",
+    "requirementId": "SRS-FR-PRINT-003",
+    "readRoles": [
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_FINANCE_MANAGER"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-WAREHOUSE",
+      "ENV-GOVERNANCE",
+      "ENV-PRINT"
+    ],
+    "journeyIds": [
+      "J04"
+    ],
+    "mappingBasis": "财务经理 / 财务经理、财务秘书、系统管理员、会计、出纳"
+  },
+  "print-004": {
+    "pageId": "print-004",
+    "requirementId": "SRS-FR-PRINT-004",
+    "readRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_SECURITY",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_SECURITY"
+    ],
+    "environmentIds": [
+      "ENV-PRINT",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J17"
+    ],
+    "mappingBasis": "各业务岗位 / 各业务岗位、系统管理员、会计、出纳"
+  },
+  "print-005": {
+    "pageId": "print-005",
+    "requirementId": "SRS-FR-PRINT-005",
+    "readRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_ADMIN",
+      "SYSTEM_FINANCE_STAFF"
+    ],
+    "writeRoles": [
+      "SYSTEM_EXECUTIVE"
+    ],
+    "environmentIds": [
+      "ENV-PRINT",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J17"
+    ],
+    "mappingBasis": "业务负责人 / 业务负责人、系统管理员、会计、出纳"
+  },
+  "print-006": {
+    "pageId": "print-006",
+    "requirementId": "SRS-FR-PRINT-006",
+    "readRoles": [
+      "SYSTEM_ADMIN",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_SECURITY"
+    ],
+    "writeRoles": [
+      "SYSTEM_ADMIN"
+    ],
+    "environmentIds": [
+      "ENV-PRINT",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J17"
+    ],
+    "mappingBasis": "系统管理员 / 财务经理、会计、出纳、各业务岗位"
+  },
+  "trace-001": {
+    "pageId": "trace-001",
+    "requirementId": "SRS-FR-TRACE-001",
+    "readRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J18"
+    ],
+    "mappingBasis": "管理层 / 管理层、兽医、业务负责人"
+  },
+  "trace-002": {
+    "pageId": "trace-002",
+    "requirementId": "SRS-FR-TRACE-002",
+    "readRoles": [
+      "SYSTEM_ADMIN",
+      "SYSTEM_EXECUTIVE"
+    ],
+    "writeRoles": [],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J18"
+    ],
+    "mappingBasis": "系统管理员 / 系统管理员、审计、管理层"
+  },
+  "trace-003": {
+    "pageId": "trace-003",
+    "requirementId": "SRS-FR-TRACE-003",
+    "readRoles": [
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J18"
+    ],
+    "mappingBasis": "兽医 / 兽医、采购、仓储"
+  },
+  "trace-004": {
+    "pageId": "trace-004",
+    "requirementId": "SRS-FR-TRACE-004",
+    "readRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_SECURITY",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_SECURITY"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-EXTERNAL"
+    ],
+    "journeyIds": [
+      "J10"
+    ],
+    "mappingBasis": "各业务岗位 / 各业务岗位"
+  },
+  "plat-001": {
+    "pageId": "plat-001",
+    "requirementId": "SRS-FR-PLAT-001",
+    "readRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_SECURITY",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_SECURITY",
+      "SYSTEM_ADMIN"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE",
+      "ENV-FIELD-H5"
+    ],
+    "journeyIds": [
+      "J01"
+    ],
+    "mappingBasis": "全部用户 / 全部用户、系统管理员"
+  },
+  "plat-002": {
+    "pageId": "plat-002",
+    "requirementId": "SRS-FR-PLAT-002",
+    "readRoles": [
+      "SYSTEM_ADMIN",
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_SECURITY"
+    ],
+    "writeRoles": [
+      "SYSTEM_ADMIN"
+    ],
+    "environmentIds": [
+      "ENV-OFFICE",
+      "ENV-FIELD-H5"
+    ],
+    "journeyIds": [
+      "J19"
+    ],
+    "mappingBasis": "系统管理员 / 系统管理员、全部用户"
+  },
+  "plat-003": {
+    "pageId": "plat-003",
+    "requirementId": "SRS-FR-PLAT-003",
+    "readRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_SECURITY",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_SECURITY"
+    ],
+    "environmentIds": [
+      "ENV-GOVERNANCE",
+      "ENV-OFFICE",
+      "ENV-FIELD-H5"
+    ],
+    "journeyIds": [
+      "J01"
+    ],
+    "mappingBasis": "全部业务角色 / 全部业务角色"
+  },
+  "plat-004": {
+    "pageId": "plat-004",
+    "requirementId": "SRS-FR-PLAT-004",
+    "readRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_SECURITY",
+      "SYSTEM_ADMIN"
+    ],
+    "writeRoles": [
+      "SYSTEM_EXECUTIVE",
+      "SYSTEM_EXTERNAL_LIAISON",
+      "SYSTEM_FINANCE_MANAGER",
+      "SYSTEM_FINANCE_STAFF",
+      "SYSTEM_SALES_MANAGER",
+      "SYSTEM_SALES_STAFF",
+      "SYSTEM_PROCUREMENT_MANAGER",
+      "SYSTEM_PROCUREMENT_STAFF",
+      "SYSTEM_VETERINARIAN",
+      "SYSTEM_FARM_LEADER",
+      "SYSTEM_FARM_WORKER",
+      "SYSTEM_SORTING_WORKER",
+      "SYSTEM_DRIVER",
+      "SYSTEM_DELIVERY_STAFF",
+      "SYSTEM_ENGINEERING_LEAD",
+      "SYSTEM_MAINTENANCE",
+      "SYSTEM_SECURITY"
+    ],
+    "environmentIds": [
+      "ENV-FIELD-H5",
+      "ENV-NIGHT-DELIVERY",
+      "ENV-WAREHOUSE",
+      "ENV-OFFICE"
+    ],
+    "journeyIds": [
+      "J16"
+    ],
+    "mappingBasis": "各业务角色 / 各业务角色"
+  }
+}
