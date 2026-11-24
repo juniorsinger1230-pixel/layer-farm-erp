@@ -1,0 +1,4594 @@
+[
+  {
+    "pageId": "org-001",
+    "requirementId": "SRS-FR-ORG-001",
+    "title": "组织主数据管理",
+    "domain": "ORG",
+    "domainName": "组织权限",
+    "priority": "P0",
+    "sourceModelId": "US-ORG-001",
+    "useCaseId": "UC-ORG-001",
+    "actor": "系统管理员",
+    "description": "作为系统管理员，我希望组织主数据管理，以便维护集团、公司、部门、岗位、组织层级、中英文名称、状态、生效/失效日期和版本。",
+    "trigger": "业务场景：组织架构",
+    "preconditions": [
+      "R04；QP-02",
+      "关联流程：组织架构"
+    ],
+    "flow": [
+      "进入组织主数据管理模块，定位对应公司与组织范围",
+      "新增或选择待维护记录，录入集团、公司、部门、岗位、组织层级、中英文名称",
+      "系统校验必填项、编码唯一性、数据格式与中英文名称",
+      "核对关联基础资料、状态及生效/失效日期",
+      "保存并生成版本，记录变更内容与操作审计",
+      "复核通过后生效，停用记录保留历史版本可追溯"
+    ],
+    "outputs": [
+      "组织单元可新增、编辑、停用并保留历史版本；变更有审计记录。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0043",
+      "AC2-0007",
+      "AC2-0008",
+      "AC2-0009"
+    ],
+    "businessRuleIds": [
+      "BR-ORG-UNIQ-001",
+      "BR-ORG-VAL-001",
+      "BR-ORG-LIFE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/org-001",
+    "index": 1
+  },
+  {
+    "pageId": "org-002",
+    "requirementId": "SRS-FR-ORG-002",
+    "title": "员工账户全量管理",
+    "domain": "ORG",
+    "domainName": "组织权限",
+    "priority": "P0",
+    "sourceModelId": "US-ORG-002",
+    "useCaseId": "UC-ORG-002",
+    "actor": "系统管理员",
+    "description": "作为系统管理员，我希望员工账户全量管理，以便为338名员工建立员工与用户账号关联，维护在职、停用、调岗和账号状态。",
+    "trigger": "业务场景：组织岗位",
+    "preconditions": [
+      "QP-04-01；R04",
+      "关联流程：组织岗位"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（组织岗位）",
+      "按标准流程完成为338名员工建立员工、用户账号关联、在职、停用、调岗",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "员工账号唯一，账号、岗位、公司和在职状态可追溯。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0044",
+      "AC2-0010",
+      "AC2-0011",
+      "AC2-0012"
+    ],
+    "businessRuleIds": [
+      "BR-ORG-VAL-002",
+      "BR-ORG-TRACE-001",
+      "BR-ORG-VAL-003"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/org-002",
+    "index": 2
+  },
+  {
+    "pageId": "org-003",
+    "requirementId": "SRS-FR-ORG-003",
+    "title": "系统角色目录管理",
+    "domain": "ORG",
+    "domainName": "组织权限",
+    "priority": "P0",
+    "sourceModelId": "US-ORG-003",
+    "useCaseId": "UC-ORG-003",
+    "actor": "系统管理员",
+    "description": "作为系统管理员，我希望系统角色目录管理，以便维护17项系统角色及角色状态，支持角色与岗位解耦。",
+    "trigger": "业务场景：系统角色",
+    "preconditions": [
+      "QP-02；流程角色梳理",
+      "关联流程：系统角色"
+    ],
+    "flow": [
+      "进入系统角色目录管理模块，定位对应公司与组织范围",
+      "新增或选择待维护记录，录入17项系统角色、角色状态、角色、岗位解耦",
+      "系统校验必填项、编码唯一性、数据格式与中英文名称",
+      "核对关联基础资料、状态及生效/失效日期",
+      "保存并生成版本，记录变更内容与操作审计",
+      "复核通过后生效，停用记录保留历史版本可追溯"
+    ],
+    "outputs": [
+      "角色名称唯一，角色停用后不再允许新授权。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0045",
+      "AC2-0013",
+      "AC2-0014",
+      "AC2-0015"
+    ],
+    "businessRuleIds": [
+      "BR-ORG-UNIQ-002",
+      "BR-ORG-VAL-004",
+      "BR-ORG-LIFE-002"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/org-003",
+    "index": 3
+  },
+  {
+    "pageId": "org-004",
+    "requirementId": "SRS-FR-ORG-004",
+    "title": "岗位角色映射管理",
+    "domain": "ORG",
+    "domainName": "组织权限",
+    "priority": "P0",
+    "sourceModelId": "US-ORG-004",
+    "useCaseId": "UC-ORG-004",
+    "actor": "系统管理员",
+    "description": "作为系统管理员，我希望岗位角色映射管理，以便维护24项组织岗位与系统角色的映射关系。",
+    "trigger": "业务场景：岗位角色",
+    "preconditions": [
+      "QP-02；R04",
+      "关联流程：岗位角色"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（岗位角色）",
+      "按标准流程完成24项组织岗位、系统角色的映射关系",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "每个岗位至少映射一个有效系统角色，映射变更留痕。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0046",
+      "AC2-0016",
+      "AC2-0017",
+      "AC2-0018"
+    ],
+    "businessRuleIds": [
+      "BR-ORG-VAL-005",
+      "BR-ORG-TRACE-002",
+      "BR-ORG-VAL-006"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/org-004",
+    "index": 4
+  },
+  {
+    "pageId": "org-005",
+    "requirementId": "SRS-FR-ORG-005",
+    "title": "数据范围授权",
+    "domain": "ORG",
+    "domainName": "组织权限",
+    "priority": "P0",
+    "sourceModelId": "US-ORG-005",
+    "useCaseId": "UC-ORG-005",
+    "actor": "系统管理员",
+    "description": "作为系统管理员，我希望数据范围授权，以便按公司、模块、单据、栋舍、仓库、设备或任务配置数据访问范围。",
+    "trigger": "业务场景：数据隔离",
+    "preconditions": [
+      "QP-02；QP-04-05",
+      "关联流程：数据隔离"
+    ],
+    "flow": [
+      "发起人提交数据范围授权申请并附必要材料",
+      "系统校验数据完整性、前置条件与申请人权限",
+      "按规则自动核查额度、合规与授权范围等条件",
+      "提交相应负责人按审批流逐级审批",
+      "通过则放行并通知相关方，驳回则注明原因退回",
+      "审批结果回写关联单据，全过程留痕可审计"
+    ],
+    "outputs": [
+      "共用岗位不默认跨公司，授权范围可查询、可复核。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-ORG-002",
+      "US-EXC-ORG-003",
+      "US-EXC-ORG-004",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0047",
+      "AC2-0019",
+      "AC2-0020",
+      "AC2-0021"
+    ],
+    "businessRuleIds": [
+      "BR-ORG-APPR-001",
+      "BR-ORG-VAL-007",
+      "BR-ORG-STATE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/org-005",
+    "index": 5
+  },
+  {
+    "pageId": "org-006",
+    "requirementId": "SRS-FR-ORG-006",
+    "title": "兼任代理与权限回收",
+    "domain": "ORG",
+    "domainName": "组织权限",
+    "priority": "P1",
+    "sourceModelId": "US-ORG-006",
+    "useCaseId": "UC-ORG-006",
+    "actor": "系统管理员",
+    "description": "作为系统管理员，我希望兼任代理与权限回收，以便支持CEO兼任采购经理、岗位代理、调岗、离职和权限有效期。",
+    "trigger": "业务场景：兼任代理",
+    "preconditions": [
+      "R04；QP-04",
+      "关联流程：兼任代理"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（兼任代理）",
+      "按标准流程完成CEO兼任采购经理、岗位代理、调岗、离职、权限有效期",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "兼任和代理有起止时间；离职或调岗后权限按规则回收。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-ORG-002",
+      "US-EXC-ORG-003",
+      "US-EXC-ORG-004",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0048",
+      "AC2-0022",
+      "AC2-0023",
+      "AC2-0024"
+    ],
+    "businessRuleIds": [
+      "BR-ORG-VAL-008",
+      "BR-ORG-TRACE-003",
+      "BR-ORG-VAL-009"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/org-006",
+    "index": 6
+  },
+  {
+    "pageId": "farm-001",
+    "requirementId": "SRS-FR-FARM-001",
+    "title": "批次立项管理",
+    "domain": "FARM",
+    "domainName": "养殖管理",
+    "priority": "P0",
+    "sourceModelId": "US-FARM-001",
+    "useCaseId": "UC-FARM-001",
+    "actor": "CEO",
+    "description": "作为CEO，我希望批次立项管理，以便支持新批次立项、预算、经营决策和审批状态管理。",
+    "trigger": "业务场景：H1-01",
+    "preconditions": [
+      "R01 H1-01；R04",
+      "关联流程：H1-01"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H1-01）",
+      "按标准流程完成新批次立项、预算、经营决策、审批状态管理",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "立项批准后才能进入后续采购和进雏准备。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0049",
+      "AC2-0025",
+      "AC2-0026",
+      "AC2-0027",
+      "AC2-0028"
+    ],
+    "businessRuleIds": [
+      "BR-FARM-VAL-001",
+      "BR-FARM-TRACE-001",
+      "BR-FARM-VAL-002",
+      "BR-FARM-STATE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/farm-001",
+    "index": 7
+  },
+  {
+    "pageId": "farm-002",
+    "requirementId": "SRS-FR-FARM-002",
+    "title": "批次档案管理",
+    "domain": "FARM",
+    "domainName": "养殖管理",
+    "priority": "P0",
+    "sourceModelId": "US-FARM-002",
+    "useCaseId": "UC-FARM-002",
+    "actor": "育雏组长",
+    "description": "作为育雏组长，我希望批次档案管理，以便维护批次号、品种、来源、进雏日期、基础数量、日龄、存栏和阶段状态。",
+    "trigger": "业务场景：H2-02",
+    "preconditions": [
+      "R01 H2-02",
+      "关联流程：H2-02"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-02）",
+      "按标准流程完成批次号、品种、来源、进雏日期、基础数量",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "批次号唯一，日龄和存栏随业务事件更新。"
+    ],
+    "exceptions": [
+      "US-EXC-FARM-007",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0050",
+      "AC2-0029",
+      "AC2-0030",
+      "AC2-0031"
+    ],
+    "businessRuleIds": [
+      "BR-FARM-VAL-003",
+      "BR-FARM-TRACE-002",
+      "BR-FARM-VAL-004"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/farm-002",
+    "index": 8
+  },
+  {
+    "pageId": "farm-003",
+    "requirementId": "SRS-FR-FARM-003",
+    "title": "栋舍栏位主数据",
+    "domain": "FARM",
+    "domainName": "养殖管理",
+    "priority": "P1",
+    "sourceModelId": "US-FARM-003",
+    "useCaseId": "UC-FARM-003",
+    "actor": "养殖组长",
+    "description": "作为养殖组长，我希望栋舍栏位主数据，以便维护106栋、栏位、层数、养殖模式、公司归属、投产/在建/未投产状态。",
+    "trigger": "业务场景：H1/H2/H3",
+    "preconditions": [
+      "R04；R01",
+      "关联流程：H1/H2/H3"
+    ],
+    "flow": [
+      "进入栋舍栏位主数据模块，定位对应公司与组织范围",
+      "新增或选择待维护记录，录入106栋、栏位、层数、养殖模式、公司归属、投产/在建/未投产状态",
+      "系统校验必填项、编码唯一性、数据格式与中英文名称",
+      "核对关联基础资料、状态及生效/失效日期",
+      "保存并生成版本，记录变更内容与操作审计",
+      "复核通过后生效，停用记录保留历史版本可追溯"
+    ],
+    "outputs": [
+      "栋舍编码唯一，状态变化和责任范围可追溯。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0051",
+      "AC2-0032",
+      "AC2-0033",
+      "AC2-0034"
+    ],
+    "businessRuleIds": [
+      "BR-FARM-UNIQ-001",
+      "BR-FARM-VAL-005",
+      "BR-FARM-LIFE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/farm-003",
+    "index": 9
+  },
+  {
+    "pageId": "farm-004",
+    "requirementId": "SRS-FR-FARM-004",
+    "title": "鸡苗到场验收",
+    "domain": "FARM",
+    "domainName": "养殖管理",
+    "priority": "P0",
+    "sourceModelId": "US-FARM-004",
+    "useCaseId": "UC-FARM-004",
+    "actor": "采购秘书",
+    "description": "作为采购秘书，我希望鸡苗到场验收，以便支持点数、均重、合格判定、赠送数量、拒收或隔离记录。",
+    "trigger": "业务场景：H2-01",
+    "preconditions": [
+      "R01 H2-01；R04",
+      "关联流程：H2-01"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-01）",
+      "按标准流程完成点数、均重、合格判定、赠送数量、拒收或隔离记录",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "验收通过后才能建档；不合格进入退货或隔离审批。"
+    ],
+    "exceptions": [
+      "US-EXC-FARM-001",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0052",
+      "AC2-0035",
+      "AC2-0036",
+      "AC2-0037"
+    ],
+    "businessRuleIds": [
+      "BR-FARM-VAL-006",
+      "BR-FARM-TRACE-003",
+      "BR-FARM-VAL-007"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/farm-004",
+    "index": 10
+  },
+  {
+    "pageId": "farm-005",
+    "requirementId": "SRS-FR-FARM-005",
+    "title": "初饮开食与饲喂管理",
+    "domain": "FARM",
+    "domainName": "养殖管理",
+    "priority": "P0",
+    "sourceModelId": "US-FARM-005",
+    "useCaseId": "UC-FARM-005",
+    "actor": "育雏工",
+    "description": "作为育雏工，我希望初饮开食与饲喂管理，以便支持初饮、开食、每日饲喂、采食检查和饲喂记录。",
+    "trigger": "业务场景：H2-03",
+    "preconditions": [
+      "R01 H2-03",
+      "关联流程：H2-03"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-03）",
+      "按标准流程完成初饮、开食、每日饲喂、采食检查、饲喂记录",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "每次饲喂有时间、物料、数量或人工补录记录。"
+    ],
+    "exceptions": [
+      "US-EXC-FARM-003",
+      "US-EXC-FARM-005",
+      "US-EXC-FARM-008",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0053",
+      "AC2-0038",
+      "AC2-0039",
+      "AC2-0040",
+      "AC2-0041"
+    ],
+    "businessRuleIds": [
+      "BR-FARM-VAL-008",
+      "BR-FARM-TRACE-004",
+      "BR-FARM-VAL-009",
+      "BR-FARM-VAL-010"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/farm-005",
+    "index": 11
+  },
+  {
+    "pageId": "farm-006",
+    "requirementId": "SRS-FR-FARM-006",
+    "title": "环境三班记录",
+    "domain": "FARM",
+    "domainName": "养殖管理",
+    "priority": "P0",
+    "sourceModelId": "US-FARM-006",
+    "useCaseId": "UC-FARM-006",
+    "actor": "育雏工",
+    "description": "作为育雏工，我希望环境三班记录，以便支持早中晚温湿度、通风、阈值预警和处置记录。",
+    "trigger": "业务场景：H2-04",
+    "preconditions": [
+      "R01 H2-04",
+      "关联流程：H2-04"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-04）",
+      "按标准流程完成早中晚温湿度、通风、阈值预警、处置记录",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "超阈值有预警、处置和复核记录。"
+    ],
+    "exceptions": [
+      "US-EXC-FARM-002",
+      "US-EXC-FARM-004",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0054",
+      "AC2-0042",
+      "AC2-0043",
+      "AC2-0044",
+      "AC2-0045"
+    ],
+    "businessRuleIds": [
+      "BR-FARM-VAL-011",
+      "BR-FARM-TRACE-005",
+      "BR-FARM-VAL-012",
+      "BR-FARM-VAL-013"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/farm-006",
+    "index": 12
+  },
+  {
+    "pageId": "farm-007",
+    "requirementId": "SRS-FR-FARM-007",
+    "title": "断喙管理",
+    "domain": "FARM",
+    "domainName": "养殖管理",
+    "priority": "P1",
+    "sourceModelId": "US-FARM-007",
+    "useCaseId": "UC-FARM-007",
+    "actor": "育雏组长",
+    "description": "作为育雏组长，我希望断喙管理，以便支持8—10日龄断喙排班、执行、止血、观察和异常记录。",
+    "trigger": "业务场景：H2-06",
+    "preconditions": [
+      "R01 H2-06；R03",
+      "关联流程：H2-06"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-06）",
+      "按标准流程完成8—10日龄断喙排班、执行、止血、观察、异常记录",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "断喙作为独立生产事件，不与免疫记录混同。"
+    ],
+    "exceptions": [
+      "US-EXC-FARM-002",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0055",
+      "AC2-0046",
+      "AC2-0047",
+      "AC2-0048"
+    ],
+    "businessRuleIds": [
+      "BR-FARM-VAL-014",
+      "BR-FARM-TRACE-006",
+      "BR-FARM-VAL-015"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/farm-007",
+    "index": 13
+  },
+  {
+    "pageId": "farm-008",
+    "requirementId": "SRS-FR-FARM-008",
+    "title": "称重与均匀度管理",
+    "domain": "FARM",
+    "domainName": "养殖管理",
+    "priority": "P1",
+    "sourceModelId": "US-FARM-008",
+    "useCaseId": "UC-FARM-008",
+    "actor": "育雏工",
+    "description": "作为育雏工，我希望称重与均匀度管理，以便支持抽样称重、均匀度计算、不达标调料或分群建议。",
+    "trigger": "业务场景：H2-07",
+    "preconditions": [
+      "R01 H2-07",
+      "关联流程：H2-07"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-07）",
+      "按标准流程完成抽样称重、均匀度计算、不达标调料或分群建议",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "抽样比例、称重结果和处置结论可追溯。"
+    ],
+    "exceptions": [
+      "US-EXC-FARM-004",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0056",
+      "AC2-0049",
+      "AC2-0050",
+      "AC2-0051"
+    ],
+    "businessRuleIds": [
+      "BR-FARM-VAL-016",
+      "BR-FARM-TRACE-007",
+      "BR-FARM-VAL-017"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/farm-008",
+    "index": 14
+  },
+  {
+    "pageId": "farm-009",
+    "requirementId": "SRS-FR-FARM-009",
+    "title": "转群管理",
+    "domain": "FARM",
+    "domainName": "养殖管理",
+    "priority": "P0",
+    "sourceModelId": "US-FARM-009",
+    "useCaseId": "UC-FARM-009",
+    "actor": "养殖组长",
+    "description": "作为养殖组长，我希望转群管理，以便支持6周/18周评估、转群单、空腹、清点、抗应激和位置变更。",
+    "trigger": "业务场景：H2-09/H3",
+    "preconditions": [
+      "R01 H2-09/H3-01/H3-06",
+      "关联流程：H2-09/H3"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-09/H3）",
+      "按标准流程完成6周/18周评估、转群单、空腹、清点、抗应激",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "转群前后存栏和位置可核对，异常有审批。"
+    ],
+    "exceptions": [
+      "US-EXC-FARM-005",
+      "US-EXC-FARM-008",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0057",
+      "AC2-0052",
+      "AC2-0053",
+      "AC2-0054",
+      "AC2-0055"
+    ],
+    "businessRuleIds": [
+      "BR-FARM-VAL-018",
+      "BR-FARM-TRACE-008",
+      "BR-FARM-VAL-019",
+      "BR-FARM-VAL-020"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/farm-009",
+    "index": 15
+  },
+  {
+    "pageId": "farm-010",
+    "requirementId": "SRS-FR-FARM-010",
+    "title": "死淘与无害化管理",
+    "domain": "FARM",
+    "domainName": "养殖管理",
+    "priority": "P1",
+    "sourceModelId": "US-FARM-010",
+    "useCaseId": "UC-FARM-010",
+    "actor": "养殖工",
+    "description": "作为养殖工，我希望死淘与无害化管理，以便支持死淘原因、数量、隔离、回收交接、无害化和存栏更新。",
+    "trigger": "业务场景：H2-08/H3-07/H4-11",
+    "preconditions": [
+      "R01；R03",
+      "关联流程：H2-08/H3-07/H4-11"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-08/H3-07/H4-11）",
+      "按标准流程完成死淘原因、数量、隔离、回收交接、无害化",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "每笔死淘关联批次、原因和处理结果，并更新存栏。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0058",
+      "AC2-0056",
+      "AC2-0057",
+      "AC2-0058",
+      "AC2-0059"
+    ],
+    "businessRuleIds": [
+      "BR-FARM-VAL-021",
+      "BR-FARM-TRACE-009",
+      "BR-FARM-VAL-022",
+      "BR-FARM-CONS-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/farm-010",
+    "index": 16
+  },
+  {
+    "pageId": "farm-011",
+    "requirementId": "SRS-FR-FARM-011",
+    "title": "集蛋与蛋品分级",
+    "domain": "FARM",
+    "domainName": "养殖管理",
+    "priority": "P0",
+    "sourceModelId": "US-FARM-011",
+    "useCaseId": "UC-FARM-011",
+    "actor": "养殖工",
+    "description": "作为养殖工，我希望集蛋与蛋品分级，以便支持每日集蛋、手检、产蛋/破蛋/软壳记录、XL/L/M/S分级和次品处理。",
+    "trigger": "业务场景：H4-02/H4-03",
+    "preconditions": [
+      "R01 H4-02/H4-03",
+      "关联流程：H4-02/H4-03"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H4-02/H4-03）",
+      "按标准流程完成每日集蛋、手检、产蛋/破蛋/软壳记录、XL/L/M/S分级、次品处理",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "集蛋、分级和异常蛋数量可核对并关联批次。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0059",
+      "AC2-0060",
+      "AC2-0061",
+      "AC2-0062",
+      "AC2-0063"
+    ],
+    "businessRuleIds": [
+      "BR-FARM-VAL-023",
+      "BR-FARM-TRACE-010",
+      "BR-FARM-VAL-024",
+      "BR-FARM-CALC-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/farm-011",
+    "index": 17
+  },
+  {
+    "pageId": "farm-012",
+    "requirementId": "SRS-FR-FARM-012",
+    "title": "淘汰决策与批次关闭",
+    "domain": "FARM",
+    "domainName": "养殖管理",
+    "priority": "P1",
+    "sourceModelId": "US-FARM-012",
+    "useCaseId": "UC-FARM-012",
+    "actor": "CEO",
+    "description": "作为CEO，我希望淘汰决策与批次关闭，以便支持基于产蛋率、成本、价格、亏损和健康数据的淘汰决策、审批和批次关闭。",
+    "trigger": "业务场景：H4-13/H5",
+    "preconditions": [
+      "R01 H4-13/H5",
+      "关联流程：H4-13/H5"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H4-13/H5）",
+      "按标准流程完成基于产蛋率、成本、价格、亏损、健康数据的淘汰决策",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "产蛋率低于70%不单独触发淘汰；决策和审批留痕。"
+    ],
+    "exceptions": [
+      "US-EXC-FARM-006",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0060",
+      "AC2-0064",
+      "AC2-0065",
+      "AC2-0066"
+    ],
+    "businessRuleIds": [
+      "BR-FARM-VAL-025",
+      "BR-FARM-TRACE-011",
+      "BR-FARM-VAL-026"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/farm-012",
+    "index": 18
+  },
+  {
+    "pageId": "vet-001",
+    "requirementId": "SRS-FR-VET-001",
+    "title": "免疫程序版本管理",
+    "domain": "VET",
+    "domainName": "兽医防疫",
+    "priority": "P0",
+    "sourceModelId": "US-VET-001",
+    "useCaseId": "UC-VET-001",
+    "actor": "兽医",
+    "description": "作为兽医，我希望免疫程序版本管理，以便维护开放式、自动化等免疫程序、适用场舍、版本、生效日期和审批状态。",
+    "trigger": "业务场景：H2-05/H3-04",
+    "preconditions": [
+      "R03；R01",
+      "关联流程：H2-05/H3-04"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-05/H3-04）",
+      "按标准流程完成开放式、自动化等免疫程序、适用场舍、版本、生效日期",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "程序版本可追溯，适用范围和生效状态明确。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0061",
+      "AC2-0067",
+      "AC2-0068",
+      "AC2-0069",
+      "AC2-0070"
+    ],
+    "businessRuleIds": [
+      "BR-VET-VAL-001",
+      "BR-VET-TRACE-001",
+      "BR-VET-VAL-002",
+      "BR-VET-CONS-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/vet-001",
+    "index": 19
+  },
+  {
+    "pageId": "vet-002",
+    "requirementId": "SRS-FR-VET-002",
+    "title": "免疫任务生成",
+    "domain": "VET",
+    "domainName": "兽医防疫",
+    "priority": "P0",
+    "sourceModelId": "US-VET-002",
+    "useCaseId": "UC-VET-002",
+    "actor": "兽医",
+    "description": "作为兽医，我希望免疫任务生成，以便按日龄/周龄节点和同一日龄多行任务生成待办。",
+    "trigger": "业务场景：H2-05",
+    "preconditions": [
+      "R03",
+      "关联流程：H2-05"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-05）",
+      "按标准流程完成按日龄/周龄节点、同一日龄多行任务生成待办",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "任务包含批次、栋舍、日龄、疫苗、路径和责任人。"
+    ],
+    "exceptions": [
+      "US-EXC-VET-001",
+      "US-EXC-VET-004",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0062",
+      "AC2-0071",
+      "AC2-0072",
+      "AC2-0073",
+      "AC2-0074"
+    ],
+    "businessRuleIds": [
+      "BR-VET-VAL-003",
+      "BR-VET-TRACE-002",
+      "BR-VET-VAL-004",
+      "BR-VET-STATE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/vet-002",
+    "index": 20
+  },
+  {
+    "pageId": "vet-003",
+    "requirementId": "SRS-FR-VET-003",
+    "title": "免疫执行记录",
+    "domain": "VET",
+    "domainName": "兽医防疫",
+    "priority": "P0",
+    "sourceModelId": "US-VET-003",
+    "useCaseId": "UC-VET-003",
+    "actor": "兽医",
+    "description": "作为兽医，我希望免疫执行记录，以便记录计划/实际日龄、执行人、兽医、疫苗批号、剂量、存栏、异常和未执行原因。",
+    "trigger": "业务场景：H2-05/H3-04",
+    "preconditions": [
+      "R03",
+      "关联流程：H2-05/H3-04"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-05/H3-04）",
+      "按标准流程完成计划/实际日龄、兽医、疫苗批号、剂量、存栏",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "免疫执行后可关联领用、库存和批次档案。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0063",
+      "AC2-0075",
+      "AC2-0076",
+      "AC2-0077"
+    ],
+    "businessRuleIds": [
+      "BR-VET-VAL-005",
+      "BR-VET-TRACE-003",
+      "BR-VET-VAL-006"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/vet-003",
+    "index": 21
+  },
+  {
+    "pageId": "vet-004",
+    "requirementId": "SRS-FR-VET-004",
+    "title": "疫苗领用与库存联动",
+    "domain": "VET",
+    "domainName": "兽医防疫",
+    "priority": "P0",
+    "sourceModelId": "US-VET-004",
+    "useCaseId": "UC-VET-004",
+    "actor": "兽医",
+    "description": "作为兽医，我希望疫苗领用与库存联动，以便免疫执行时关联疫苗领用、批号、库存扣减和不足预警。",
+    "trigger": "业务场景：H2-05/H4-12",
+    "preconditions": [
+      "R03；R01",
+      "关联流程：H2-05/H4-12"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-05/H4-12）",
+      "按标准流程完成免疫执行时关联疫苗领用、批号、库存扣减、不足预警",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "库存不足或批号不一致时阻断或进入审批。"
+    ],
+    "exceptions": [
+      "US-EXC-VET-002",
+      "US-EXC-VET-005",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0064",
+      "AC2-0078",
+      "AC2-0079",
+      "AC2-0080",
+      "AC2-0081"
+    ],
+    "businessRuleIds": [
+      "BR-VET-VAL-007",
+      "BR-VET-TRACE-004",
+      "BR-VET-VAL-008",
+      "BR-VET-CALC-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/vet-004",
+    "index": 22
+  },
+  {
+    "pageId": "vet-005",
+    "requirementId": "SRS-FR-VET-005",
+    "title": "用药处方管理",
+    "domain": "VET",
+    "domainName": "兽医防疫",
+    "priority": "P0",
+    "sourceModelId": "US-VET-005",
+    "useCaseId": "UC-VET-005",
+    "actor": "兽医",
+    "description": "作为兽医，我希望用药处方管理，以便支持药品处方、用法用量、审批、执行和异常反馈。",
+    "trigger": "业务场景：H4-10",
+    "preconditions": [
+      "R01 RC-007；R03",
+      "关联流程：H4-10"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H4-10）",
+      "按标准流程完成药品处方、用法用量、审批、执行、异常反馈",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "处方与批次、药品、用量和执行记录关联。"
+    ],
+    "exceptions": [
+      "US-EXC-VET-003",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0065",
+      "AC2-0082",
+      "AC2-0083",
+      "AC2-0084",
+      "AC2-0085"
+    ],
+    "businessRuleIds": [
+      "BR-VET-VAL-009",
+      "BR-VET-TRACE-005",
+      "BR-VET-VAL-010",
+      "BR-VET-VAL-011"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/vet-005",
+    "index": 23
+  },
+  {
+    "pageId": "vet-006",
+    "requirementId": "SRS-FR-VET-006",
+    "title": "休药期与禁售控制",
+    "domain": "VET",
+    "domainName": "兽医防疫",
+    "priority": "P0",
+    "sourceModelId": "US-VET-006",
+    "useCaseId": "UC-VET-006",
+    "actor": "兽医",
+    "description": "作为兽医，我希望休药期与禁售控制，以便支持休药期计算、禁售预警、例外审批和解除控制。",
+    "trigger": "业务场景：H4-10",
+    "preconditions": [
+      "R01 H4-10；R03",
+      "关联流程：H4-10"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H4-10）",
+      "按标准流程完成休药期计算、禁售预警、例外审批、解除控制",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "休药期内相关蛋品或批次不能违规销售，例外需审批。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0066",
+      "AC2-0086",
+      "AC2-0087",
+      "AC2-0088",
+      "AC2-0089"
+    ],
+    "businessRuleIds": [
+      "BR-VET-VAL-012",
+      "BR-VET-TRACE-006",
+      "BR-VET-VAL-013",
+      "BR-VET-VAL-014"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/vet-006",
+    "index": 24
+  },
+  {
+    "pageId": "vet-007",
+    "requirementId": "SRS-FR-VET-007",
+    "title": "检疫证管理",
+    "domain": "VET",
+    "domainName": "兽医防疫",
+    "priority": "P0",
+    "sourceModelId": "US-VET-007",
+    "useCaseId": "UC-VET-007",
+    "actor": "兽医",
+    "description": "作为兽医，我希望检疫证管理，以便支持按发运批次申请、出证、随货同行、归档和追溯。",
+    "trigger": "业务场景：H4-08/H5-03",
+    "preconditions": [
+      "R01 H4-08/H5-03",
+      "关联流程：H4-08/H5-03"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H4-08/H5-03）",
+      "按标准流程完成按发运批次申请、出证、随货同行、归档、追溯",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "无证或证单不符不得发运。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0067",
+      "AC2-0090",
+      "AC2-0091",
+      "AC2-0092",
+      "AC2-0093"
+    ],
+    "businessRuleIds": [
+      "BR-VET-VAL-015",
+      "BR-VET-TRACE-007",
+      "BR-VET-VAL-016",
+      "BR-VET-VAL-017"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/vet-007",
+    "index": 25
+  },
+  {
+    "pageId": "vet-008",
+    "requirementId": "SRS-FR-VET-008",
+    "title": "漏种补种与异常反应",
+    "domain": "VET",
+    "domainName": "兽医防疫",
+    "priority": "P1",
+    "sourceModelId": "US-VET-008",
+    "useCaseId": "UC-VET-008",
+    "actor": "兽医",
+    "description": "作为兽医，我希望漏种补种与异常反应，以便支持漏种、延后、替代疫苗、异常反应登记、审批和补种。",
+    "trigger": "业务场景：H2-05",
+    "preconditions": [
+      "R03",
+      "关联流程：H2-05"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-05）",
+      "按标准流程完成漏种、延后、替代疫苗、异常反应登记、审批",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "补种和替代均有原因、审批和执行结果。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0068",
+      "AC2-0094",
+      "AC2-0095",
+      "AC2-0096"
+    ],
+    "businessRuleIds": [
+      "BR-VET-VAL-018",
+      "BR-VET-TRACE-008",
+      "BR-VET-VAL-019"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/vet-008",
+    "index": 26
+  },
+  {
+    "pageId": "proc-001",
+    "requirementId": "SRS-FR-PROC-001",
+    "title": "采购申请管理",
+    "domain": "PROC",
+    "domainName": "采购管理",
+    "priority": "P0",
+    "sourceModelId": "US-PROC-001",
+    "useCaseId": "UC-PROC-001",
+    "actor": "兽医",
+    "description": "作为兽医，我希望采购申请管理，以便支持疫苗、药品、饲料、设备和其他物资采购申请。",
+    "trigger": "业务场景：H1-03",
+    "preconditions": [
+      "R01 H1-03；R03",
+      "关联流程：H1-03"
+    ],
+    "flow": [
+      "发起人提交采购申请管理申请并附必要材料",
+      "系统校验数据完整性、前置条件与申请人权限",
+      "按规则自动核查额度、合规与授权范围等条件",
+      "提交相应负责人按审批流逐级审批",
+      "通过则放行并通知相关方，驳回则注明原因退回",
+      "审批结果回写关联单据，全过程留痕可审计"
+    ],
+    "outputs": [
+      "申请有来源、物料、数量、用途和审批状态。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0069",
+      "AC2-0097",
+      "AC2-0098",
+      "AC2-0099",
+      "AC2-0100"
+    ],
+    "businessRuleIds": [
+      "BR-PROC-APPR-001",
+      "BR-PROC-VAL-001",
+      "BR-PROC-STATE-001",
+      "BR-PROC-APPR-002"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/proc-001",
+    "index": 27
+  },
+  {
+    "pageId": "proc-002",
+    "requirementId": "SRS-FR-PROC-002",
+    "title": "采购订单管理",
+    "domain": "PROC",
+    "domainName": "采购管理",
+    "priority": "P0",
+    "sourceModelId": "US-PROC-002",
+    "useCaseId": "UC-PROC-002",
+    "actor": "采购秘书",
+    "description": "作为采购秘书，我希望采购订单管理，以便支持采购订单创建、审批、变更、执行和关闭。",
+    "trigger": "业务场景：H1-03",
+    "preconditions": [
+      "R01；R03",
+      "关联流程：H1-03"
+    ],
+    "flow": [
+      "选择业务对象（物料/客户/供应商/批次）并录入单据头信息",
+      "录入单据明细（采购订单创建、审批、变更、执行、关闭）",
+      "系统校验库存、信用、批次效期、权限与数据范围",
+      "执行金额/成本计算及 FEFO 批次分配等处理",
+      "过账并更新库存台账与往来账，触发关联联动",
+      "生成单据编号、审计记录并推送通知"
+    ],
+    "outputs": [
+      "订单与申请、入库、应付可关联。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0070",
+      "AC2-0101",
+      "AC2-0102",
+      "AC2-0103",
+      "AC2-0104",
+      "AC2-0105"
+    ],
+    "businessRuleIds": [
+      "BR-PROC-VAL-002",
+      "BR-PROC-CALC-001",
+      "BR-PROC-CODE-001",
+      "BR-PROC-STATE-002",
+      "BR-PROC-APPR-003"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/proc-002",
+    "index": 28
+  },
+  {
+    "pageId": "proc-003",
+    "requirementId": "SRS-FR-PROC-003",
+    "title": "供应商管理",
+    "domain": "PROC",
+    "domainName": "采购管理",
+    "priority": "P1",
+    "sourceModelId": "US-PROC-003",
+    "useCaseId": "UC-PROC-003",
+    "actor": "采购秘书",
+    "description": "作为采购秘书，我希望供应商管理，以便维护供应商、供应物料、联系人、资质、品牌和状态。",
+    "trigger": "业务场景：供应商",
+    "preconditions": [
+      "R03；R04",
+      "关联流程：供应商"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（供应商）",
+      "按标准流程完成供应商、供应物料、联系人、资质、品牌",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "供应商与物料关系可追溯，资质缺失进入待确认。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0071",
+      "AC2-0106",
+      "AC2-0107",
+      "AC2-0108"
+    ],
+    "businessRuleIds": [
+      "BR-PROC-VAL-003",
+      "BR-PROC-TRACE-001",
+      "BR-PROC-VAL-004"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/proc-003",
+    "index": 29
+  },
+  {
+    "pageId": "proc-004",
+    "requirementId": "SRS-FR-PROC-004",
+    "title": "到货验收管理",
+    "domain": "PROC",
+    "domainName": "采购管理",
+    "priority": "P0",
+    "sourceModelId": "US-PROC-004",
+    "useCaseId": "UC-PROC-004",
+    "actor": "入库组长",
+    "description": "作为入库组长，我希望到货验收管理，以便支持按订单核对数量、规格、质量、包装和到货差异。",
+    "trigger": "业务场景：H1-04",
+    "preconditions": [
+      "R01 H1-04",
+      "关联流程：H1-04"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H1-04）",
+      "按标准流程完成按订单核对数量、规格、质量、包装、到货差异",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "验收结果与入库、应付和差异处理关联。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0072",
+      "AC2-0109",
+      "AC2-0110",
+      "AC2-0111",
+      "AC2-0112"
+    ],
+    "businessRuleIds": [
+      "BR-PROC-VAL-005",
+      "BR-PROC-TRACE-002",
+      "BR-PROC-VAL-006",
+      "BR-PROC-VAL-007"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/proc-004",
+    "index": 30
+  },
+  {
+    "pageId": "proc-005",
+    "requirementId": "SRS-FR-PROC-005",
+    "title": "采购退货管理",
+    "domain": "PROC",
+    "domainName": "采购管理",
+    "priority": "P0",
+    "sourceModelId": "US-PROC-005",
+    "useCaseId": "UC-PROC-005",
+    "actor": "采购秘书",
+    "description": "作为采购秘书，我希望采购退货管理，以便支持不合格物料、鸡苗或数量差异的退货、索赔和审批。",
+    "trigger": "业务场景：H2-01",
+    "preconditions": [
+      "R01 H2-01",
+      "关联流程：H2-01"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-01）",
+      "按标准流程完成不合格物料、鸡苗或数量差异的退货、索赔、审批",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "退货有原因、数量、审批、出库和应付调整。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0073",
+      "AC2-0113",
+      "AC2-0114",
+      "AC2-0115"
+    ],
+    "businessRuleIds": [
+      "BR-PROC-VAL-008",
+      "BR-PROC-TRACE-003",
+      "BR-PROC-VAL-009"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/proc-005",
+    "index": 31
+  },
+  {
+    "pageId": "proc-006",
+    "requirementId": "SRS-FR-PROC-006",
+    "title": "紧急采购与兼任审批",
+    "domain": "PROC",
+    "domainName": "采购管理",
+    "priority": "P0",
+    "sourceModelId": "US-PROC-006",
+    "useCaseId": "UC-PROC-006",
+    "actor": "CEO",
+    "description": "作为CEO，我希望紧急采购与兼任审批，以便支持采购经理空缺期间CEO兼任、紧急采购和例外审批。",
+    "trigger": "业务场景：H1-03",
+    "preconditions": [
+      "R04；R01",
+      "关联流程：H1-03"
+    ],
+    "flow": [
+      "发起人提交紧急采购与兼任审批申请并附必要材料",
+      "系统校验数据完整性、前置条件与申请人权限",
+      "按规则自动核查额度、合规与授权范围等条件",
+      "提交相应负责人按审批流逐级审批",
+      "通过则放行并通知相关方，驳回则注明原因退回",
+      "审批结果回写关联单据，全过程留痕可审计"
+    ],
+    "outputs": [
+      "紧急采购有原因、审批和事后复核。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0074",
+      "AC2-0116",
+      "AC2-0117",
+      "AC2-0118"
+    ],
+    "businessRuleIds": [
+      "BR-PROC-APPR-004",
+      "BR-PROC-VAL-010",
+      "BR-PROC-STATE-003"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/proc-006",
+    "index": 32
+  },
+  {
+    "pageId": "inv-001",
+    "requirementId": "SRS-FR-INV-001",
+    "title": "物料主数据管理",
+    "domain": "INV",
+    "domainName": "库存管理",
+    "priority": "P1",
+    "sourceModelId": "US-INV-001",
+    "useCaseId": "UC-INV-001",
+    "actor": "采购秘书",
+    "description": "作为采购秘书，我希望物料主数据管理，以便维护疫苗、药品、饲料、成品蛋、分类、品牌、包装规格和计量单位。",
+    "trigger": "业务场景：库存",
+    "preconditions": [
+      "R03；R01",
+      "关联流程：库存"
+    ],
+    "flow": [
+      "进入物料主数据管理模块，定位对应公司与组织范围",
+      "新增或选择待维护记录，录入疫苗、药品、饲料、成品蛋、分类、品牌",
+      "系统校验必填项、编码唯一性、数据格式与中英文名称",
+      "核对关联基础资料、状态及生效/失效日期",
+      "保存并生成版本，记录变更内容与操作审计",
+      "复核通过后生效，停用记录保留历史版本可追溯"
+    ],
+    "outputs": [
+      "物料编码唯一，分类和多单位信息可维护。"
+    ],
+    "exceptions": [
+      "US-EXC-FARM-003",
+      "US-EXC-INV-007",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0075",
+      "AC2-0119",
+      "AC2-0120",
+      "AC2-0121"
+    ],
+    "businessRuleIds": [
+      "BR-INV-UNIQ-001",
+      "BR-INV-VAL-001",
+      "BR-INV-LIFE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/inv-001",
+    "index": 33
+  },
+  {
+    "pageId": "inv-002",
+    "requirementId": "SRS-FR-INV-002",
+    "title": "库存台账",
+    "domain": "INV",
+    "domainName": "库存管理",
+    "priority": "P0",
+    "sourceModelId": "US-INV-002",
+    "useCaseId": "UC-INV-002",
+    "actor": "仓管",
+    "description": "作为仓管，我希望库存台账，以便支持按物料、批次、库位、公司和仓库查询库存数量及状态。",
+    "trigger": "业务场景：H1-04/H4",
+    "preconditions": [
+      "R01；R03",
+      "关联流程：H1-04/H4"
+    ],
+    "flow": [
+      "进入库存台账模块，定位对应公司与组织范围",
+      "新增或选择待维护记录，录入按物料、批次、库位、公司、仓库查询库存数量、状态",
+      "系统校验必填项、编码唯一性、数据格式与中英文名称",
+      "核对关联基础资料、状态及生效/失效日期",
+      "保存并生成版本，记录变更内容与操作审计",
+      "复核通过后生效，停用记录保留历史版本可追溯"
+    ],
+    "outputs": [
+      "出入库后台账实时更新，流水可追溯。"
+    ],
+    "exceptions": [
+      "US-EXC-INV-004",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0076",
+      "AC2-0122",
+      "AC2-0123",
+      "AC2-0124",
+      "AC2-0125"
+    ],
+    "businessRuleIds": [
+      "BR-INV-UNIQ-002",
+      "BR-INV-VAL-002",
+      "BR-INV-LIFE-002",
+      "BR-INV-CALC-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": true,
+    "pattern": "business-list",
+    "route": "/app/inv-002",
+    "index": 34
+  },
+  {
+    "pageId": "inv-003",
+    "requirementId": "SRS-FR-INV-003",
+    "title": "入库管理",
+    "domain": "INV",
+    "domainName": "库存管理",
+    "priority": "P0",
+    "sourceModelId": "US-INV-003",
+    "useCaseId": "UC-INV-003",
+    "actor": "入库组长",
+    "description": "作为入库组长，我希望入库管理，以便支持采购到货、成品蛋和其他物料入库、校验和上架。",
+    "trigger": "业务场景：H1-04/H4-04",
+    "preconditions": [
+      "R01 H1-04/H4-04",
+      "关联流程：H1-04/H4-04"
+    ],
+    "flow": [
+      "选择业务对象（物料/客户/供应商/批次）并录入单据头信息",
+      "录入单据明细（采购到货、成品蛋、其他物料入库、校验、上架）",
+      "系统校验库存、信用、批次效期、权限与数据范围",
+      "执行金额/成本计算及 FEFO 批次分配等处理",
+      "过账并更新库存台账与往来账，触发关联联动",
+      "生成单据编号、审计记录并推送通知"
+    ],
+    "outputs": [
+      "入库单与订单、批次、数量和库位关联。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0077",
+      "AC2-0126",
+      "AC2-0127",
+      "AC2-0128",
+      "AC2-0129",
+      "AC2-0130"
+    ],
+    "businessRuleIds": [
+      "BR-INV-VAL-003",
+      "BR-INV-CALC-002",
+      "BR-INV-CODE-001",
+      "BR-INV-STATE-001",
+      "BR-INV-STATE-002"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/inv-003",
+    "index": 35
+  },
+  {
+    "pageId": "inv-004",
+    "requirementId": "SRS-FR-INV-004",
+    "title": "出库管理",
+    "domain": "INV",
+    "domainName": "库存管理",
+    "priority": "P0",
+    "sourceModelId": "US-INV-004",
+    "useCaseId": "UC-INV-004",
+    "actor": "出库组长",
+    "description": "作为出库组长，我希望出库管理，以便支持销售、领用、调拨、退货和任务驱动的出库。",
+    "trigger": "业务场景：H4-06",
+    "preconditions": [
+      "R01 H4-06",
+      "关联流程：H4-06"
+    ],
+    "flow": [
+      "选择业务对象（物料/客户/供应商/批次）并录入单据头信息",
+      "录入单据明细（销售、领用、调拨、退货、任务驱动的出库）",
+      "系统校验库存、信用、批次效期、权限与数据范围",
+      "执行金额/成本计算及 FEFO 批次分配等处理",
+      "过账并更新库存台账与往来账，触发关联联动",
+      "生成单据编号、审计记录并推送通知"
+    ],
+    "outputs": [
+      "出库后库存和批次扣减，审批与交接完整。"
+    ],
+    "exceptions": [
+      "US-EXC-INV-001",
+      "US-EXC-INV-005",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0078",
+      "AC2-0131",
+      "AC2-0132",
+      "AC2-0133",
+      "AC2-0134",
+      "AC2-0135"
+    ],
+    "businessRuleIds": [
+      "BR-INV-VAL-004",
+      "BR-INV-CALC-003",
+      "BR-INV-CODE-002",
+      "BR-INV-STATE-003",
+      "BR-INV-STATE-004"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/inv-004",
+    "index": 36
+  },
+  {
+    "pageId": "inv-005",
+    "requirementId": "SRS-FR-INV-005",
+    "title": "库位管理",
+    "domain": "INV",
+    "domainName": "库存管理",
+    "priority": "P1",
+    "sourceModelId": "US-INV-005",
+    "useCaseId": "UC-INV-005",
+    "actor": "仓管",
+    "description": "作为仓管，我希望库位管理，以便维护仓库、库区、库位、容量和物料存放关系。",
+    "trigger": "业务场景：仓储",
+    "preconditions": [
+      "R01；R03",
+      "关联流程：仓储"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（仓储）",
+      "按标准流程完成仓库、库区、库位、容量、物料存放关系",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "库位编码唯一，物料位置可查询。"
+    ],
+    "exceptions": [
+      "US-EXC-INV-002",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0079",
+      "AC2-0136",
+      "AC2-0137",
+      "AC2-0138"
+    ],
+    "businessRuleIds": [
+      "BR-INV-VAL-005",
+      "BR-INV-TRACE-001",
+      "BR-INV-VAL-006"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/inv-005",
+    "index": 37
+  },
+  {
+    "pageId": "inv-006",
+    "requirementId": "SRS-FR-INV-006",
+    "title": "库存盘点",
+    "domain": "INV",
+    "domainName": "库存管理",
+    "priority": "P0",
+    "sourceModelId": "US-INV-006",
+    "useCaseId": "UC-INV-006",
+    "actor": "仓管",
+    "description": "作为仓管，我希望库存盘点，以便支持盘点任务、账面数、实盘数、差异、调整和审批。",
+    "trigger": "业务场景：盘点",
+    "preconditions": [
+      "R03；R01",
+      "关联流程：盘点"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（盘点）",
+      "按标准流程完成盘点任务、账面数、实盘数、差异、调整",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "盘点差异有原因、审批和调整记录。"
+    ],
+    "exceptions": [
+      "US-EXC-INV-003",
+      "US-EXC-INV-006",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0080",
+      "AC2-0139",
+      "AC2-0140",
+      "AC2-0141",
+      "AC2-0142",
+      "AC2-0143"
+    ],
+    "businessRuleIds": [
+      "BR-INV-VAL-007",
+      "BR-INV-TRACE-002",
+      "BR-INV-VAL-008",
+      "BR-INV-CALC-004",
+      "BR-INV-VAL-009"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/inv-006",
+    "index": 38
+  },
+  {
+    "pageId": "inv-007",
+    "requirementId": "SRS-FR-INV-007",
+    "title": "批次效期与FEFO",
+    "domain": "INV",
+    "domainName": "库存管理",
+    "priority": "P0",
+    "sourceModelId": "US-INV-007",
+    "useCaseId": "UC-INV-007",
+    "actor": "仓管",
+    "description": "作为仓管，我希望批次效期与FEFO，以便支持批号、生产日期、有效期、临期预警和FEFO出库。",
+    "trigger": "业务场景：H4-06",
+    "preconditions": [
+      "R01；R03",
+      "关联流程：H4-06"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H4-06）",
+      "按标准流程完成批号、生产日期、有效期、临期预警、FEFO出库",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "效期缺失或临期时有预警，出库按规则执行。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0081",
+      "AC2-0144",
+      "AC2-0145",
+      "AC2-0146",
+      "AC2-0147",
+      "AC2-0148"
+    ],
+    "businessRuleIds": [
+      "BR-INV-VAL-010",
+      "BR-INV-TRACE-003",
+      "BR-INV-VAL-011",
+      "BR-INV-TRACE-004",
+      "BR-INV-VAL-012"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/inv-007",
+    "index": 39
+  },
+  {
+    "pageId": "inv-008",
+    "requirementId": "SRS-FR-INV-008",
+    "title": "安全库存预警",
+    "domain": "INV",
+    "domainName": "库存管理",
+    "priority": "P0",
+    "sourceModelId": "US-INV-008",
+    "useCaseId": "UC-INV-008",
+    "actor": "仓管",
+    "description": "作为仓管，我希望安全库存预警，以便按物料、仓库和阈值触发补库申请和通知。",
+    "trigger": "业务场景：H4-12",
+    "preconditions": [
+      "R01 H4-12；R03",
+      "关联流程：H4-12"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H4-12）",
+      "按标准流程完成按物料、仓库、阈值触发补库申请、通知",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "低于阈值生成预警或采购申请，处理状态可追踪。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0082",
+      "AC2-0149",
+      "AC2-0150",
+      "AC2-0151",
+      "AC2-0152",
+      "AC2-0153"
+    ],
+    "businessRuleIds": [
+      "BR-INV-VAL-013",
+      "BR-INV-TRACE-005",
+      "BR-INV-VAL-014",
+      "BR-INV-CALC-005",
+      "BR-INV-VAL-015"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": true,
+    "pattern": "business-list",
+    "route": "/app/inv-008",
+    "index": 40
+  },
+  {
+    "pageId": "sales-001",
+    "requirementId": "SRS-FR-SALES-001",
+    "title": "客户主数据管理",
+    "domain": "SALES",
+    "domainName": "销售管理",
+    "priority": "P1",
+    "sourceModelId": "US-SALES-001",
+    "useCaseId": "UC-SALES-001",
+    "actor": "销售经理",
+    "description": "作为销售经理，我希望客户主数据管理，以便维护客户、联系人、地址、账期、信用、价格和状态。",
+    "trigger": "业务场景：H4-05",
+    "preconditions": [
+      "R01；R02",
+      "关联流程：H4-05"
+    ],
+    "flow": [
+      "进入客户主数据管理模块，定位对应公司与组织范围",
+      "新增或选择待维护记录，录入客户、联系人、地址、账期、信用、价格",
+      "系统校验必填项、编码唯一性、数据格式与中英文名称",
+      "核对关联基础资料、状态及生效/失效日期",
+      "保存并生成版本，记录变更内容与操作审计",
+      "复核通过后生效，停用记录保留历史版本可追溯"
+    ],
+    "outputs": [
+      "客户编码唯一，信用和账期变更留痕。"
+    ],
+    "exceptions": [
+      "US-EXC-SALES-004",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0083",
+      "AC2-0154",
+      "AC2-0155",
+      "AC2-0156"
+    ],
+    "businessRuleIds": [
+      "BR-SALES-UNIQ-001",
+      "BR-SALES-VAL-001",
+      "BR-SALES-LIFE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/sales-001",
+    "index": 41
+  },
+  {
+    "pageId": "sales-002",
+    "requirementId": "SRS-FR-SALES-002",
+    "title": "价格管理",
+    "domain": "SALES",
+    "domainName": "销售管理",
+    "priority": "P1",
+    "sourceModelId": "US-SALES-002",
+    "useCaseId": "UC-SALES-002",
+    "actor": "销售经理",
+    "description": "作为销售经理，我希望价格管理，以便维护蛋品、青年鸡、淘汰鸡、附加项目价格和生效规则。",
+    "trigger": "业务场景：H4-05",
+    "preconditions": [
+      "R01；R02",
+      "关联流程：H4-05"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H4-05）",
+      "按标准流程完成蛋品、青年鸡、淘汰鸡、附加项目价格、生效规则",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "价格变更有审批和生效日期，订单可追溯取价。"
+    ],
+    "exceptions": [
+      "US-EXC-SALES-002",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0084",
+      "AC2-0157",
+      "AC2-0158",
+      "AC2-0159"
+    ],
+    "businessRuleIds": [
+      "BR-SALES-VAL-002",
+      "BR-SALES-TRACE-001",
+      "BR-SALES-VAL-003"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/sales-002",
+    "index": 42
+  },
+  {
+    "pageId": "sales-003",
+    "requirementId": "SRS-FR-SALES-003",
+    "title": "销售订单管理",
+    "domain": "SALES",
+    "domainName": "销售管理",
+    "priority": "P0",
+    "sourceModelId": "US-SALES-003",
+    "useCaseId": "UC-SALES-003",
+    "actor": "销售经理",
+    "description": "作为销售经理，我希望销售订单管理，以便支持订单录入、确认、变更、执行、关闭和查询。",
+    "trigger": "业务场景：H4-05",
+    "preconditions": [
+      "R01 H4-05；R02",
+      "关联流程：H4-05"
+    ],
+    "flow": [
+      "选择业务对象（物料/客户/供应商/批次）并录入单据头信息",
+      "录入单据明细（订单录入、确认、变更、执行、关闭、查询）",
+      "系统校验库存、信用、批次效期、权限与数据范围",
+      "执行金额/成本计算及 FEFO 批次分配等处理",
+      "过账并更新库存台账与往来账，触发关联联动",
+      "生成单据编号、审计记录并推送通知"
+    ],
+    "outputs": [
+      "订单与库存、出库、配送、签收和应收关联。"
+    ],
+    "exceptions": [
+      "US-EXC-SALES-001",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0085",
+      "AC2-0160",
+      "AC2-0161",
+      "AC2-0162",
+      "AC2-0163",
+      "AC2-0164"
+    ],
+    "businessRuleIds": [
+      "BR-SALES-VAL-004",
+      "BR-SALES-CALC-001",
+      "BR-SALES-CODE-001",
+      "BR-SALES-STATE-001",
+      "BR-SALES-STATE-002"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "sales-order",
+    "route": "/app/sales-003",
+    "index": 43
+  },
+  {
+    "pageId": "sales-004",
+    "requirementId": "SRS-FR-SALES-004",
+    "title": "信用检查",
+    "domain": "SALES",
+    "domainName": "销售管理",
+    "priority": "P0",
+    "sourceModelId": "US-SALES-004",
+    "useCaseId": "UC-SALES-004",
+    "actor": "销售",
+    "description": "作为销售，我希望信用检查，以便下单时检查信用额度、账期、余额和超额例外。",
+    "trigger": "业务场景：H4-05",
+    "preconditions": [
+      "R01 GAP-12",
+      "关联流程：H4-05"
+    ],
+    "flow": [
+      "发起人提交信用检查申请并附必要材料",
+      "系统校验数据完整性、前置条件与申请人权限",
+      "按规则自动核查额度、合规与授权范围等条件",
+      "提交相应负责人按审批流逐级审批",
+      "通过则放行并通知相关方，驳回则注明原因退回",
+      "审批结果回写关联单据，全过程留痕可审计"
+    ],
+    "outputs": [
+      "超额按规则拦截或审批，检查结果留痕。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0086",
+      "AC2-0165",
+      "AC2-0166",
+      "AC2-0167",
+      "AC2-0168"
+    ],
+    "businessRuleIds": [
+      "BR-SALES-APPR-001",
+      "BR-SALES-VAL-005",
+      "BR-SALES-STATE-003",
+      "BR-SALES-VAL-006"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/sales-004",
+    "index": 44
+  },
+  {
+    "pageId": "sales-005",
+    "requirementId": "SRS-FR-SALES-005",
+    "title": "销售出库协同",
+    "domain": "SALES",
+    "domainName": "销售管理",
+    "priority": "P0",
+    "sourceModelId": "US-SALES-005",
+    "useCaseId": "UC-SALES-005",
+    "actor": "销售",
+    "description": "作为销售，我希望销售出库协同，以便销售订单驱动蛋库拣货、批次扣减和发货交接。",
+    "trigger": "业务场景：H4-06",
+    "preconditions": [
+      "R01 H4-06",
+      "关联流程：H4-06"
+    ],
+    "flow": [
+      "选择业务对象（物料/客户/供应商/批次）并录入单据头信息",
+      "录入单据明细（销售订单驱动蛋库拣货、批次扣减、发货交接）",
+      "系统校验库存、信用、批次效期、权限与数据范围",
+      "执行金额/成本计算及 FEFO 批次分配等处理",
+      "过账并更新库存台账与往来账，触发关联联动",
+      "生成单据编号、审计记录并推送通知"
+    ],
+    "outputs": [
+      "订单、出库单和批次数量一致。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0087",
+      "AC2-0169",
+      "AC2-0170",
+      "AC2-0171",
+      "AC2-0172",
+      "AC2-0173"
+    ],
+    "businessRuleIds": [
+      "BR-SALES-VAL-007",
+      "BR-SALES-CALC-002",
+      "BR-SALES-CODE-002",
+      "BR-SALES-STATE-004",
+      "BR-SALES-VAL-008"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/sales-005",
+    "index": 45
+  },
+  {
+    "pageId": "sales-006",
+    "requirementId": "SRS-FR-SALES-006",
+    "title": "销售退货与订单变更",
+    "domain": "SALES",
+    "domainName": "销售管理",
+    "priority": "P1",
+    "sourceModelId": "US-SALES-006",
+    "useCaseId": "UC-SALES-006",
+    "actor": "销售",
+    "description": "作为销售，我希望销售退货与订单变更，以便支持客户取消、数量变更、质量退货、库存和应收调整。",
+    "trigger": "业务场景：异常流程",
+    "preconditions": [
+      "R01；R02",
+      "关联流程：异常流程"
+    ],
+    "flow": [
+      "选择业务对象（物料/客户/供应商/批次）并录入单据头信息",
+      "录入单据明细（客户取消、数量变更、质量退货、库存、应收调整）",
+      "系统校验库存、信用、批次效期、权限与数据范围",
+      "执行金额/成本计算及 FEFO 批次分配等处理",
+      "过账并更新库存台账与往来账，触发关联联动",
+      "生成单据编号、审计记录并推送通知"
+    ],
+    "outputs": [
+      "变更或退货有审批、库存处理和财务调整。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0088",
+      "AC2-0174",
+      "AC2-0175",
+      "AC2-0176",
+      "AC2-0177"
+    ],
+    "businessRuleIds": [
+      "BR-SALES-VAL-009",
+      "BR-SALES-CALC-003",
+      "BR-SALES-CODE-003",
+      "BR-SALES-STATE-005"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/sales-006",
+    "index": 46
+  },
+  {
+    "pageId": "sales-007",
+    "requirementId": "SRS-FR-SALES-007",
+    "title": "青年鸡与淘汰鸡销售",
+    "domain": "SALES",
+    "domainName": "销售管理",
+    "priority": "P1",
+    "sourceModelId": "US-SALES-007",
+    "useCaseId": "UC-SALES-007",
+    "actor": "销售",
+    "description": "作为销售，我希望青年鸡与淘汰鸡销售，以便支持产品类型区分、定金、检疫、装车、应收和批次关闭。",
+    "trigger": "业务场景：H3-05/H5",
+    "preconditions": [
+      "R01 H3-05/H5",
+      "关联流程：H3-05/H5"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H3-05/H5）",
+      "按标准流程完成产品类型区分、定金、检疫、装车、应收",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "不同产品类型有独立流程和单证。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0089",
+      "AC2-0178",
+      "AC2-0179",
+      "AC2-0180"
+    ],
+    "businessRuleIds": [
+      "BR-SALES-VAL-010",
+      "BR-SALES-TRACE-002",
+      "BR-SALES-VAL-011"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/sales-007",
+    "index": 47
+  },
+  {
+    "pageId": "log-001",
+    "requirementId": "SRS-FR-LOG-001",
+    "title": "车辆主数据管理",
+    "domain": "LOG",
+    "domainName": "物流配送",
+    "priority": "P1",
+    "sourceModelId": "US-LOG-001",
+    "useCaseId": "UC-LOG-001",
+    "actor": "物流",
+    "description": "作为物流，我希望车辆主数据管理，以便维护车辆、车牌、司机、状态、配送能力和维修信息。",
+    "trigger": "业务场景：H4-07",
+    "preconditions": [
+      "R02；R04",
+      "关联流程：H4-07"
+    ],
+    "flow": [
+      "进入车辆主数据管理模块，定位对应公司与组织范围",
+      "新增或选择待维护记录，录入车辆、车牌、司机、状态、配送能力、维修信息",
+      "系统校验必填项、编码唯一性、数据格式与中英文名称",
+      "核对关联基础资料、状态及生效/失效日期",
+      "保存并生成版本，记录变更内容与操作审计",
+      "复核通过后生效，停用记录保留历史版本可追溯"
+    ],
+    "outputs": [
+      "车辆与配送单、司机和任务可关联。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0090",
+      "AC2-0181",
+      "AC2-0182",
+      "AC2-0183"
+    ],
+    "businessRuleIds": [
+      "BR-LOG-UNIQ-001",
+      "BR-LOG-VAL-001",
+      "BR-LOG-LIFE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/log-001",
+    "index": 48
+  },
+  {
+    "pageId": "log-002",
+    "requirementId": "SRS-FR-LOG-002",
+    "title": "路线与配送计划",
+    "domain": "LOG",
+    "domainName": "物流配送",
+    "priority": "P0",
+    "sourceModelId": "US-LOG-002",
+    "useCaseId": "UC-LOG-002",
+    "actor": "物流负责人",
+    "description": "作为物流负责人，我希望路线与配送计划，以便支持客户路线、订单汇总、车辆/司机/配送员安排和任务发布。",
+    "trigger": "业务场景：H4-07",
+    "preconditions": [
+      "R01 H4-07；R04",
+      "关联流程：H4-07"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H4-07）",
+      "按标准流程完成客户路线、订单汇总、车辆/司机/配送员安排、任务发布",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "计划包含订单、客户、车辆、人员和时间。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0091",
+      "AC2-0184",
+      "AC2-0185",
+      "AC2-0186",
+      "AC2-0187"
+    ],
+    "businessRuleIds": [
+      "BR-LOG-VAL-002",
+      "BR-LOG-TRACE-001",
+      "BR-LOG-VAL-003",
+      "BR-LOG-CALC-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/log-002",
+    "index": 49
+  },
+  {
+    "pageId": "log-003",
+    "requirementId": "SRS-FR-LOG-003",
+    "title": "夜间装车管理",
+    "domain": "LOG",
+    "domainName": "物流配送",
+    "priority": "P0",
+    "sourceModelId": "US-LOG-003",
+    "useCaseId": "UC-LOG-003",
+    "actor": "司机",
+    "description": "作为司机，我希望夜间装车管理，以便支持拣货交接、装车核对、车辆和人员记录。",
+    "trigger": "业务场景：H4-07",
+    "preconditions": [
+      "R01 H4-07",
+      "关联流程：H4-07"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H4-07）",
+      "按标准流程完成拣货交接、装车核对、车辆、人员记录",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "装车数量与出库单和配送计划一致。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0092",
+      "AC2-0188",
+      "AC2-0189",
+      "AC2-0190",
+      "AC2-0191"
+    ],
+    "businessRuleIds": [
+      "BR-LOG-VAL-004",
+      "BR-LOG-TRACE-002",
+      "BR-LOG-VAL-005",
+      "BR-LOG-VAL-006"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/log-003",
+    "index": 50
+  },
+  {
+    "pageId": "log-004",
+    "requirementId": "SRS-FR-LOG-004",
+    "title": "配送签收与回单",
+    "domain": "LOG",
+    "domainName": "物流配送",
+    "priority": "P0",
+    "sourceModelId": "US-LOG-004",
+    "useCaseId": "UC-LOG-004",
+    "actor": "司机",
+    "description": "作为司机，我希望配送签收与回单，以便支持客户签收、拍照/纸质回单、异常备注和回单登记。",
+    "trigger": "业务场景：H4-07",
+    "preconditions": [
+      "R01 H4-07；R02",
+      "关联流程：H4-07"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H4-07）",
+      "按标准流程完成客户签收、拍照/纸质回单、异常备注、回单登记",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "每张配送单有签收或异常结论，回单可追溯。"
+    ],
+    "exceptions": [
+      "US-EXC-LOG-002",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0093",
+      "AC2-0192",
+      "AC2-0193",
+      "AC2-0194",
+      "AC2-0195"
+    ],
+    "businessRuleIds": [
+      "BR-LOG-VAL-007",
+      "BR-LOG-TRACE-003",
+      "BR-LOG-VAL-008",
+      "BR-LOG-STATE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/log-004",
+    "index": 51
+  },
+  {
+    "pageId": "log-005",
+    "requirementId": "SRS-FR-LOG-005",
+    "title": "异常交付处理",
+    "domain": "LOG",
+    "domainName": "物流配送",
+    "priority": "P1",
+    "sourceModelId": "US-LOG-005",
+    "useCaseId": "UC-LOG-005",
+    "actor": "司机",
+    "description": "作为司机，我希望异常交付处理，以便支持拒收、破损、无人签收、错送、漏送和人工兜底。",
+    "trigger": "业务场景：异常流程",
+    "preconditions": [
+      "R01；R02",
+      "关联流程：异常流程"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（异常流程）",
+      "按标准流程完成拒收、破损、无人签收、错送、漏送",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "异常交付有原因、现场证据、审批和后续处理。"
+    ],
+    "exceptions": [
+      "US-EXC-LOG-001",
+      "US-EXC-LOG-002",
+      "US-EXC-SALES-003",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0094",
+      "AC2-0196",
+      "AC2-0197",
+      "AC2-0198"
+    ],
+    "businessRuleIds": [
+      "BR-LOG-VAL-009",
+      "BR-LOG-TRACE-004",
+      "BR-LOG-VAL-010"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/log-005",
+    "index": 52
+  },
+  {
+    "pageId": "log-006",
+    "requirementId": "SRS-FR-LOG-006",
+    "title": "司机配送员任务管理",
+    "domain": "LOG",
+    "domainName": "物流配送",
+    "priority": "P0",
+    "sourceModelId": "US-LOG-006",
+    "useCaseId": "UC-LOG-006",
+    "actor": "物流负责人",
+    "description": "作为物流负责人，我希望司机配送员任务管理，以便支持司机与配送员轮换、任务分配、外勤记录和不点名规则。",
+    "trigger": "业务场景：H4-07",
+    "preconditions": [
+      "R04",
+      "关联流程：H4-07"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H4-07）",
+      "按标准流程完成司机、配送员轮换、任务分配、外勤记录、不点名规则",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "任务与人员、车辆、时间和结果关联。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0095",
+      "AC2-0199",
+      "AC2-0200",
+      "AC2-0201"
+    ],
+    "businessRuleIds": [
+      "BR-LOG-VAL-011",
+      "BR-LOG-TRACE-005",
+      "BR-LOG-VAL-012"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/log-006",
+    "index": 53
+  },
+  {
+    "pageId": "fin-001",
+    "requirementId": "SRS-FR-FIN-001",
+    "title": "应付管理",
+    "domain": "FIN",
+    "domainName": "财务管理",
+    "priority": "P0",
+    "sourceModelId": "US-FIN-001",
+    "useCaseId": "UC-FIN-001",
+    "actor": "财务经理",
+    "description": "作为财务经理，我希望应付管理，以便根据采购、入库和退货形成应付、调整和核销。",
+    "trigger": "业务场景：H1-04",
+    "preconditions": [
+      "R01 H1-04；R03",
+      "关联流程：H1-04"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H1-04）",
+      "按标准流程完成根据采购、入库、退货形成应付、调整、核销",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环",
+      "会计依据采购、验收和供应商发票核对应付，识别预提税适用税率和金额。",
+      "应付余额仅在DV/CV批准并完成付款执行后核销。"
+    ],
+    "outputs": [
+      "应付与订单、入库和付款可勾稽。",
+      "应付、DV/CV、付款执行和预提税可勾稽。"
+    ],
+    "exceptions": [
+      "US-EXC-FIN-002",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0096",
+      "AC2-0202",
+      "AC2-0203",
+      "AC2-0204",
+      "AC2-0205",
+      "AC2-0928"
+    ],
+    "businessRuleIds": [
+      "BR-FIN-VAL-001",
+      "BR-FIN-TRACE-001",
+      "BR-FIN-VAL-002",
+      "BR-FIN-STATE-001",
+      "BR-FIN-CALC-007"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/fin-001",
+    "index": 54
+  },
+  {
+    "pageId": "fin-002",
+    "requirementId": "SRS-FR-FIN-002",
+    "title": "应收管理",
+    "domain": "FIN",
+    "domainName": "财务管理",
+    "priority": "P0",
+    "sourceModelId": "US-FIN-002",
+    "useCaseId": "UC-FIN-002",
+    "actor": "财务经理",
+    "description": "作为财务经理，我希望应收管理，以便根据销售订单、签收和退货形成应收、核销和逾期跟踪。",
+    "trigger": "业务场景：H4-09",
+    "preconditions": [
+      "R01 H4-09",
+      "关联流程：H4-09"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H4-09）",
+      "按标准流程完成根据销售订单、签收、退货形成应收、核销、逾期跟踪",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "应收与订单、签收、收款一致。"
+    ],
+    "exceptions": [
+      "US-EXC-FIN-003",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0097",
+      "AC2-0206",
+      "AC2-0207",
+      "AC2-0208",
+      "AC2-0209"
+    ],
+    "businessRuleIds": [
+      "BR-FIN-VAL-003",
+      "BR-FIN-TRACE-002",
+      "BR-FIN-VAL-004",
+      "BR-FIN-VAL-005"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/fin-002",
+    "index": 55
+  },
+  {
+    "pageId": "fin-003",
+    "requirementId": "SRS-FR-FIN-003",
+    "title": "付款与支票管理",
+    "domain": "FIN",
+    "domainName": "财务管理",
+    "priority": "P0",
+    "sourceModelId": "US-FIN-003",
+    "useCaseId": "UC-FIN-003",
+    "actor": "财务经理",
+    "description": "作为财务经理，我希望付款与支票管理，以便支持付款申请、现金/支票、银行账户、支票号和审批。",
+    "trigger": "业务场景：H1-01/H2-10",
+    "preconditions": [
+      "R02；R01",
+      "关联流程：H1-01/H2-10"
+    ],
+    "flow": [
+      "选择业务对象（物料/客户/供应商/批次）并录入单据头信息",
+      "录入单据明细（付款申请、现金/支票、银行账户、支票号、审批）",
+      "系统校验库存、信用、批次效期、权限与数据范围",
+      "执行金额/成本计算及 FEFO 批次分配等处理",
+      "过账并更新库存台账与往来账，触发关联联动",
+      "生成单据编号、审计记录并推送通知",
+      "会计依据供应商发票和验收单准备Disbursement Voucher或Check Voucher，完成会计分录与预提税计算。",
+      "授权审批人在金额权限内批准；出纳不得自行创建或批准待付凭证。",
+      "出纳仅依据已批准凭证执行支票、银行转账或现金支付，并独立跟踪实际付款状态。"
+    ],
+    "outputs": [
+      "付款与申请、支票、银行和审批记录关联。",
+      "凭证准备、审批和付款执行职责分离；计划付款方式不等同于实际付款状态。"
+    ],
+    "exceptions": [
+      "US-EXC-FIN-001",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0098",
+      "AC2-0210",
+      "AC2-0211",
+      "AC2-0212",
+      "AC2-0213",
+      "AC2-0925",
+      "AC2-0926",
+      "AC2-0927"
+    ],
+    "businessRuleIds": [
+      "BR-FIN-VAL-006",
+      "BR-FIN-CALC-001",
+      "BR-FIN-CODE-001",
+      "BR-FIN-STATE-002",
+      "BR-FIN-APPR-002",
+      "BR-FIN-STATE-007",
+      "BR-FIN-STATE-008"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/fin-003",
+    "index": 56
+  },
+  {
+    "pageId": "fin-004",
+    "requirementId": "SRS-FR-FIN-004",
+    "title": "收款与现金管理",
+    "domain": "FIN",
+    "domainName": "财务管理",
+    "priority": "P0",
+    "sourceModelId": "US-FIN-004",
+    "useCaseId": "UC-FIN-004",
+    "actor": "财务秘书",
+    "description": "作为财务秘书，我希望收款与现金管理，以便支持现金、支票、银行存款、溢付、余额和收款核销。",
+    "trigger": "业务场景：H4-09",
+    "preconditions": [
+      "R02；R01",
+      "关联流程：H4-09"
+    ],
+    "flow": [
+      "选择业务对象（物料/客户/供应商/批次）并录入单据头信息",
+      "录入单据明细（现金、支票、银行存款、溢付、余额、收款核销）",
+      "系统校验库存、信用、批次效期、权限与数据范围",
+      "执行金额/成本计算及 FEFO 批次分配等处理",
+      "过账并更新库存台账与往来账，触发关联联动",
+      "生成单据编号、审计记录并推送通知"
+    ],
+    "outputs": [
+      "收款方式、金额、单号和核销关系可追溯。"
+    ],
+    "exceptions": [
+      "US-EXC-FIN-002",
+      "US-EXC-FIN-003",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0099",
+      "AC2-0214",
+      "AC2-0215",
+      "AC2-0216",
+      "AC2-0217"
+    ],
+    "businessRuleIds": [
+      "BR-FIN-VAL-007",
+      "BR-FIN-CALC-002",
+      "BR-FIN-CODE-002",
+      "BR-FIN-STATE-003"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/fin-004",
+    "index": 57
+  },
+  {
+    "pageId": "fin-005",
+    "requirementId": "SRS-FR-FIN-005",
+    "title": "费用归集",
+    "domain": "FIN",
+    "domainName": "财务管理",
+    "priority": "P1",
+    "sourceModelId": "US-FIN-005",
+    "useCaseId": "UC-FIN-005",
+    "actor": "财务经理",
+    "description": "作为财务经理，我希望费用归集，以便按批次、部门、公司和费用类别归集饲料、兽药、人工、水电、折旧等。",
+    "trigger": "业务场景：H2-10",
+    "preconditions": [
+      "R01 H2-10；R04",
+      "关联流程：H2-10"
+    ],
+    "flow": [
+      "选择业务对象（物料/客户/供应商/批次）并录入单据头信息",
+      "录入单据明细（按批次、部门、公司、费用类别归集饲料、兽药、人工）",
+      "系统校验库存、信用、批次效期、权限与数据范围",
+      "执行金额/成本计算及 FEFO 批次分配等处理",
+      "过账并更新库存台账与往来账，触发关联联动",
+      "生成单据编号、审计记录并推送通知"
+    ],
+    "outputs": [
+      "费用来源和归集口径可追溯，缺失单据不静默补齐。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0100",
+      "AC2-0218",
+      "AC2-0219",
+      "AC2-0220",
+      "AC2-0221"
+    ],
+    "businessRuleIds": [
+      "BR-FIN-VAL-008",
+      "BR-FIN-CALC-003",
+      "BR-FIN-CODE-003",
+      "BR-FIN-STATE-004"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/fin-005",
+    "index": 58
+  },
+  {
+    "pageId": "fin-006",
+    "requirementId": "SRS-FR-FIN-006",
+    "title": "批次成本卡",
+    "domain": "FIN",
+    "domainName": "财务管理",
+    "priority": "P0",
+    "sourceModelId": "US-FIN-006",
+    "useCaseId": "UC-FIN-006",
+    "actor": "财务经理",
+    "description": "作为财务经理，我希望批次成本卡，以便支持材料、人工、费用、单位成本和阶段成本计算。",
+    "trigger": "业务场景：H2-10/H5-04",
+    "preconditions": [
+      "R01 RC-016",
+      "关联流程：H2-10/H5-04"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H2-10/H5-04）",
+      "按标准流程完成材料、人工、费用、单位成本、阶段成本计算",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "成本卡与费用、出入库和批次数据可勾稽。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0101",
+      "AC2-0222",
+      "AC2-0223",
+      "AC2-0224",
+      "AC2-0225"
+    ],
+    "businessRuleIds": [
+      "BR-FIN-VAL-009",
+      "BR-FIN-TRACE-003",
+      "BR-FIN-VAL-010",
+      "BR-FIN-CALC-004"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": true,
+    "pattern": "business-list",
+    "route": "/app/fin-006",
+    "index": 59
+  },
+  {
+    "pageId": "fin-007",
+    "requirementId": "SRS-FR-FIN-007",
+    "title": "利润核算与批次结项",
+    "domain": "FIN",
+    "domainName": "财务管理",
+    "priority": "P0",
+    "sourceModelId": "US-FIN-007",
+    "useCaseId": "UC-FIN-007",
+    "actor": "财务经理",
+    "description": "作为财务经理，我希望利润核算与批次结项，以便支持收入、成本、利润、结算和批次关闭。",
+    "trigger": "业务场景：H5-04",
+    "preconditions": [
+      "R01 H5-04",
+      "关联流程：H5-04"
+    ],
+    "flow": [
+      "选择业务对象（物料/客户/供应商/批次）并录入单据头信息",
+      "录入单据明细（收入、成本、利润、结算、批次关闭）",
+      "系统校验库存、信用、批次效期、权限与数据范围",
+      "执行金额/成本计算及 FEFO 批次分配等处理",
+      "过账并更新库存台账与往来账，触发关联联动",
+      "生成单据编号、审计记录并推送通知"
+    ],
+    "outputs": [
+      "结项前收入、成本、应收和应付数据可核对。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0102",
+      "AC2-0226",
+      "AC2-0227",
+      "AC2-0228",
+      "AC2-0229",
+      "AC2-0230"
+    ],
+    "businessRuleIds": [
+      "BR-FIN-VAL-011",
+      "BR-FIN-CALC-005",
+      "BR-FIN-CODE-004",
+      "BR-FIN-STATE-005",
+      "BR-FIN-CALC-006"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/fin-007",
+    "index": 60
+  },
+  {
+    "pageId": "fin-008",
+    "requirementId": "SRS-FR-FIN-008",
+    "title": "财务对账与报表",
+    "domain": "FIN",
+    "domainName": "财务管理",
+    "priority": "P2",
+    "sourceModelId": "US-FIN-008",
+    "useCaseId": "UC-FIN-008",
+    "actor": "财务经理",
+    "description": "作为财务经理，我希望财务对账与报表，以便支持应收应付、现金、银行、库存金额和业务数据对账。",
+    "trigger": "业务场景：报表",
+    "preconditions": [
+      "R01；R03",
+      "关联流程：报表"
+    ],
+    "flow": [
+      "选择报表类型、公司、期间与数据范围（受权限控制）",
+      "系统按既定口径取数并汇总计算",
+      "校验数据完整性与口径一致性",
+      "呈现财务对账与报表结果，支持钻取与明细查询",
+      "按需导出 Excel/PDF 或调用打印",
+      "记录访问、导出与打印审计"
+    ],
+    "outputs": [
+      "对账差异有标识、原因和处理状态。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0103",
+      "AC2-0231",
+      "AC2-0232",
+      "AC2-0233"
+    ],
+    "businessRuleIds": [
+      "BR-FIN-VAL-012",
+      "BR-FIN-DQ-001",
+      "BR-FIN-LIFE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": true,
+    "pattern": "business-list",
+    "route": "/app/fin-008",
+    "index": 61
+  },
+  {
+    "pageId": "fin-009",
+    "requirementId": "SRS-FR-FIN-009",
+    "title": "付款凭证（DV/CV）准备",
+    "domain": "FIN",
+    "domainName": "财务管理",
+    "priority": "P0",
+    "sourceModelId": "US-FIN-009",
+    "useCaseId": "UC-FIN-009",
+    "actor": "会计",
+    "description": "作为会计，我希望依据发票和验收单准备DV/CV并完成会计分录、预提税计算，以便付款在审批前形成可审计凭证。",
+    "trigger": "变更输入：CR-FIN-PRINT-20261121",
+    "preconditions": [
+      "供应商发票、验收单、应付记录及权限矩阵已存在；按THL/TGE公司主体隔离。"
+    ],
+    "flow": [
+      "核对采购订单、验收单、供应商发票和应付余额。",
+      "选择Disbursement Voucher或Check Voucher，录入收款人、用途、金额和计划付款方式。",
+      "完成会计分录，计算预提税、净额和付款到期日。",
+      "提交授权审批人按金额权限审批。"
+    ],
+    "outputs": [
+      "DV/CV与发票、验收单、会计分录、预提税和审批记录可追溯。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0242",
+      "AC2-0925",
+      "AC2-0928"
+    ],
+    "businessRuleIds": [
+      "BR-FIN-APPR-002",
+      "BR-FIN-CALC-007"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "payment-voucher",
+    "route": "/app/fin-009",
+    "index": 62
+  },
+  {
+    "pageId": "fin-010",
+    "requirementId": "SRS-FR-FIN-010",
+    "title": "付款执行与资金状态跟踪",
+    "domain": "FIN",
+    "domainName": "财务管理",
+    "priority": "P0",
+    "sourceModelId": "US-FIN-010",
+    "useCaseId": "UC-FIN-010",
+    "actor": "出纳",
+    "description": "作为出纳，我希望只依据已批准DV/CV执行付款并独立登记状态，以便区分计划支付方式和实际资金划转结果。",
+    "trigger": "变更输入：CR-FIN-PRINT-20261121",
+    "preconditions": [
+      "供应商发票、验收单、应付记录及权限矩阵已存在；按THL/TGE公司主体隔离。"
+    ],
+    "flow": [
+      "读取已批准DV/CV，核对金额、收款人、公司和付款方式。",
+      "按支票、银行转账或现金执行资金划转。",
+      "独立登记支票已签发待领取、银行转账已发起或现金已支付等执行状态。",
+      "收集支票存根、银行回单或现金签收证据并回写应付核销。"
+    ],
+    "outputs": [
+      "未批准凭证不能付款；付款执行状态、证据和应付核销独立可查。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0243",
+      "AC2-0925",
+      "AC2-0926",
+      "AC2-0927"
+    ],
+    "businessRuleIds": [
+      "BR-FIN-APPR-002",
+      "BR-FIN-STATE-007",
+      "BR-FIN-STATE-008"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "payment-execution",
+    "route": "/app/fin-010",
+    "index": 63
+  },
+  {
+    "pageId": "eqp-001",
+    "requirementId": "SRS-FR-EQP-001",
+    "title": "设备台账管理",
+    "domain": "EQP",
+    "domainName": "设备工程",
+    "priority": "P1",
+    "sourceModelId": "US-EQP-001",
+    "useCaseId": "UC-EQP-001",
+    "actor": "电修领导",
+    "description": "作为电修领导，我希望设备台账管理，以便维护环控、保温、喂料、供水、供电等设备及公司/栋舍归属。",
+    "trigger": "业务场景：H1-05",
+    "preconditions": [
+      "R01 H1-05；R04",
+      "关联流程：H1-05"
+    ],
+    "flow": [
+      "进入设备台账管理模块，定位对应公司与组织范围",
+      "新增或选择待维护记录，录入环控、保温、喂料、供水、供电等设备、公司/栋舍归属",
+      "系统校验必填项、编码唯一性、数据格式与中英文名称",
+      "核对关联基础资料、状态及生效/失效日期",
+      "保存并生成版本，记录变更内容与操作审计",
+      "复核通过后生效，停用记录保留历史版本可追溯"
+    ],
+    "outputs": [
+      "设备编码唯一，状态和责任范围可追溯。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0104",
+      "AC2-0234",
+      "AC2-0235",
+      "AC2-0236"
+    ],
+    "businessRuleIds": [
+      "BR-EQP-UNIQ-001",
+      "BR-EQP-VAL-001",
+      "BR-EQP-LIFE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/eqp-001",
+    "index": 64
+  },
+  {
+    "pageId": "eqp-002",
+    "requirementId": "SRS-FR-EQP-002",
+    "title": "设备点检",
+    "domain": "EQP",
+    "domainName": "设备工程",
+    "priority": "P1",
+    "sourceModelId": "US-EQP-002",
+    "useCaseId": "UC-EQP-002",
+    "actor": "电修领导",
+    "description": "作为电修领导，我希望设备点检，以便支持进雏前、空舍后和周期点检。",
+    "trigger": "业务场景：H1-05/H5-06",
+    "preconditions": [
+      "R01 H1-05/H5-06",
+      "关联流程：H1-05/H5-06"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H1-05/H5-06）",
+      "按标准流程完成进雏前、空舍后、周期点检",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "点检项、结果、异常和复核记录完整。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0105",
+      "AC2-0237",
+      "AC2-0238",
+      "AC2-0239"
+    ],
+    "businessRuleIds": [
+      "BR-EQP-VAL-002",
+      "BR-EQP-TRACE-001",
+      "BR-EQP-VAL-003"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/eqp-002",
+    "index": 65
+  },
+  {
+    "pageId": "eqp-003",
+    "requirementId": "SRS-FR-EQP-003",
+    "title": "设备保养",
+    "domain": "EQP",
+    "domainName": "设备工程",
+    "priority": "P1",
+    "sourceModelId": "US-EQP-003",
+    "useCaseId": "UC-EQP-003",
+    "actor": "维修工",
+    "description": "作为维修工，我希望设备保养，以便支持保养计划、执行、备件、周期和状态。",
+    "trigger": "业务场景：H4-12",
+    "preconditions": [
+      "R01 H4-12",
+      "关联流程：H4-12"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H4-12）",
+      "按标准流程完成保养计划、执行、备件、周期、状态",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "保养完成后设备状态更新，逾期有提醒。"
+    ],
+    "exceptions": [
+      "US-EXC-EQP-001",
+      "US-EXC-EQP-003",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0106",
+      "AC2-0240",
+      "AC2-0241",
+      "AC2-0242"
+    ],
+    "businessRuleIds": [
+      "BR-EQP-VAL-004",
+      "BR-EQP-TRACE-002",
+      "BR-EQP-VAL-005"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/eqp-003",
+    "index": 66
+  },
+  {
+    "pageId": "eqp-004",
+    "requirementId": "SRS-FR-EQP-004",
+    "title": "故障维修管理",
+    "domain": "EQP",
+    "domainName": "设备工程",
+    "priority": "P1",
+    "sourceModelId": "US-EQP-004",
+    "useCaseId": "UC-EQP-004",
+    "actor": "维修工",
+    "description": "作为维修工，我希望故障维修管理，以便支持故障报修、派工、维修、验收和停机记录。",
+    "trigger": "业务场景：异常流程",
+    "preconditions": [
+      "R01；R04",
+      "关联流程：异常流程"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（异常流程）",
+      "按标准流程完成故障报修、派工、维修、验收、停机记录",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "故障有原因、处理、验收和恢复时间。"
+    ],
+    "exceptions": [
+      "US-EXC-EQP-001",
+      "US-EXC-EQP-002",
+      "US-EXC-EQP-003",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0107",
+      "AC2-0243",
+      "AC2-0244",
+      "AC2-0245"
+    ],
+    "businessRuleIds": [
+      "BR-EQP-VAL-006",
+      "BR-EQP-TRACE-003",
+      "BR-EQP-VAL-007"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/eqp-004",
+    "index": 67
+  },
+  {
+    "pageId": "eqp-005",
+    "requirementId": "SRS-FR-EQP-005",
+    "title": "备件与跨公司支援",
+    "domain": "EQP",
+    "domainName": "设备工程",
+    "priority": "P1",
+    "sourceModelId": "US-EQP-005",
+    "useCaseId": "UC-EQP-005",
+    "actor": "电修领导",
+    "description": "作为电修领导，我希望备件与跨公司支援，以便管理备件库存、维修任务和THL/TGE跨公司调动。",
+    "trigger": "业务场景：H5-06",
+    "preconditions": [
+      "R04",
+      "关联流程：H5-06"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（H5-06）",
+      "按标准流程完成备件库存、维修任务、THL/TGE跨公司调动",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "跨公司支援有任务、人员、时间和结果记录。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0108",
+      "AC2-0246",
+      "AC2-0247",
+      "AC2-0248"
+    ],
+    "businessRuleIds": [
+      "BR-EQP-VAL-008",
+      "BR-EQP-TRACE-004",
+      "BR-EQP-VAL-009"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/eqp-005",
+    "index": 68
+  },
+  {
+    "pageId": "rpt-001",
+    "requirementId": "SRS-FR-RPT-001",
+    "title": "经营驾驶舱",
+    "domain": "RPT",
+    "domainName": "经营分析",
+    "priority": "P1",
+    "sourceModelId": "US-RPT-001",
+    "useCaseId": "UC-RPT-001",
+    "actor": "CEO",
+    "description": "作为CEO，我希望经营驾驶舱，以便展示公司、批次、生产、销售、库存、财务和异常关键指标。",
+    "trigger": "业务场景：管理看板",
+    "preconditions": [
+      "R01；R04",
+      "关联流程：管理看板"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（管理看板）",
+      "按标准流程完成展示公司、批次、生产、销售、库存",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "指标口径、数据来源和刷新规则明确。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0109",
+      "AC2-0249",
+      "AC2-0250",
+      "AC2-0251"
+    ],
+    "businessRuleIds": [
+      "BR-RPT-VAL-001",
+      "BR-RPT-TRACE-001",
+      "BR-RPT-VAL-002"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": true,
+    "pattern": "dashboard",
+    "route": "/app/rpt-001",
+    "index": 69
+  },
+  {
+    "pageId": "rpt-002",
+    "requirementId": "SRS-FR-RPT-002",
+    "title": "生产报表",
+    "domain": "RPT",
+    "domainName": "经营分析",
+    "priority": "P2",
+    "sourceModelId": "US-RPT-002",
+    "useCaseId": "UC-RPT-002",
+    "actor": "养殖负责人",
+    "description": "作为养殖负责人，我希望生产报表，以便支持存栏、日龄、死淘、产蛋、分级、环境、饲喂等报表。",
+    "trigger": "业务场景：生产管理",
+    "preconditions": [
+      "R01；R03",
+      "关联流程：生产管理"
+    ],
+    "flow": [
+      "选择报表类型、公司、期间与数据范围（受权限控制）",
+      "系统按既定口径取数并汇总计算",
+      "校验数据完整性与口径一致性",
+      "呈现生产报表结果，支持钻取与明细查询",
+      "按需导出 Excel/PDF 或调用打印",
+      "记录访问、导出与打印审计"
+    ],
+    "outputs": [
+      "报表可按公司、批次、栋舍和时间筛选。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0110",
+      "AC2-0252",
+      "AC2-0253",
+      "AC2-0254"
+    ],
+    "businessRuleIds": [
+      "BR-RPT-VAL-003",
+      "BR-RPT-DQ-001",
+      "BR-RPT-LIFE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": true,
+    "pattern": "business-list",
+    "route": "/app/rpt-002",
+    "index": 70
+  },
+  {
+    "pageId": "rpt-003",
+    "requirementId": "SRS-FR-RPT-003",
+    "title": "库存采购报表",
+    "domain": "RPT",
+    "domainName": "经营分析",
+    "priority": "P2",
+    "sourceModelId": "US-RPT-003",
+    "useCaseId": "UC-RPT-003",
+    "actor": "仓储",
+    "description": "作为仓储，我希望库存采购报表，以便支持库存数量、金额、分类、供应商、安全库存和待采购分析。",
+    "trigger": "业务场景：库存采购",
+    "preconditions": [
+      "R03；R01",
+      "关联流程：库存采购"
+    ],
+    "flow": [
+      "选择报表类型、公司、期间与数据范围（受权限控制）",
+      "系统按既定口径取数并汇总计算",
+      "校验数据完整性与口径一致性",
+      "呈现库存采购报表结果，支持钻取与明细查询",
+      "按需导出 Excel/PDF 或调用打印",
+      "记录访问、导出与打印审计"
+    ],
+    "outputs": [
+      "报表与台账、盘点和采购数据勾稽。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0111",
+      "AC2-0255",
+      "AC2-0256",
+      "AC2-0257"
+    ],
+    "businessRuleIds": [
+      "BR-RPT-VAL-004",
+      "BR-RPT-DQ-002",
+      "BR-RPT-LIFE-002"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": true,
+    "pattern": "business-list",
+    "route": "/app/rpt-003",
+    "index": 71
+  },
+  {
+    "pageId": "rpt-004",
+    "requirementId": "SRS-FR-RPT-004",
+    "title": "销售财务报表",
+    "domain": "RPT",
+    "domainName": "经营分析",
+    "priority": "P2",
+    "sourceModelId": "US-RPT-004",
+    "useCaseId": "UC-RPT-004",
+    "actor": "销售",
+    "description": "作为销售，我希望销售财务报表，以便支持订单、配送、签收、应收、收款、成本和利润分析。",
+    "trigger": "业务场景：销售财务",
+    "preconditions": [
+      "R01；R02",
+      "关联流程：销售财务"
+    ],
+    "flow": [
+      "选择报表类型、公司、期间与数据范围（受权限控制）",
+      "系统按既定口径取数并汇总计算",
+      "校验数据完整性与口径一致性",
+      "呈现销售财务报表结果，支持钻取与明细查询",
+      "按需导出 Excel/PDF 或调用打印",
+      "记录访问、导出与打印审计"
+    ],
+    "outputs": [
+      "报表与订单、回单、应收和成本数据一致。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0112",
+      "AC2-0258",
+      "AC2-0259",
+      "AC2-0260"
+    ],
+    "businessRuleIds": [
+      "BR-RPT-VAL-005",
+      "BR-RPT-DQ-003",
+      "BR-RPT-LIFE-003"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": true,
+    "pattern": "business-list",
+    "route": "/app/rpt-004",
+    "index": 72
+  },
+  {
+    "pageId": "rpt-005",
+    "requirementId": "SRS-FR-RPT-005",
+    "title": "报表导出与权限",
+    "domain": "RPT",
+    "domainName": "经营分析",
+    "priority": "P2",
+    "sourceModelId": "US-RPT-005",
+    "useCaseId": "UC-RPT-005",
+    "actor": "各业务角色",
+    "description": "作为各业务角色，我希望报表导出与权限，以便支持报表查询、导出、打印、保存和角色权限控制。",
+    "trigger": "业务场景：报表",
+    "preconditions": [
+      "R01；R02",
+      "关联流程：报表"
+    ],
+    "flow": [
+      "选择报表类型、公司、期间与数据范围（受权限控制）",
+      "系统按既定口径取数并汇总计算",
+      "校验数据完整性与口径一致性",
+      "呈现报表导出与权限结果，支持钻取与明细查询",
+      "按需导出 Excel/PDF 或调用打印",
+      "记录访问、导出与打印审计"
+    ],
+    "outputs": [
+      "导出和打印有授权、留痕和格式规则。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0113",
+      "AC2-0261",
+      "AC2-0262",
+      "AC2-0263"
+    ],
+    "businessRuleIds": [
+      "BR-RPT-VAL-006",
+      "BR-RPT-DQ-004",
+      "BR-RPT-LIFE-004"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/rpt-005",
+    "index": 73
+  },
+  {
+    "pageId": "print-001",
+    "requirementId": "SRS-FR-PRINT-001",
+    "title": "打印模板版本管理",
+    "domain": "PRINT",
+    "domainName": "单据打印",
+    "priority": "P2",
+    "sourceModelId": "US-PRINT-001",
+    "useCaseId": "UC-PRINT-001",
+    "actor": "系统管理员",
+    "description": "作为系统管理员，我希望打印模板版本管理，以便维护模板ID、版本、来源哈希、适用主体、启用状态。",
+    "trigger": "业务场景：打印",
+    "preconditions": [
+      "R02；R03",
+      "关联流程：打印"
+    ],
+    "flow": [
+      "选择报表类型、公司、期间与数据范围（受权限控制）",
+      "系统按既定口径取数并汇总计算",
+      "校验数据完整性与口径一致性",
+      "呈现打印模板版本管理结果，支持钻取与明细查询",
+      "按需导出 Excel/PDF 或调用打印",
+      "记录访问、导出与打印审计"
+    ],
+    "outputs": [
+      "模板变更可追溯，旧版本可查询。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0114",
+      "AC2-0264",
+      "AC2-0265",
+      "AC2-0266"
+    ],
+    "businessRuleIds": [
+      "BR-PRINT-VAL-001",
+      "BR-PRINT-DQ-001",
+      "BR-PRINT-LIFE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/print-001",
+    "index": 74
+  },
+  {
+    "pageId": "print-002",
+    "requirementId": "SRS-FR-PRINT-002",
+    "title": "配送单打印",
+    "domain": "PRINT",
+    "domainName": "单据打印",
+    "priority": "P2",
+    "sourceModelId": "US-PRINT-002",
+    "useCaseId": "UC-PRINT-002",
+    "actor": "销售",
+    "description": "作为销售，我希望配送单打印，以便按TGE配送单版式绑定客户、订单、蛋品、付款、车辆、人员字段。",
+    "trigger": "业务场景：H4-07",
+    "preconditions": [
+      "R02",
+      "关联流程：H4-07"
+    ],
+    "flow": [
+      "选择报表类型、公司、期间与数据范围（受权限控制）",
+      "系统按既定口径取数并汇总计算",
+      "校验数据完整性与口径一致性",
+      "呈现配送单打印结果，支持钻取与明细查询",
+      "按需导出 Excel/PDF 或调用打印",
+      "记录访问、导出与打印审计"
+    ],
+    "outputs": [
+      "打印内容与系统配送单一致，字段位置符合模板。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0115",
+      "AC2-0267",
+      "AC2-0268",
+      "AC2-0269"
+    ],
+    "businessRuleIds": [
+      "BR-PRINT-VAL-002",
+      "BR-PRINT-DQ-002",
+      "BR-PRINT-LIFE-002"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/print-002",
+    "index": 75
+  },
+  {
+    "pageId": "print-003",
+    "requirementId": "SRS-FR-PRINT-003",
+    "title": "现金/支票打印",
+    "domain": "PRINT",
+    "domainName": "单据打印",
+    "priority": "P2",
+    "sourceModelId": "US-PRINT-003",
+    "useCaseId": "UC-PRINT-003",
+    "actor": "财务经理",
+    "description": "作为财务经理，我希望现金/支票打印，以便按THL现金/支票版式绑定付款、银行、支票、金额和审批字段。",
+    "trigger": "业务场景：财务",
+    "preconditions": [
+      "R02",
+      "关联流程：财务"
+    ],
+    "flow": [
+      "选择报表类型、公司、期间与数据范围（受权限控制）",
+      "系统按既定口径取数并汇总计算",
+      "校验数据完整性与口径一致性",
+      "呈现现金/支票打印结果，支持钻取与明细查询",
+      "按需导出 Excel/PDF 或调用打印",
+      "记录访问、导出与打印审计",
+      "打印适配需覆盖EPSON L360, EPSON LX-310, EPSON L3110, EPSON L5390, EPSON L8050, BROTHER T830DW, BROTHER T-720共7台设备。",
+      "Cash/Check Voucher按一半A4纸张，其余单据按Legal纸张；打印前进行纸张和版式校验。"
+    ],
+    "outputs": [
+      "打印内容与付款申请和支票记录一致。",
+      "目标设备、纸张规格、打印结果和重打/作废日志可追溯。"
+    ],
+    "exceptions": [
+      "US-EXC-PRINT-001",
+      "US-EXC-PRINT-003",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0116",
+      "AC2-0270",
+      "AC2-0271",
+      "AC2-0272",
+      "AC2-0929",
+      "AC2-0930"
+    ],
+    "businessRuleIds": [
+      "BR-PRINT-VAL-003",
+      "BR-PRINT-DQ-003",
+      "BR-PRINT-LIFE-003",
+      "BR-PRINT-VAL-007",
+      "BR-PRINT-VAL-008"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/print-003",
+    "index": 76
+  },
+  {
+    "pageId": "print-004",
+    "requirementId": "SRS-FR-PRINT-004",
+    "title": "标签与业务单据打印",
+    "domain": "PRINT",
+    "domainName": "单据打印",
+    "priority": "P2",
+    "sourceModelId": "US-PRINT-004",
+    "useCaseId": "UC-PRINT-004",
+    "actor": "各业务岗位",
+    "description": "作为各业务岗位，我希望标签与业务单据打印，以便支持检疫证、出入库、库存、设备、标签等打印需求。",
+    "trigger": "业务场景：业务单据",
+    "preconditions": [
+      "R01；R03",
+      "关联流程：业务单据"
+    ],
+    "flow": [
+      "选择报表类型、公司、期间与数据范围（受权限控制）",
+      "系统按既定口径取数并汇总计算",
+      "校验数据完整性与口径一致性",
+      "呈现标签与业务单据打印结果，支持钻取与明细查询",
+      "按需导出 Excel/PDF 或调用打印",
+      "记录访问、导出与打印审计",
+      "打印适配需覆盖EPSON L360, EPSON LX-310, EPSON L3110, EPSON L5390, EPSON L8050, BROTHER T830DW, BROTHER T-720共7台设备。",
+      "Cash/Check Voucher按一半A4纸张，其余单据按Legal纸张；打印前进行纸张和版式校验。"
+    ],
+    "outputs": [
+      "打印模板、单据和权限关联，打印留痕。",
+      "目标设备、纸张规格、打印结果和重打/作废日志可追溯。"
+    ],
+    "exceptions": [
+      "US-EXC-PRINT-002",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0117",
+      "AC2-0273",
+      "AC2-0274",
+      "AC2-0275",
+      "AC2-0929",
+      "AC2-0930"
+    ],
+    "businessRuleIds": [
+      "BR-PRINT-VAL-004",
+      "BR-PRINT-DQ-004",
+      "BR-PRINT-LIFE-004",
+      "BR-PRINT-VAL-007",
+      "BR-PRINT-VAL-008"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/print-004",
+    "index": 77
+  },
+  {
+    "pageId": "print-005",
+    "requirementId": "SRS-FR-PRINT-005",
+    "title": "重打、作废与审计",
+    "domain": "PRINT",
+    "domainName": "单据打印",
+    "priority": "P1",
+    "sourceModelId": "US-PRINT-005",
+    "useCaseId": "UC-PRINT-005",
+    "actor": "业务负责人",
+    "description": "作为业务负责人，我希望重打、作废与审计，以便支持打印次数、重打原因、作废、编号连续性和审计。",
+    "trigger": "业务场景：打印治理",
+    "preconditions": [
+      "R02",
+      "关联流程：打印治理"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（打印治理）",
+      "按标准流程完成打印次数、重打原因、作废、编号连续性、审计",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环",
+      "打印适配需覆盖EPSON L360, EPSON LX-310, EPSON L3110, EPSON L5390, EPSON L8050, BROTHER T830DW, BROTHER T-720共7台设备。",
+      "Cash/Check Voucher按一半A4纸张，其余单据按Legal纸张；打印前进行纸张和版式校验。"
+    ],
+    "outputs": [
+      "重打和作废必须有原因、权限和日志。",
+      "目标设备、纸张规格、打印结果和重打/作废日志可追溯。"
+    ],
+    "exceptions": [
+      "US-EXC-PRINT-001",
+      "US-EXC-PRINT-003",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0118",
+      "AC2-0276",
+      "AC2-0277",
+      "AC2-0278"
+    ],
+    "businessRuleIds": [
+      "BR-PRINT-VAL-005",
+      "BR-PRINT-TRACE-001",
+      "BR-PRINT-VAL-006"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/print-005",
+    "index": 78
+  },
+  {
+    "pageId": "print-006",
+    "requirementId": "SRS-FR-PRINT-006",
+    "title": "打印设备与纸张适配",
+    "domain": "PRINT",
+    "domainName": "单据打印",
+    "priority": "P1",
+    "sourceModelId": "US-PRINT-006",
+    "useCaseId": "UC-PRINT-006",
+    "actor": "系统管理员",
+    "description": "作为系统管理员，我希望维护7台打印设备及半A4/Legal纸张适配，以便财务和业务单据在现场设备上正确输出。",
+    "trigger": "变更输入：CR-FIN-PRINT-20261121",
+    "preconditions": [
+      "供应商发票、验收单、应付记录及权限矩阵已存在；按THL/TGE公司主体隔离。"
+    ],
+    "flow": [
+      "登记7台打印设备品牌、型号、连接方式、安装位置和适用单据。",
+      "配置Cash/Check Voucher一半A4、其余单据Legal的模板参数。",
+      "逐台执行驱动、走纸、边距、缩放和重打测试。",
+      "将适配结果、缺陷和兜底PDF方案记录到打印日志。"
+    ],
+    "outputs": [
+      "7台设备及纸张规格均有适配记录；未通过项有明确兜底和整改闭环。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0244",
+      "AC2-0929",
+      "AC2-0930"
+    ],
+    "businessRuleIds": [
+      "BR-PRINT-VAL-007",
+      "BR-PRINT-VAL-008"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/print-006",
+    "index": 79
+  },
+  {
+    "pageId": "trace-001",
+    "requirementId": "SRS-FR-TRACE-001",
+    "title": "批次全链路穿透",
+    "domain": "TRACE",
+    "domainName": "质量追溯",
+    "priority": "P1",
+    "sourceModelId": "US-TRACE-001",
+    "useCaseId": "UC-TRACE-001",
+    "actor": "管理层",
+    "description": "作为管理层，我希望批次全链路穿透，以便从批次穿透栋舍、饲喂、免疫、用药、死淘、集蛋、销售和结算。",
+    "trigger": "业务场景：质量追溯",
+    "preconditions": [
+      "R01 RC-017；R03",
+      "关联流程：质量追溯"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（质量追溯）",
+      "按标准流程完成从批次穿透栋舍、饲喂、免疫、用药、死淘",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "每个业务节点可追溯到单据、人员和时间。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0119",
+      "AC2-0279",
+      "AC2-0280",
+      "AC2-0281"
+    ],
+    "businessRuleIds": [
+      "BR-TRACE-VAL-001",
+      "BR-TRACE-TRACE-001",
+      "BR-TRACE-VAL-002"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": true,
+    "pattern": "traceability",
+    "route": "/app/trace-001",
+    "index": 80
+  },
+  {
+    "pageId": "trace-002",
+    "requirementId": "SRS-FR-TRACE-002",
+    "title": "操作审计日志",
+    "domain": "TRACE",
+    "domainName": "质量追溯",
+    "priority": "P1",
+    "sourceModelId": "US-TRACE-002",
+    "useCaseId": "UC-TRACE-002",
+    "actor": "系统管理员",
+    "description": "作为系统管理员，我希望操作审计日志，以便记录登录、授权、审批、打印、导出、数据变更和关键操作。",
+    "trigger": "业务场景：审计",
+    "preconditions": [
+      "QP-04；R04",
+      "关联流程：审计"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（审计）",
+      "按标准流程完成登录、授权、审批、打印、导出",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "日志包含人员、时间、对象、动作和结果，不可随意篡改。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0120",
+      "AC2-0282",
+      "AC2-0283",
+      "AC2-0284"
+    ],
+    "businessRuleIds": [
+      "BR-TRACE-VAL-003",
+      "BR-TRACE-TRACE-002",
+      "BR-TRACE-VAL-004"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": true,
+    "pattern": "business-list",
+    "route": "/app/trace-002",
+    "index": 81
+  },
+  {
+    "pageId": "trace-003",
+    "requirementId": "SRS-FR-TRACE-003",
+    "title": "物料与免疫追溯",
+    "domain": "TRACE",
+    "domainName": "质量追溯",
+    "priority": "P1",
+    "sourceModelId": "US-TRACE-003",
+    "useCaseId": "UC-TRACE-003",
+    "actor": "兽医",
+    "description": "作为兽医，我希望物料与免疫追溯，以便追溯物料批号、疫苗品牌、供应商、接种路径、执行人和批次。",
+    "trigger": "业务场景：追溯",
+    "preconditions": [
+      "R03",
+      "关联流程：追溯"
+    ],
+    "flow": [
+      "触发业务场景并核对任务与对象（追溯）",
+      "按标准流程完成追溯物料批号、疫苗品牌、供应商、接种路径、批次",
+      "现场录入处理结果与关键数据，系统校验取值范围与阈值",
+      "出现超阈值或异常时转入对应异常处理流程",
+      "提交记录并联动台账、库存或通知等关联模块",
+      "生成业务单据与审计记录，确认业务闭环"
+    ],
+    "outputs": [
+      "物料与免疫记录可双向查询。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0121",
+      "AC2-0285",
+      "AC2-0286",
+      "AC2-0287"
+    ],
+    "businessRuleIds": [
+      "BR-TRACE-VAL-005",
+      "BR-TRACE-TRACE-003",
+      "BR-TRACE-VAL-006"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": true,
+    "pattern": "business-list",
+    "route": "/app/trace-003",
+    "index": 82
+  },
+  {
+    "pageId": "trace-004",
+    "requirementId": "SRS-FR-TRACE-004",
+    "title": "单证归档",
+    "domain": "TRACE",
+    "domainName": "质量追溯",
+    "priority": "P2",
+    "sourceModelId": "US-TRACE-004",
+    "useCaseId": "UC-TRACE-004",
+    "actor": "各业务岗位",
+    "description": "作为各业务岗位，我希望单证归档，以便对纸质/电子单据、照片、签收、检疫证和附件进行归档。",
+    "trigger": "业务场景：归档",
+    "preconditions": [
+      "R01—R03",
+      "关联流程：归档"
+    ],
+    "flow": [
+      "选择报表类型、公司、期间与数据范围（受权限控制）",
+      "系统按既定口径取数并汇总计算",
+      "校验数据完整性与口径一致性",
+      "呈现单证归档结果，支持钻取与明细查询",
+      "按需导出 Excel/PDF 或调用打印",
+      "记录访问、导出与打印审计"
+    ],
+    "outputs": [
+      "单证与业务对象关联，可检索、可查看。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0122",
+      "AC2-0288",
+      "AC2-0289",
+      "AC2-0290"
+    ],
+    "businessRuleIds": [
+      "BR-TRACE-VAL-007",
+      "BR-TRACE-DQ-001",
+      "BR-TRACE-LIFE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/trace-004",
+    "index": 83
+  },
+  {
+    "pageId": "plat-001",
+    "requirementId": "SRS-FR-PLAT-001",
+    "title": "登录认证与会话管理",
+    "domain": "PLAT",
+    "domainName": "平台管理",
+    "priority": "P0",
+    "sourceModelId": "US-PLAT-001",
+    "useCaseId": "UC-PLAT-001",
+    "actor": "全部用户",
+    "description": "作为全部用户，我希望登录认证与会话管理，以便支持登录、认证、会话、密码、退出和异常登录处理。",
+    "trigger": "业务场景：平台",
+    "preconditions": [
+      "QP-04",
+      "关联流程：平台"
+    ],
+    "flow": [
+      "接收用户请求并校验身份、会话与令牌有效性",
+      "校验角色、数据范围与操作权限",
+      "执行登录认证与会话管理相关平台处理",
+      "校验输入合法性、安全策略与多语言规则",
+      "返回处理结果并写入系统日志",
+      "异常时转入安全拦截或人工兜底流程"
+    ],
+    "outputs": [
+      "认证和会话策略生效，登录异常有记录。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0123",
+      "AC2-0291",
+      "AC2-0292"
+    ],
+    "businessRuleIds": [
+      "BR-PLAT-CONS-001",
+      "BR-PLAT-VAL-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/plat-001",
+    "index": 84
+  },
+  {
+    "pageId": "plat-002",
+    "requirementId": "SRS-FR-PLAT-002",
+    "title": "多语言管理",
+    "domain": "PLAT",
+    "domainName": "平台管理",
+    "priority": "P1",
+    "sourceModelId": "US-PLAT-002",
+    "useCaseId": "UC-PLAT-002",
+    "actor": "系统管理员",
+    "description": "作为系统管理员，我希望多语言管理，以便支持中英文界面和主数据，预留简繁英扩展。",
+    "trigger": "业务场景：国际化",
+    "preconditions": [
+      "QP-04-10",
+      "关联流程：国际化"
+    ],
+    "flow": [
+      "接收用户请求并校验身份、会话与令牌有效性",
+      "校验角色、数据范围与操作权限",
+      "执行多语言管理相关平台处理",
+      "校验输入合法性、安全策略与多语言规则",
+      "返回处理结果并写入系统日志",
+      "异常时转入安全拦截或人工兜底流程"
+    ],
+    "outputs": [
+      "语言切换后关键字段和枚举可正确显示。"
+    ],
+    "exceptions": [
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003",
+      "US-EXC-ORG-001"
+    ],
+    "acceptanceIds": [
+      "AC1-0124",
+      "AC2-0293",
+      "AC2-0294"
+    ],
+    "businessRuleIds": [
+      "BR-PLAT-CONS-002",
+      "BR-PLAT-VAL-002"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/plat-002",
+    "index": 85
+  },
+  {
+    "pageId": "plat-003",
+    "requirementId": "SRS-FR-PLAT-003",
+    "title": "消息通知",
+    "domain": "PLAT",
+    "domainName": "平台管理",
+    "priority": "P1",
+    "sourceModelId": "US-PLAT-003",
+    "useCaseId": "UC-PLAT-003",
+    "actor": "全部业务角色",
+    "description": "作为全部业务角色，我希望消息通知，以便支持待办、预警、审批、任务、库存和异常通知。",
+    "trigger": "业务场景：通知",
+    "preconditions": [
+      "R01；R03",
+      "关联流程：通知"
+    ],
+    "flow": [
+      "接收用户请求并校验身份、会话与令牌有效性",
+      "校验角色、数据范围与操作权限",
+      "执行消息通知相关平台处理",
+      "校验输入合法性、安全策略与多语言规则",
+      "返回处理结果并写入系统日志",
+      "异常时转入安全拦截或人工兜底流程"
+    ],
+    "outputs": [
+      "通知与业务事件、接收人和处理状态关联。"
+    ],
+    "exceptions": [
+      "US-EXC-PLAT-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0125",
+      "AC2-0295",
+      "AC2-0296"
+    ],
+    "businessRuleIds": [
+      "BR-PLAT-CONS-003",
+      "BR-PLAT-VAL-003"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/plat-003",
+    "index": 86
+  },
+  {
+    "pageId": "plat-004",
+    "requirementId": "SRS-FR-PLAT-004",
+    "title": "附件与导入导出",
+    "domain": "PLAT",
+    "domainName": "平台管理",
+    "priority": "P2",
+    "sourceModelId": "US-PLAT-004",
+    "useCaseId": "UC-PLAT-004",
+    "actor": "各业务角色",
+    "description": "作为各业务角色，我希望附件与导入导出，以便支持文件上传、附件、数据导入、导出、模板下载和校验。",
+    "trigger": "业务场景：平台",
+    "preconditions": [
+      "R01—R03",
+      "关联流程：平台"
+    ],
+    "flow": [
+      "选择报表类型、公司、期间与数据范围（受权限控制）",
+      "系统按既定口径取数并汇总计算",
+      "校验数据完整性与口径一致性",
+      "呈现附件与导入导出结果，支持钻取与明细查询",
+      "按需导出 Excel/PDF 或调用打印",
+      "记录访问、导出与打印审计"
+    ],
+    "outputs": [
+      "附件有归属，导入导出有校验、结果和错误提示。"
+    ],
+    "exceptions": [
+      "US-EXC-ORG-001",
+      "US-EXC-PLAT-002",
+      "US-EXC-PLAT-003"
+    ],
+    "acceptanceIds": [
+      "AC1-0126",
+      "AC2-0297",
+      "AC2-0298",
+      "AC2-0299"
+    ],
+    "businessRuleIds": [
+      "BR-PLAT-VAL-004",
+      "BR-PLAT-DQ-001",
+      "BR-PLAT-LIFE-001"
+    ],
+    "dataRuleIds": [],
+    "nfrIds": [],
+    "entityIds": [],
+    "readOnly": false,
+    "pattern": "business-list",
+    "route": "/app/plat-004",
+    "index": 87
+  }
+]

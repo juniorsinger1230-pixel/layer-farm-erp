@@ -20,6 +20,6 @@
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM", "DOM.Iterable"]
   },
-  "include": ["apps/**/*.ts", "apps/**/*.tsx", "packages/**/*.ts", "e2e/**/*.ts", "playwright.config.ts"],
-  "exclude": ["dist", "node_modules", "tests"]
+  "include": ["apps/api/**/*.ts", "apps/worker/**/*.ts", "packages/**/*.ts", "e2e/**/*.ts", "playwright.config.ts"],
+  "exclude": ["apps/web", "dist", "node_modules", "tests"]
 }
