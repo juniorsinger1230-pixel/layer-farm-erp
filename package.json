@@ -1,0 +1,54 @@
+{
+  "name": "layer-farm-erp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && npm run build:web",
+    "build:web": "vite build --config apps/web/vite.config.ts",
+    "dev:web": "vite --config apps/web/vite.config.ts",
+    "start": "node dist/apps/api/src/server.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "test:coverage": "npm run build && c8 --reporter=text --reporter=lcov --reporter=json-summary --exclude-after-remap --exclude=apps/web --exclude=tests --exclude=dist --include=apps/api/src --include=packages --check-coverage --statements=95 --branches=65 --functions=90 --lines=95 node --test tests/*.test.mjs",
+    "security": "node scripts/security-check.mjs",
+    "audit": "node scripts/dependency-scan.mjs",
+    "license:check": "node scripts/license-check.mjs",
+    "sbom": "node scripts/generate-sbom.mjs",
+    "quality:evaluate": "node scripts/quality-gate-evaluate.mjs",
+    "gate": "npm run lint && npm run typecheck && npm run test:coverage && npm run security && npm run audit && npm run license:check && npm run sbom && npm run quality:evaluate"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.11",
+    "antd": "^5.29.3",
+    "bullmq": "^5.65.1",
+    "hono": "^4.6.0",
+    "ioredis": "^5.8.2",
+    "pdfkit": "^0.17.2",
+    "pg": "^8.23.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.17",
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^22.0.0",
+    "@types/pdfkit": "^0.17.4",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^18.3.28",
+    "@types/react-dom": "^18.3.7",
+    "@types/ws": "^8.18.1",
+    "@vitejs/plugin-react": "^4.7.0",
+    "c8": "^9.1.0",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.46.4",
+    "vite": "^6.3.6"
+  }
+}

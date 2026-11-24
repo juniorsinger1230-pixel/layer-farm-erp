@@ -1,0 +1,13 @@
+node_modules
+dist
+apps/web/dist
+coverage
+.git
+.github
+.env
+.env.*
+data
+*.zip
+*-output.txt
+*-result.json
+sbom.json

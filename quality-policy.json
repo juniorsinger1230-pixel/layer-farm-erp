@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "coverage": {
+    "statements": 95,
+    "branches": 65,
+    "functions": 90,
+    "lines": 95
+  },
+  "dependencyScan": {
+    "failOnSeverity": "moderate",
+    "registry": "https://registry.npmjs.org"
+  },
+  "waivers": []
+}
