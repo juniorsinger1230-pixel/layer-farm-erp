@@ -12,7 +12,7 @@ import { BullMqEventQueue } from '../../../packages/events/src/bullmq.js';
 import { IdempotentEventConsumer, OutboxRelay } from '../../../packages/events/src/outbox.js';
 import { NotificationHub } from '../../../packages/events/src/websocket.js';
 import { LocalSandboxAdapter, type PrinterAdapter } from '../../../packages/integrations/src/print.js';
-import { ValkeyRateLimiter } from '../../../packages/integrations/src/rate-limiter.js';
+import { FallbackRateLimiter, InMemoryRateLimiter, ValkeyRateLimiter } from '../../../packages/integrations/src/rate-limiter.js';
 import { LocalAttachmentStore } from '../../../packages/integrations/src/attachments.js';
 
 const config = loadConfig();
@@ -40,7 +40,7 @@ const app = createApp({
   ...(pool ? { database: pool } : {}),
   ...(auth ? { auth } : {}),
   attachmentStore: new LocalAttachmentStore(resolve(config.attachmentDir ?? './data/attachments')),
-  ...(rateLimitRedis ? { rateLimiter: new ValkeyRateLimiter(rateLimitRedis) } : {}),
+  ...(rateLimitRedis ? { rateLimiter: new FallbackRateLimiter(new ValkeyRateLimiter(rateLimitRedis), new InMemoryRateLimiter()) } : {}),
   ...(printerAdapters ? { printerAdapters } : {}),
   ...(config.printFontPath ? { printFontPath: config.printFontPath } : {}),
   ...(queue ? { queueStatus: () => queue.status(), deadLetters: { list: (limit: number) => queue.deadLetters(limit), replay: (jobId: string) => queue.replayDeadLetter(jobId) } } : {}),

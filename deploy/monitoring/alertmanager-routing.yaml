@@ -1,0 +1,41 @@
+global:
+  resolve_timeout: 5m
+route:
+  receiver: engineering-webhook
+  group_by: ["namespace", "service", "alertname"]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  routes:
+    - matchers:
+        - severity = critical
+      receiver: oncall-webhook
+      group_wait: 0s
+      repeat_interval: 1h
+    - matchers:
+        - severity = warning
+      receiver: engineering-webhook
+      group_wait: 2m
+      repeat_interval: 8h
+    - matchers:
+        - domain = data
+      receiver: data-platform-webhook
+      group_wait: 30s
+      repeat_interval: 2h
+inhibit_rules:
+  - source_matchers: [severity = critical]
+    target_matchers: [severity = warning]
+    equal: [namespace, service, alertname]
+receivers:
+  - name: oncall-webhook
+    webhook_configs:
+      - url: http://oncall-adapter.internal/alert
+        send_resolved: true
+  - name: engineering-webhook
+    webhook_configs:
+      - url: http://engineering-alert-adapter.internal/alert
+        send_resolved: true
+  - name: data-platform-webhook
+    webhook_configs:
+      - url: http://data-alert-adapter.internal/alert
+        send_resolved: true

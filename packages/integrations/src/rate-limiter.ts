@@ -48,3 +48,18 @@ export class InMemoryRateLimiter implements RateLimiter {
     return Promise.resolve({ allowed: existing.count <= limit, limit, remaining: Math.max(0, limit - existing.count), resetAt: existing.resetAt });
   }
 }
+
+export class FallbackRateLimiter implements RateLimiter {
+  constructor(
+    private readonly primary: RateLimiter,
+    private readonly fallback: RateLimiter,
+  ) {}
+
+  async check(key: string, limit: number, windowSeconds: number): Promise<RateLimitDecision> {
+    try {
+      return await this.primary.check(key, limit, windowSeconds);
+    } catch {
+      return this.fallback.check(key, limit, windowSeconds);
+    }
+  }
+}

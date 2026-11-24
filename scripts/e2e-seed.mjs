@@ -5,8 +5,8 @@ import { hashPassword } from '../dist/packages/security/src/auth.js';
 
 const projectRoot = fileURLToPath(new URL('..', import.meta.url));
 const testData = JSON.parse(readFileSync(new URL('../e2e/test-data.json', import.meta.url), 'utf8'));
-const envText = readFileSync(`${projectRoot}deploy/compose/.env`, 'utf8');
-const env = Object.fromEntries(envText.split(/\r?\n/).filter((line) => line.includes('=')).map((line) => {
+const envPath = `${projectRoot}deploy/compose/.env`;
+const env = process.env.DATABASE_URL ? {} : Object.fromEntries(readFileSync(envPath, 'utf8').split(/\r?\n/).filter((line) => line.includes('=')).map((line) => {
   const separator = line.indexOf('=');
   return [line.slice(0, separator), line.slice(separator + 1)];
 }));

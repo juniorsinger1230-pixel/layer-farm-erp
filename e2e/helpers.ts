@@ -51,12 +51,20 @@ export async function openMenu(page: Page, name: string): Promise<void> {
 async function closeDrawer(drawer: ReturnType<Page['getByRole']>): Promise<void> {
   try {
     await expect(drawer).toBeHidden({ timeout: 2000 });
+    return;
   } catch {
-    if (await drawer.isVisible().catch(() => false)) {
-      await drawer.getByRole('button', { name: '关闭' }).click();
-      await expect(drawer).toBeHidden();
+    // Drawer may be in its closing animation when the save action resolves.
+  }
+  if (await drawer.isVisible().catch(() => false)) {
+    try {
+      await drawer.getByRole('button', { name: '关闭' }).click({ timeout: 5000 });
+    } catch {
+      if (await drawer.isVisible().catch(() => false)) {
+        await drawer.press('Escape');
+      }
     }
   }
+  await expect(drawer).toBeHidden();
 }
 
 export async function createRecord(page: Page, buttonName: string, fields: readonly FieldPair[]): Promise<void> {
