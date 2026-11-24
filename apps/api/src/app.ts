@@ -22,6 +22,7 @@ import { PrintService, type PrinterAdapter } from '../../../packages/integration
 import type { RateLimiter } from '../../../packages/integrations/src/rate-limiter.js';
 import { LocalAttachmentStore } from '../../../packages/integrations/src/attachments.js';
 import { resources } from '../../../packages/domain/src/generated/resources.js';
+import { resourceRoutePolicyByPath } from '../../../packages/domain/src/generated/resource-route-policy.js';
 import { AppError, internalError, validationError } from '../../../packages/shared/src/errors.js';
 
 export type DependencyProbe = () => Promise<void>;
@@ -642,79 +643,89 @@ export function createApp(options: AppOptions) {
     return c.json({ data: { jobId: c.req.param('jobId'), status: 'replayed' } });
   });
   for (const resource of resources) {
-    app.get(resource.path, async (c) => {
-      options.auth!.authorize(c.get('auth'), `${resource.permission}:read`);
-      const { service, roles } = domainFor(c, resource.table);
-      const query = c.req.query();
-      const reserved = new Set(['page', 'pageSize', 'orderBy', 'orderDirection']);
-      const filters = Object.fromEntries(Object.entries(query).filter(([key]) => !reserved.has(key)));
-      const page = Number(query.page ?? 1);
-      const pageSize = Number(query.pageSize ?? 50);
-      const direction = query.orderDirection?.toUpperCase();
-      if (direction !== undefined && direction !== 'ASC' && direction !== 'DESC') throw validationError();
-      const result = await service.list(resource.table, {
-        page, pageSize, filters,
-        ...(query.orderBy === undefined ? {} : { orderBy: query.orderBy }),
-        ...(direction === undefined ? {} : { orderDirection: direction }),
+    const policy = resourceRoutePolicyByPath.get(resource.path);
+    if (!policy) continue;
+    const allows = (method: string): boolean => policy.allowedMethods.includes(method);
+
+    if (allows('GET')) {
+      app.get(resource.path, async (c) => {
+        options.auth!.authorize(c.get('auth'), `${resource.permission}:read`);
+        const { service, roles } = domainFor(c, resource.table);
+        const query = c.req.query();
+        const reserved = new Set(['page', 'pageSize', 'orderBy', 'orderDirection']);
+        const filters = Object.fromEntries(Object.entries(query).filter(([key]) => !reserved.has(key)));
+        const page = Number(query.page ?? 1);
+        const pageSize = Number(query.pageSize ?? 50);
+        const direction = query.orderDirection?.toUpperCase();
+        if (direction !== undefined && direction !== 'ASC' && direction !== 'DESC') throw validationError();
+        const result = await service.list(resource.table, {
+          page, pageSize, filters,
+          ...(query.orderBy === undefined ? {} : { orderBy: query.orderBy }),
+          ...(direction === undefined ? {} : { orderDirection: direction }),
+        });
+        return c.json({ data: projectFields(result, roles) });
       });
-      return c.json({ data: projectFields(result, roles) });
-    });
 
-    app.get(`${resource.path}/:id`, async (c) => {
-      options.auth!.authorize(c.get('auth'), `${resource.permission}:read`);
-      const { service, roles } = domainFor(c, resource.table);
-      return c.json({ data: projectFields(await service.get(resource.table, c.req.param('id')), roles) });
-    });
+      app.get(`${resource.path}/:id`, async (c) => {
+        options.auth!.authorize(c.get('auth'), `${resource.permission}:read`);
+        const { service, roles } = domainFor(c, resource.table);
+        return c.json({ data: projectFields(await service.get(resource.table, c.req.param('id')), roles) });
+      });
+    }
 
-    app.post(resource.path, async (c) => {
-      options.auth!.authorize(c.get('auth'), `${resource.permission}:create`);
-      const { service, roles } = domainFor(c, resource.table);
-      const body = await readJsonObject(c.req.raw, options.config.bodyLimitBytes);
-      const idempotencyKey = c.req.header('idempotency-key');
-      if (idempotencyKey === undefined) throw validationError();
-      const created = await service.create(resource.table, body, idempotencyKey);
-      return c.json({ data: projectFields(created, roles) }, 201);
-    });
+    if (allows('POST')) {
+      app.post(resource.path, async (c) => {
+        options.auth!.authorize(c.get('auth'), `${resource.permission}:create`);
+        const { service, roles } = domainFor(c, resource.table);
+        const body = await readJsonObject(c.req.raw, options.config.bodyLimitBytes);
+        const idempotencyKey = c.req.header('idempotency-key');
+        if (idempotencyKey === undefined) throw validationError();
+        const created = await service.create(resource.table, body, idempotencyKey);
+        return c.json({ data: projectFields(created, roles) }, 201);
+      });
 
-    app.post(`${resource.path}/:id/actions`, async (c) => {
-      const body = await readJsonObject(c.req.raw, options.config.bodyLimitBytes);
-      if (typeof body.action !== 'string' || !/^[a-z_]+$/.test(body.action)) throw validationError();
-      const conversionAction = resource.table === 'purchase_requisition' && body.action === 'convert_to_purchase_order';
-      const actionPermission = conversionAction || ['approve', 'reject', 'accept', 'release'].includes(body.action)
-        ? `${resource.permission}:approve`
-        : `${resource.permission}:update`;
-      options.auth!.authorize(c.get('auth'), actionPermission);
-      const { service, inventory, procurement, roles } = domainFor(c, resource.table);
-      const key = c.req.header('idempotency-key');
-      let updated: unknown;
-      if (resource.table === 'goods_receipt' && body.action === 'receive') {
-        if (key === undefined) throw validationError();
-        updated = await inventory.receive({ ...body, goodsReceiptId: c.req.param('id') }, key);
-      } else if (resource.table === 'sales_order' && body.action === 'allocate') {
-        if (key === undefined) throw validationError();
-        updated = await inventory.reserve(c.req.param('id'), body.lines, key);
-      } else if (resource.table === 'sales_order' && body.action === 'ship') {
-        if (key === undefined) throw validationError();
-        updated = await inventory.issue(c.req.param('id'), key);
-      } else if (resource.table === 'sales_order' && body.action === 'release') {
-        if (key === undefined) throw validationError();
-        updated = await inventory.release(c.req.param('id'), key);
-      } else if (resource.table === 'purchase_requisition' && body.action === 'convert_to_purchase_order') {
-        if (key === undefined || typeof body.data !== 'object' || body.data === null) throw validationError();
-        updated = await procurement.convertRequisition(c.req.param('id'), body.data as Record<string, unknown>, key);
-      } else {
-        updated = await service.transition(resource.table, c.req.param('id'), body.action, c.req.header('if-match')?.replaceAll('"', ''));
-      }
-      return c.json({ data: projectFields(updated, roles) });
-    });
+      app.post(`${resource.path}/:id/actions`, async (c) => {
+        const body = await readJsonObject(c.req.raw, options.config.bodyLimitBytes);
+        if (typeof body.action !== 'string' || !/^[a-z_]+$/.test(body.action)) throw validationError();
+        const conversionAction = resource.table === 'purchase_requisition' && body.action === 'convert_to_purchase_order';
+        const actionPermission = conversionAction || ['approve', 'reject', 'accept', 'release'].includes(body.action)
+          ? `${resource.permission}:approve`
+          : `${resource.permission}:update`;
+        options.auth!.authorize(c.get('auth'), actionPermission);
+        const { service, inventory, procurement, roles } = domainFor(c, resource.table);
+        const key = c.req.header('idempotency-key');
+        let updated: unknown;
+        if (resource.table === 'goods_receipt' && body.action === 'receive') {
+          if (key === undefined) throw validationError();
+          updated = await inventory.receive({ ...body, goodsReceiptId: c.req.param('id') }, key);
+        } else if (resource.table === 'sales_order' && body.action === 'allocate') {
+          if (key === undefined) throw validationError();
+          updated = await inventory.reserve(c.req.param('id'), body.lines, key);
+        } else if (resource.table === 'sales_order' && body.action === 'ship') {
+          if (key === undefined) throw validationError();
+          updated = await inventory.issue(c.req.param('id'), key);
+        } else if (resource.table === 'sales_order' && body.action === 'release') {
+          if (key === undefined) throw validationError();
+          updated = await inventory.release(c.req.param('id'), key);
+        } else if (resource.table === 'purchase_requisition' && body.action === 'convert_to_purchase_order') {
+          if (key === undefined || typeof body.data !== 'object' || body.data === null) throw validationError();
+          updated = await procurement.convertRequisition(c.req.param('id'), body.data as Record<string, unknown>, key);
+        } else {
+          updated = await service.transition(resource.table, c.req.param('id'), body.action, c.req.header('if-match')?.replaceAll('"', ''));
+        }
+        return c.json({ data: projectFields(updated, roles) });
+      });
+    }
 
-    app.patch(`${resource.path}/:id`, async (c) => {
-      options.auth!.authorize(c.get('auth'), `${resource.permission}:update`);
-      const { service, roles } = domainFor(c, resource.table);
-      const body = await readJsonObject(c.req.raw, options.config.bodyLimitBytes);
-      const updated = await service.update(resource.table, c.req.param('id'), body, c.req.header('if-match')?.replaceAll('"', ''));
-      return c.json({ data: projectFields(updated, roles) });
-    });
+    if (allows('PATCH')) {
+      app.patch(`${resource.path}/:id`, async (c) => {
+        options.auth!.authorize(c.get('auth'), `${resource.permission}:update`);
+        const { service, roles } = domainFor(c, resource.table);
+        const body = await readJsonObject(c.req.raw, options.config.bodyLimitBytes);
+        const updated = await service.update(resource.table, c.req.param('id'), body, c.req.header('if-match')?.replaceAll('"', ''));
+        return c.json({ data: projectFields(updated, roles) });
+      });
+    }
   }
 
   app.notFound((c) => c.json(errorBody(c.get('requestId'), 'NOT_FOUND', '请求资源不存在'), 404));
