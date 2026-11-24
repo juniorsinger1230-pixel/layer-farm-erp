@@ -48,6 +48,17 @@ export async function openMenu(page: Page, name: string): Promise<void> {
   await page.waitForLoadState('networkidle');
 }
 
+async function closeDrawer(drawer: ReturnType<Page['getByRole']>): Promise<void> {
+  try {
+    await expect(drawer).toBeHidden({ timeout: 2000 });
+  } catch {
+    if (await drawer.isVisible().catch(() => false)) {
+      await drawer.getByRole('button', { name: '关闭' }).click();
+      await expect(drawer).toBeHidden();
+    }
+  }
+}
+
 export async function createRecord(page: Page, buttonName: string, fields: readonly FieldPair[]): Promise<void> {
   await page.getByRole('button', { name: buttonName }).click();
   const drawer = page.getByRole('dialog');
@@ -60,12 +71,7 @@ export async function createRecord(page: Page, buttonName: string, fields: reado
   }
   await drawer.getByRole('button', { name: /保\s*存/ }).click();
   await expect(page.getByText('已保存并通过领域校验').first()).toBeVisible();
-  try {
-    await expect(drawer).toBeHidden({ timeout: 2000 });
-  } catch {
-    await drawer.getByRole('button', { name: '关闭' }).click();
-    await expect(drawer).toBeHidden();
-  }
+  await closeDrawer(drawer);
 }
 
 type Envelope<T> = { data: T };
@@ -95,12 +101,7 @@ export async function executeAction(page: Page, search: string, fields: readonly
   }
   await drawer.getByRole('button', { name: /保\s*存/ }).click();
   await expect(page.getByText('已保存并通过领域校验').first()).toBeVisible();
-  try {
-    await expect(drawer).toBeHidden({ timeout: 2000 });
-  } catch {
-    await drawer.getByRole('button', { name: '关闭' }).click();
-    await expect(drawer).toBeHidden();
-  }
+  await closeDrawer(drawer);
   await page.getByPlaceholder('搜索当前记录').fill('');
 }
 

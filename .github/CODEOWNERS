@@ -1,0 +1,13 @@
+# Code Owners for layer-farm-erp
+* @juniorsinger1230-pixel
+.github/** @juniorsinger1230-pixel
+apps/api/** @juniorsinger1230-pixel
+apps/web/** @juniorsinger1230-pixel
+packages/database/** @juniorsinger1230-pixel
+packages/domain/** @juniorsinger1230-pixel
+packages/integrations/** @juniorsinger1230-pixel
+packages/security/** @juniorsinger1230-pixel
+deploy/** @juniorsinger1230-pixel
+migrations/** @juniorsinger1230-pixel
+scripts/** @juniorsinger1230-pixel
+e2e/** @juniorsinger1230-pixel

@@ -1,0 +1,450 @@
+{
+  "event": "e2e_cleanup_completed",
+  "checkedAt": "2026-11-24T12:30:52.953Z",
+  "tableCount": 107,
+  "remainingRows": 0,
+  "schemaEstimates": [
+    {
+      "schema_name": "app",
+      "estimated_rows": "-75"
+    },
+    {
+      "schema_name": "app_auth",
+      "estimated_rows": "-2"
+    },
+    {
+      "schema_name": "app_ops",
+      "estimated_rows": "-30"
+    }
+  ],
+  "remainingChecks": [
+    {
+      "table": "app.company",
+      "rowCount": 0
+    },
+    {
+      "table": "app.organization_unit",
+      "rowCount": 0
+    },
+    {
+      "table": "app.medication_prescription",
+      "rowCount": 0
+    },
+    {
+      "table": "app.inbound_record",
+      "rowCount": 0
+    },
+    {
+      "table": "app.mortality_cull_record",
+      "rowCount": 0
+    },
+    {
+      "table": "app.vaccination_execution",
+      "rowCount": 0
+    },
+    {
+      "table": "app.vaccine_requisition",
+      "rowCount": 0
+    },
+    {
+      "table": "app.quarantine_certificate",
+      "rowCount": 0
+    },
+    {
+      "table": "app.rm_report_snapshot",
+      "rowCount": 0
+    },
+    {
+      "table": "app.data_permission",
+      "rowCount": 0
+    },
+    {
+      "table": "app.rm_audit_version_projection",
+      "rowCount": 0
+    },
+    {
+      "table": "app.disbursement_voucher",
+      "rowCount": 0
+    },
+    {
+      "table": "app.outbound_record",
+      "rowCount": 0
+    },
+    {
+      "table": "app.equipment",
+      "rowCount": 0
+    },
+    {
+      "table": "app.farm_batch",
+      "rowCount": 0
+    },
+    {
+      "table": "app.equipment_check",
+      "rowCount": 0
+    },
+    {
+      "table": "app.warehouse_location",
+      "rowCount": 0
+    },
+    {
+      "table": "app.house_pen",
+      "rowCount": 0
+    },
+    {
+      "table": "app.maintenance_work_order",
+      "rowCount": 0
+    },
+    {
+      "table": "app.delivery_exception",
+      "rowCount": 0
+    },
+    {
+      "table": "app.stocktake_record",
+      "rowCount": 0
+    },
+    {
+      "table": "app.chick_receipt",
+      "rowCount": 0
+    },
+    {
+      "table": "app.receivable",
+      "rowCount": 0
+    },
+    {
+      "table": "app.spare_part",
+      "rowCount": 0
+    },
+    {
+      "table": "app.feeding_record",
+      "rowCount": 0
+    },
+    {
+      "table": "app.batch_expiry",
+      "rowCount": 0
+    },
+    {
+      "table": "app.outbox_event",
+      "rowCount": 0
+    },
+    {
+      "table": "app.attachment",
+      "rowCount": 0
+    },
+    {
+      "table": "app.environment_record",
+      "rowCount": 0
+    },
+    {
+      "table": "app.safety_stock",
+      "rowCount": 0
+    },
+    {
+      "table": "app.version_history",
+      "rowCount": 0
+    },
+    {
+      "table": "app.receipt_record",
+      "rowCount": 0
+    },
+    {
+      "table": "app.customer",
+      "rowCount": 0
+    },
+    {
+      "table": "app.beak_trimming_record",
+      "rowCount": 0
+    },
+    {
+      "table": "app.cash_checkbook",
+      "rowCount": 0
+    },
+    {
+      "table": "app.payable",
+      "rowCount": 0
+    },
+    {
+      "table": "app.payment_record",
+      "rowCount": 0
+    },
+    {
+      "table": "app.weighing_record",
+      "rowCount": 0
+    },
+    {
+      "table": "app.print_template",
+      "rowCount": 0
+    },
+    {
+      "table": "app.print_job",
+      "rowCount": 0
+    },
+    {
+      "table": "app.print_log",
+      "rowCount": 0
+    },
+    {
+      "table": "app.printer_device",
+      "rowCount": 0
+    },
+    {
+      "table": "app.audit_log",
+      "rowCount": 0
+    },
+    {
+      "table": "app.notification",
+      "rowCount": 0
+    },
+    {
+      "table": "app.term_enum",
+      "rowCount": 0
+    },
+    {
+      "table": "app.offline_sync_record",
+      "rowCount": 0
+    },
+    {
+      "table": "app.supplier",
+      "rowCount": 0
+    },
+    {
+      "table": "app.price_list",
+      "rowCount": 0
+    },
+    {
+      "table": "app.sales_order",
+      "rowCount": 0
+    },
+    {
+      "table": "app.transfer_record",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.egg_collection",
+      "rowCount": 0
+    },
+    {
+      "table": "app.credit_limit",
+      "rowCount": 0
+    },
+    {
+      "table": "app.payment_term_exception",
+      "rowCount": 0
+    },
+    {
+      "table": "app.vaccination_program",
+      "rowCount": 0
+    },
+    {
+      "table": "app.delivery_task",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.inventory_valuation",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.mrp_run",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.mrp_line",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.procurement_return",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.sales_return_execution",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.delivery_status_event",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.payment_allocation",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.supplier_account_binding",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.journal_entry",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.journal_line",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.tax_rate",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.tax_transaction",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.supplier_order_confirmation",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.sales_discount_approval",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.supplier_asn",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.flock_cost_entry",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.flock_cost_snapshot",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.purchase_requisition_conversion",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.accounting_period",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.account_balance_snapshot",
+      "rowCount": 0
+    },
+    {
+      "table": "app_auth.credential",
+      "rowCount": 0
+    },
+    {
+      "table": "app_auth.session",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.inventory_movement",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.flock_position",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.print_template_design",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.inventory_reservation",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.sales_order_line",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.material_uom_conversion",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.stocktake_line",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.supplier_lead_time",
+      "rowCount": 0
+    },
+    {
+      "table": "app_ops.livestock_sale_execution",
+      "rowCount": 0
+    },
+    {
+      "table": "app.purchase_order",
+      "rowCount": 0
+    },
+    {
+      "table": "app.goods_receipt",
+      "rowCount": 0
+    },
+    {
+      "table": "app.material",
+      "rowCount": 0
+    },
+    {
+      "table": "app.inventory_ledger",
+      "rowCount": 0
+    },
+    {
+      "table": "app.cost_allocation",
+      "rowCount": 0
+    },
+    {
+      "table": "app.traceability_link",
+      "rowCount": 0
+    },
+    {
+      "table": "app.idempotency_consumption",
+      "rowCount": 0
+    },
+    {
+      "table": "app.rm_operational_dashboard",
+      "rowCount": 0
+    },
+    {
+      "table": "app.task_status",
+      "rowCount": 0
+    },
+    {
+      "table": "app.\"position\"",
+      "rowCount": 0
+    },
+    {
+      "table": "app.employee",
+      "rowCount": 0
+    },
+    {
+      "table": "app.system_role",
+      "rowCount": 0
+    },
+    {
+      "table": "app.vaccination_task",
+      "rowCount": 0
+    },
+    {
+      "table": "app.vehicle_route",
+      "rowCount": 0
+    },
+    {
+      "table": "app.delivery_receipt",
+      "rowCount": 0
+    },
+    {
+      "table": "app.withdrawal_period_record",
+      "rowCount": 0
+    },
+    {
+      "table": "app.metric_definition",
+      "rowCount": 0
+    },
+    {
+      "table": "app.report_record",
+      "rowCount": 0
+    },
+    {
+      "table": "app.dashboard_snapshot",
+      "rowCount": 0
+    },
+    {
+      "table": "app.purchase_requisition",
+      "rowCount": 0
+    },
+    {
+      "table": "app.rm_traceability_projection",
+      "rowCount": 0
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "event": "business_smoke_passed",
+  "checkedAt": "2026-11-24T12:28:13.767Z",
+  "baseUrl": "http://127.0.0.1:8080",
+  "totalChecks": 11,
+  "checks": [
+    {
+      "name": "API live probe",
+      "path": "/health/live",
+      "method": "GET",
+      "status": 200,
+      "ok": true,
+      "durationMs": 80
+    },
+    {
+      "name": "API ready probe",
+      "path": "/health/ready",
+      "method": "GET",
+      "status": 200,
+      "ok": true,
+      "durationMs": 16
+    },
+    {
+      "name": "Administrator MFA login",
+      "path": "/api/v1/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ok": true,
+      "durationMs": 137
+    },
+    {
+      "name": "Current principal",
+      "path": "/api/v1/auth/me",
+      "method": "GET",
+      "status": 200,
+      "ok": true,
+      "durationMs": 17
+    },
+    {
+      "name": "Materials",
+      "path": "/api/v1/inv/materials?page=1&pageSize=200",
+      "method": "GET",
+      "status": 200,
+      "ok": true,
+      "durationMs": 19
+    },
+    {
+      "name": "Stock locations",
+      "path": "/api/v1/inv/stock-locations?page=1&pageSize=200",
+      "method": "GET",
+      "status": 200,
+      "ok": true,
+      "durationMs": 9
+    },
+    {
+      "name": "Houses and pens",
+      "path": "/api/v1/farm/houses-and-pens?page=1&pageSize=200",
+      "method": "GET",
+      "status": 200,
+      "ok": true,
+      "durationMs": 7
+    },
+    {
+      "name": "Suppliers",
+      "path": "/api/v1/proc/suppliers?page=1&pageSize=200",
+      "method": "GET",
+      "status": 200,
+      "ok": true,
+      "durationMs": 13
+    },
+    {
+      "name": "Customers",
+      "path": "/api/v1/sales/customers?page=1&pageSize=200",
+      "method": "GET",
+      "status": 200,
+      "ok": true,
+      "durationMs": 8
+    },
+    {
+      "name": "Credit limits",
+      "path": "/api/v1/sales/credit-checks?page=1&pageSize=200",
+      "method": "GET",
+      "status": 200,
+      "ok": true,
+      "durationMs": 25
+    },
+    {
+      "name": "Latest print design",
+      "path": "/api/v1/print/print-templates/1/design",
+      "method": "GET",
+      "status": 200,
+      "ok": true,
+      "durationMs": 17
+    }
+  ]
+}

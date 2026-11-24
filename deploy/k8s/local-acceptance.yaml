@@ -1,0 +1,493 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: layer-farm-local
+  labels:
+    app.kubernetes.io/part-of: layer-farm-erp
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: layer-farm-local
+spec:
+  selector:
+    app: postgres
+  ports:
+    - name: tcp-postgres
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: layer-farm-local
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 70
+        runAsGroup: 70
+        fsGroup: 70
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          command:
+            - postgres
+            - -c
+            - unix_socket_directories=/tmp
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: layer_farm
+            - name: POSTGRES_USER
+              value: erp
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: layer-farm-local-runtime
+                  key: postgres-password
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+            - name: tmp
+              mountPath: /tmp
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-h", "127.0.0.1", "-U", "erp", "-d", "layer_farm"]
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 20
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-h", "127.0.0.1", "-U", "erp", "-d", "layer_farm"]
+            periodSeconds: 15
+            timeoutSeconds: 3
+            failureThreshold: 3
+      volumes:
+        - name: data
+          hostPath:
+            path: /var/lib/layer-farm-local/postgres
+            type: Directory
+        - name: tmp
+          emptyDir:
+            sizeLimit: 32Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: valkey
+  namespace: layer-farm-local
+spec:
+  selector:
+    app: valkey
+  ports:
+    - name: tcp-valkey
+      port: 6379
+      targetPort: 6379
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: valkey
+  namespace: layer-farm-local
+spec:
+  serviceName: valkey
+  replicas: 1
+  selector:
+    matchLabels:
+      app: valkey
+  template:
+    metadata:
+      labels:
+        app: valkey
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: valkey
+          image: valkey/valkey:8.1.4-alpine
+          imagePullPolicy: IfNotPresent
+          command: ["valkey-server", "--appendonly", "yes"]
+          ports:
+            - containerPort: 6379
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+          readinessProbe:
+            exec:
+              command: ["valkey-cli", "ping"]
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 20
+          livenessProbe:
+            exec:
+              command: ["valkey-cli", "ping"]
+            periodSeconds: 15
+            timeoutSeconds: 3
+            failureThreshold: 3
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 32Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: database-migrate
+  namespace: layer-farm-local
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app: database-migrate
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: migrate
+          image: layer-farm-erp-api:local-v1
+          imagePullPolicy: IfNotPresent
+          command: ["node", "dist/packages/database/src/migrate.js"]
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: MIGRATION_DIR
+              value: /app/migrations
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: layer-farm-local-runtime
+                  key: database-url
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 1
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 32Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: layer-farm-local
+spec:
+  type: NodePort
+  selector:
+    app: api
+  ports:
+    - name: http-api
+      port: 3100
+      targetPort: 3100
+      nodePort: 30100
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: layer-farm-local
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: api
+          image: layer-farm-erp-api:local-v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3100
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: "3100"
+            - name: BODY_LIMIT_BYTES
+              value: "1048576"
+            - name: DATABASE_SSL
+              value: "false"
+            - name: EVENT_QUEUE_NAME
+              value: layer-farm-local-events
+            - name: ATTACHMENT_DIR
+              value: /data/attachments
+            - name: ATTACHMENT_RETENTION_DAYS
+              value: "3650"
+            - name: PRINT_SANDBOX_MODE
+              value: "true"
+            - name: EXTERNAL_INTEGRATIONS_ENABLED
+              value: "false"
+            - name: RATE_LIMIT_ENABLED
+              value: "true"
+            - name: RATE_LIMIT_WINDOW_SECONDS
+              value: "60"
+            - name: RATE_LIMIT_MAX
+              value: "300"
+            - name: LOGIN_RATE_LIMIT_MAX
+              value: "20"
+            - name: GRACEFUL_SHUTDOWN_TIMEOUT_MS
+              value: "10000"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: layer-farm-local-runtime
+                  key: database-url
+            - name: VALKEY_URL
+              valueFrom:
+                secretKeyRef:
+                  name: layer-farm-local-runtime
+                  key: valkey-url
+            - name: JWT_SIGNING_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: layer-farm-local-runtime
+                  key: jwt-signing-key
+          resources:
+            requests:
+              cpu: 100m
+              memory: 160Mi
+            limits:
+              cpu: 1
+              memory: 768Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: attachments
+              mountPath: /data/attachments
+            - name: tmp
+              mountPath: /tmp
+          startupProbe:
+            httpGet:
+              path: /health/live
+              port: 3100
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 3100
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 3100
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+      volumes:
+        - name: attachments
+          persistentVolumeClaim:
+            claimName: attachments
+        - name: tmp
+          emptyDir:
+            sizeLimit: 64Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: attachments
+  namespace: layer-farm-local
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: api
+  namespace: layer-farm-local
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: layer-farm-local
+spec:
+  type: NodePort
+  selector:
+    app: web
+  ports:
+    - name: http-web
+      port: 80
+      targetPort: 8080
+      nodePort: 30080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: layer-farm-local
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        runAsGroup: 101
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: web
+          image: layer-farm-erp-web:local-v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: cache
+              mountPath: /var/cache/nginx
+            - name: run
+              mountPath: /var/run
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 32Mi
+        - name: cache
+          emptyDir:
+            sizeLimit: 32Mi
+        - name: run
+          emptyDir:
+            sizeLimit: 1Mi
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: web
+  namespace: layer-farm-local
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: web
