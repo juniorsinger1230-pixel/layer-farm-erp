@@ -18,3 +18,5 @@ sca-scan-result.json
 security-check-result.json
 license-check-result.json
 schema-generation-report.json
+playwright-report/
+test-results/

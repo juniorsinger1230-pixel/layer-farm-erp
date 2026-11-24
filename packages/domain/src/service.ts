@@ -116,6 +116,7 @@ async function assertReference(db: Queryable, table: string, id: unknown, contex
 export async function assertReferences(db: Queryable, table: string, input: Record<string, unknown>, context: ActorContext): Promise<void> {
   for (const [field, value] of Object.entries(input)) {
     if (value === null) continue;
+    if (field === 'credit_ref' && value === 0) continue;
     const referenced = TABLE_REFERENCES[table]?.[field] ?? REFERENCES[field];
     if (referenced !== undefined) await assertReference(db, referenced, value, context);
   }

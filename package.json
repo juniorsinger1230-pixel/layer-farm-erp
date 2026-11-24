@@ -15,6 +15,9 @@
     "lint": "eslint .",
     "test": "npm run build && node --test tests/*.test.mjs",
     "test:coverage": "npm run build && c8 --reporter=text --reporter=lcov --reporter=json-summary --exclude-after-remap --exclude=apps/web --exclude=tests --exclude=dist --include=apps/api/src --include=packages --check-coverage --statements=95 --branches=65 --functions=90 --lines=95 node --test tests/*.test.mjs",
+    "e2e:seed": "node scripts/e2e-seed.mjs",
+    "e2e": "playwright test --config=playwright.config.ts",
+    "e2e:report": "playwright show-report --config=playwright.config.ts",
     "security": "node scripts/security-check.mjs",
     "audit": "node scripts/dependency-scan.mjs",
     "license:check": "node scripts/license-check.mjs",
@@ -41,6 +44,7 @@
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.17",
     "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.65.1",
     "@types/node": "^22.0.0",
     "@types/pdfkit": "^0.17.4",
     "@types/pg": "^8.23.1",

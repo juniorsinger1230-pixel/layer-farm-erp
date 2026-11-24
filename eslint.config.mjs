@@ -7,7 +7,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
-    files: ['apps/**/*.ts', 'apps/**/*.tsx', 'packages/**/*.ts'],
+    files: ['apps/**/*.ts', 'apps/**/*.tsx', 'packages/**/*.ts', 'e2e/**/*.ts', 'playwright.config.ts'],
     languageOptions: {
       parserOptions: {
         projectService: true,
