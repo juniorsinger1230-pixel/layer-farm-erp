@@ -27,7 +27,7 @@ export async function apiBlob(path: string): Promise<Blob> {
   return response.blob();
 }
 
-export async function login(input: { account: string; password: string; companyCode: string; mfaCode?: string }): Promise<void> {
+export async function login(input: { account: string; password: string; companyCode: string }): Promise<void> {
   const response = await fetch('/api/v1/auth/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(input) });
   const result = await response.json() as Envelope;
   if (!response.ok || !isSession(result.data)) throw new Error(message(result, '登录失败'));

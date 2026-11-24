@@ -38,7 +38,7 @@ const resourceNames: Record<string, string> = {
   'sales-orders': '销售订单', 'printer-paper-adaptation': '打印设备', 'print-job': '打印任务', 'dashboard-snapshot': '经营快照',
 };
 
-type LoginValues = { account: string; password: string; companyCode: string; mfaCode?: string };
+type LoginValues = { account: string; password: string; companyCode: string };
 type MrpValues = { materialId: number; requiredDate: string; grossRequirement: number; convert?: boolean };
 type PrintValues = { templateId: number; deviceId: number; lines: string; dispatchNow?: boolean };
 type LivestockValues = { saleNo: string; saleType: 'chick' | 'cull'; customerId: number; flockBatchId: number; quantity: number; unitPrice: number; unitCost?: number; saleDate: string };
@@ -51,7 +51,7 @@ function display(value: unknown): string { if (value === null || value === undef
 function Login({ onSuccess }: { onSuccess: () => void }) {
   const [loading, setLoading] = useState(false); const { message } = AntApp.useApp();
   const submit = (values: LoginValues) => { void (async () => { setLoading(true); try { await login(values); onSuccess(); } catch (e) { message.error((e as Error).message); } finally { setLoading(false); } })(); };
-  return <div className="login"><Card className="login-card"><div className="login-logo"><div className="brand-mark" style={{ margin: 'auto', background: '#2563eb', color: '#fff', width: 48, height: 48 }}>禽</div><b>禽牧云 ERP</b><span className="muted">菲律宾蛋鸡养殖经营管理平台</span></div><Form layout="vertical" initialValues={{ companyCode: 'THL' }} onFinish={submit}><Form.Item name="companyCode" label="公司" rules={[{ required: true }]}><Select options={[{ value: 'THL', label: 'THL' }, { value: 'TGE', label: 'TGE' }]} /></Form.Item><Form.Item name="account" label="员工账号" rules={[{ required: true }]}><Input autoComplete="username" /></Form.Item><Form.Item name="password" label="密码" rules={[{ required: true }]}><Input.Password autoComplete="current-password" /></Form.Item><Form.Item name="mfaCode" label="MFA 验证码（高权限角色）"><Input.OTP length={6} /></Form.Item><Button type="primary" htmlType="submit" block size="large" loading={loading}>安全登录</Button></Form></Card></div>;
+  return <div className="login"><Card className="login-card"><div className="login-logo"><div className="brand-mark" style={{ margin: 'auto', background: '#2563eb', color: '#fff', width: 48, height: 48 }}>禽</div><b>禽牧云 ERP</b><span className="muted">菲律宾蛋鸡养殖经营管理平台</span></div><Form layout="vertical" initialValues={{ companyCode: 'THL' }} onFinish={submit}><Form.Item name="companyCode" label="公司" rules={[{ required: true }]}><Select options={[{ value: 'THL', label: 'THL' }, { value: 'TGE', label: 'TGE' }]} /></Form.Item><Form.Item name="account" label="员工账号" rules={[{ required: true }]}><Input autoComplete="username" /></Form.Item><Form.Item name="password" label="密码" rules={[{ required: true }]}><Input.Password autoComplete="current-password" /></Form.Item><Button type="primary" htmlType="submit" block size="large" loading={loading}>安全登录</Button></Form></Card></div>;
 }
 
 function RecordEditor({ open, initial, onClose, onSave, title }: { open: boolean; initial?: Json | undefined; onClose: () => void; onSave: (data: Json) => Promise<void>; title: string }) {

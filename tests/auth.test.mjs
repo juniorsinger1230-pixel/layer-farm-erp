@@ -73,6 +73,27 @@ test('高权限角色必须MFA且接受时钟相邻窗口', async () => {
   await assert.rejects(auth.login('boss.test', password, 'THL', '000000'), (error) => error.code === 'UNAUTHORIZED');
 });
 
+test('MFA关闭后高权限角色可直接登录', async () => {
+  const store = new InMemoryAuthStore();
+  const auth = new AuthService(store, {
+    issuer: 'layer-farm-test',
+    audience: 'layer-farm-api',
+    signingKey,
+    mfaEnabled: false,
+    now: () => now,
+  });
+  const bossPrincipal = {
+    ...principal([{ role: 'boss' }]),
+    employeeId: 3,
+    employeeNo: 'EMP-BOSS-NOMFA',
+    mfaEnrolled: false,
+  };
+  await auth.register('boss.nomfa', password, bossPrincipal);
+  const tokens = await auth.login('boss.nomfa', password, 'THL');
+  const authenticated = await auth.authenticate(`Bearer ${tokens.accessToken}`);
+  assert.equal(authenticated.principal.roles[0].role, 'boss');
+});
+
 test('篡改、错误签发方和过期JWT均被拒绝', async () => {
   const { auth } = await fixture();
   const tokens = await auth.login('feeder.test', password, 'THL');

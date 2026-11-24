@@ -8,6 +8,7 @@ export interface AppConfig {
   databaseUrl?: string;
   valkeyUrl?: string;
   jwtSigningKey?: string;
+  mfaEnabled: boolean;
   eventQueueName?: string;
   attachmentDir?: string;
   printFontPath?: string;
@@ -42,6 +43,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     bodyLimitBytes: parsePositiveInteger(env.BODY_LIMIT_BYTES, 1_048_576, 10_485_760),
     externalIntegrationsEnabled: env.EXTERNAL_INTEGRATIONS_ENABLED === 'true',
     printSandboxMode: env.PRINT_SANDBOX_MODE === 'true',
+    mfaEnabled: env.MFA_ENABLED !== 'false',
     attachmentRetentionDays: parsePositiveInteger(env.ATTACHMENT_RETENTION_DAYS, 3650, 36500),
     rateLimitEnabled: env.RATE_LIMIT_ENABLED !== 'false',
     rateLimitWindowSeconds: parsePositiveInteger(env.RATE_LIMIT_WINDOW_SECONDS, 60, 3600),

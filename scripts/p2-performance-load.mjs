@@ -1,5 +1,4 @@
 import { writeFileSync } from 'node:fs';
-import { totp } from '../dist/packages/security/src/auth.js';
 
 const baseUrl = process.env.BASE_URL ?? 'http://127.0.0.1:8080';
 const testData = JSON.parse(await import('node:fs').then((fs) => fs.readFileSync(new URL('../e2e/test-data.json', import.meta.url), 'utf8')));
@@ -25,7 +24,6 @@ async function login() {
       account: testData.account,
       password: testData.password,
       companyCode: testData.companyCode,
-      mfaCode: totp(testData.mfaSecret),
     }),
   });
   if (!response.ok) throw new Error(`Login failed: ${response.status} ${await response.text()}`);

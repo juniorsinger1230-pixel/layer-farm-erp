@@ -16,6 +16,7 @@
     "test": "npm run build && node --test tests/*.test.mjs",
     "test:coverage": "npm run build && c8 --reporter=text --reporter=lcov --reporter=json-summary --exclude-after-remap --exclude=apps/web --exclude=tests --exclude=dist --include=apps/api/src --include=packages --check-coverage --statements=95 --branches=65 --functions=90 --lines=95 node --test tests/*.test.mjs",
     "e2e:seed": "node scripts/e2e-seed.mjs",
+    "trial:seed": "node scripts/trial-account-seed.mjs",
     "e2e:cleanup": "node scripts/e2e-cleanup.mjs",
     "e2e": "playwright test --config=playwright.config.ts",
     "e2e:report": "playwright show-report --config=playwright.config.ts",
