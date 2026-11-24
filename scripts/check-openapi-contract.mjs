@@ -1,211 +1,75 @@
 import { readFileSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+import {
+  collectImplementedOperations,
+  loadContext,
+  operationKey,
+} from './contract-model.mjs';
+import { buildExpected } from './contract-expected.mjs';
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const options = parseArgs(process.argv.slice(2));
-const openapiPath = resolve(root, options.openapi ?? '../../../SRS_需求规格化与基线/SRS08_OpenAPI3.1初版.json');
-const mappingPath = resolve(root, options.mapping ?? '../../../SRS_需求规格化与基线/SRS08_API需求操作映射.json');
-const appPath = resolve(root, options.app ?? 'apps/api/src/app.ts');
-const resourcesPath = resolve(root, options.resources ?? 'packages/domain/src/generated/resources.ts');
-const policyPath = resolve(root, options.policy ?? 'packages/domain/src/generated/resource-route-policy.ts');
-const contractProcessPath = resolve(root, options.contractProcess ?? 'packages/domain/src/contract-process.ts');
-const outputPath = resolve(root, options.out ?? 'openapi-contract-check-result.json');
-
-const httpMethods = new Set(['get', 'post', 'put', 'patch', 'delete', 'head', 'options', 'trace']);
+const context = loadContext(options);
+const openapiPath = resolve(context.root, options.openapi ?? '../../../SRS_需求规格化与基线/SRS08_OpenAPI3.1初版.json');
+const mappingPath = resolve(context.root, options.mapping ?? '../../../SRS_需求规格化与基线/SRS08_API需求操作映射.json');
+const outputPath = resolve(context.root, options.out ?? 'openapi-contract-check-result.json');
 const openapi = JSON.parse(readFileSync(openapiPath, 'utf8'));
 const mappingDocument = JSON.parse(readFileSync(mappingPath, 'utf8'));
-const appSource = readFileSync(appPath, 'utf8');
-const resourcesSource = readFileSync(resourcesPath, 'utf8');
-const policySource = readFileSync(policyPath, 'utf8');
-const contractProcessSource = readFileSync(contractProcessPath, 'utf8');
 
-const resourceRegex = /\{\s*"table":\s*"([^"]+)"[\s\S]*?"path":\s*"([^"]+)"[\s\S]*?"module":\s*"([^"]+)"[\s\S]*?"permission":\s*"([^"]+)"[\s\S]*?"companyScope":\s*(true|false)[\s\S]*?"contractPath":\s*(true|false)\s*\}/g;
-const resources = [...resourcesSource.matchAll(resourceRegex)].map((match) => ({
-  table: match[1],
-  path: match[2],
-  module: match[3],
-  permission: match[4],
-  companyScope: match[5] === 'true',
-  contractPath: match[6] === 'true',
-}));
-const policyRegex = /\{\s*"table":\s*"([^"]+)"[\s\S]*?"path":\s*"([^"]+)"[\s\S]*?"allowedMethods":\s*\[([^\]]*)\]/g;
-const routePolicies = [...policySource.matchAll(policyRegex)].map((match) => ({
-  table: match[1],
-  path: match[2],
-  allowedMethods: [...match[3].matchAll(/"([^"]+)"/g)].map((method) => method[1]),
-}));
-
+const httpMethods = new Set(['get', 'post', 'put', 'patch', 'delete', 'head', 'options', 'trace']);
 const authoritativeOperations = [];
 for (const [path, pathItem] of Object.entries(openapi.paths ?? {})) {
   for (const [method, operation] of Object.entries(pathItem)) {
     if (!httpMethods.has(method)) continue;
-    authoritativeOperations.push({
-      method: method.toUpperCase(),
-      path,
-      key: operationKey(method.toUpperCase(), path),
-      operationId: operation.operationId,
-      tags: operation.tags ?? [],
-    });
+    const upper = method.toUpperCase();
+    authoritativeOperations.push({ method: upper, path, key: operationKey(upper, path), operationId: operation.operationId, tags: operation.tags ?? [] });
   }
 }
 
-const contractExpectations = [];
-for (const mapping of mappingDocument.mappings) {
-  const expected = expectedOperationsForMapping(mapping);
-  contractExpectations.push({
-    requirementId: mapping.requirement_id,
-    useCaseId: mapping.use_case_id,
-    domain: mapping.domain,
-    mode: mapping.mode,
-    collectionPath: mapping.collection_path,
-    itemPath: mapping.item_path,
-    actionPath: mapping.action_path,
-    expected,
-  });
+const implementedOperations = collectImplementedOperations(context);
+const actualByKey = new Map(implementedOperations.map((item) => [item.key, item]));
+const authoritativeByKey = new Map(authoritativeOperations.map((item) => [item.key, item]));
+const missingContractOperations = authoritativeOperations.filter((item) => !actualByKey.has(item.key)).map(stripKey);
+const undocumentedOperations = implementedOperations.filter((item) => !authoritativeByKey.has(item.key)).map(stripKey);
+
+const schemaErrors = [];
+const statusErrors = [];
+const parameterErrors = [];
+const checkedOperations = [];
+
+for (const operation of authoritativeOperations) {
+  const pathItem = openapi.paths[operation.path];
+  const operationDoc = pathItem[operation.method.toLowerCase()];
+  const expected = buildExpected(operation, context);
+  const errors = compareOperation(operation, operationDoc, expected, openapi);
+  if (errors.schema.length) schemaErrors.push({ key: operation.key, operationId: operation.operationId, errors: errors.schema });
+  if (errors.statuses.length) statusErrors.push({ key: operation.key, operationId: operation.operationId, errors: errors.statuses });
+  if (errors.parameters.length) parameterErrors.push({ key: operation.key, operationId: operation.operationId, errors: errors.parameters });
+  checkedOperations.push({ key: operation.key, expectedStatuses: expected.statuses, expectedFields: Object.keys(expected.body?.properties ?? {}), expectedQuery: Object.keys(expected.query ?? {}) });
 }
-
-const generatedLoopLine = lineAt(appSource, appSource.indexOf('for (const resource of resources)'));
-const actualOperations = [];
-const seen = new Set();
-function addOperation(method, path, source) {
-  const normalizedPath = normalizeHonoPath(path);
-  const key = operationKey(method, normalizedPath);
-  if (seen.has(key)) return;
-  seen.add(key);
-  actualOperations.push({ method, path: normalizedPath, key, source });
-}
-
-for (const policy of routePolicies) {
-  const resource = resources.find((item) => item.path === policy.path);
-  const source = {
-    type: 'generated',
-    file: appPath,
-    line: generatedLoopLine,
-    resource,
-  };
-  if (policy.allowedMethods.includes('GET')) {
-    addOperation('GET', policy.path, source);
-    addOperation('GET', `${policy.path}/:id`, source);
-  }
-  if (policy.allowedMethods.includes('POST')) {
-    addOperation('POST', policy.path, source);
-    addOperation('POST', `${policy.path}/:id/actions`, source);
-  }
-  if (policy.allowedMethods.includes('PATCH')) {
-    addOperation('PATCH', `${policy.path}/:id`, source);
-  }
-}
-
-const readOnlyProcessPaths = new Set([
-  '/api/v1/fin/batch-cost-cards',
-  '/api/v1/fin/financial-reconciliation-reports',
-  '/api/v1/rpt/management-dashboard',
-  '/api/v1/rpt/production-reports',
-  '/api/v1/rpt/inventory-purchase-reports',
-  '/api/v1/rpt/sales-finance-reports',
-  '/api/v1/trace/batch-end-to-end-trace',
-]);
-const contractProcessRegex = /\{[\s\S]*?requirementId: '([^']+)'[\s\S]*?path: '([^']+)'[\s\S]*?\}/g;
-const contractProcessPolicies = [...contractProcessSource.matchAll(contractProcessRegex)]
-  .map((match) => ({
-    requirementId: match[1],
-    path: match[2],
-    readOnly: readOnlyProcessPaths.has(match[2]),
-    collectionAlreadyRegistered: match[0].includes('collectionAlreadyRegistered: true'),
-    line: lineAt(contractProcessSource, match.index),
-  }))
-  .filter((item) => item.path.startsWith('/api/v1/'));
-
-for (const processPolicy of contractProcessPolicies) {
-  const source = {
-    type: 'contract-process',
-    file: contractProcessPath,
-    line: processPolicy.line,
-    requirementId: processPolicy.requirementId,
-  };
-  if (!processPolicy.collectionAlreadyRegistered) {
-    addOperation('GET', processPolicy.path, source);
-    if (!processPolicy.readOnly) addOperation('POST', processPolicy.path, source);
-  }
-  addOperation('GET', `${processPolicy.path}/:id`, source);
-  if (!processPolicy.readOnly) {
-    addOperation('PATCH', `${processPolicy.path}/:id`, source);
-    addOperation('POST', `${processPolicy.path}/:id/actions`, source);
-  }
-}
-
-const infrastructureOperations = [];
-const routePattern = /app\.(get|post|put|patch|delete|head|options)\(\s*([^,\n]+?)\s*,/g;
-for (const match of appSource.matchAll(routePattern)) {
-  const method = match[1].toUpperCase();
-  const rawExpression = match[2].trim();
-  const path = decodeRouteExpression(rawExpression);
-  if (path === undefined) continue;
-  const source = {
-    type: 'explicit',
-    file: appPath,
-    line: lineAt(appSource, match.index),
-  };
-  if (!path.startsWith('/api/v1/')) {
-    infrastructureOperations.push({ method, path: normalizeHonoPath(path), source });
-    continue;
-  }
-  addOperation(method, path, source);
-}
-
-const actualByKey = new Map(actualOperations.map((operation) => [operation.key, operation]));
-const authoritativeByKey = new Map(authoritativeOperations.map((operation) => [operation.key, operation]));
-const mappingByCollection = new Map(mappingDocument.mappings.map((mapping) => [mapping.collection_path, mapping]));
-
-const matchedOperations = authoritativeOperations
-  .filter((operation) => actualByKey.has(operation.key))
-  .map(stripKey);
-const missingContractOperations = authoritativeOperations
-  .filter((operation) => !actualByKey.has(operation.key))
-  .map((operation) => ({ ...stripKey(operation), requirement: findRequirementForPath(operation.path) }));
-const undocumentedOperations = actualOperations
-  .filter((operation) => !authoritativeByKey.has(operation.key))
-  .map(stripKey);
 
 const readOnlyWriteExposures = [];
-for (const expectation of contractExpectations.filter((item) => item.mode === 'READ_ONLY')) {
-  for (const operation of actualOperations) {
-    if (!operation.path.startsWith(expectation.collectionPath)) continue;
-    if (operation.method !== 'GET') {
-      readOnlyWriteExposures.push({
-        ...stripKey(operation),
-        contract: {
-          requirementId: expectation.requirementId,
-          mode: expectation.mode,
-        },
-      });
+for (const mapping of mappingDocument.mappings.filter((item) => item.mode === 'READ_ONLY' || item.mode === 'PROPOSED_READ_ONLY')) {
+  for (const operation of implementedOperations) {
+    if (operation.path.startsWith(mapping.collection_path) && operation.method !== 'GET') {
+      readOnlyWriteExposures.push({ ...stripKey(operation), requirementId: mapping.requirement_id });
     }
   }
 }
 
-const nonContractResourceEndpoints = [];
-for (const resource of resources.filter((item) => !mappingByCollection.has(item.path))) {
-  for (const operation of actualOperations) {
-    if (operation.source.resource?.table === resource.table) {
-      nonContractResourceEndpoints.push(stripKey(operation));
-    }
-  }
-}
-
-const explicitUndocumentedOperations = undocumentedOperations.filter((operation) => operation.source.type === 'explicit');
-const genericUndocumentedOperations = undocumentedOperations.filter((operation) => operation.source.type === 'generated');
-
+const routePass = missingContractOperations.length === 0 && undocumentedOperations.length === 0;
+const fieldPass = schemaErrors.length === 0 && parameterErrors.length === 0;
+const statusPass = statusErrors.length === 0;
 const result = {
   checkedAt: new Date().toISOString(),
-  status: missingContractOperations.length === 0 && undocumentedOperations.length === 0 ? 'pass' : 'fail',
-  scope: 'route and HTTP method bidirectional coverage',
+  status: routePass && fieldPass && statusPass ? 'pass' : 'fail',
+  scope: 'route, HTTP method, field-level schema, query parameters and status-code contract',
   inputs: {
     openapiPath,
     mappingPath,
-    appPath,
-    resourcesPath,
-    policyPath,
+    appPath: context.paths.appPath,
+    resourcesPath: context.paths.resourcesPath,
+    policyPath: context.paths.policyPath,
+    contractProcessPath: context.paths.processPath,
   },
   authoritative: {
     openapi: openapi.openapi,
@@ -214,91 +78,143 @@ const result = {
     mappings: mappingDocument.mappings.length,
   },
   implementation: {
-    resources: resources.length,
-    resourcesWithContractPath: resources.filter((resource) => resource.contractPath).length,
-    routePolicies: routePolicies.length,
-    generatedOperations: actualOperations.filter((operation) => operation.source.type === 'generated').length,
-    explicitApiOperations: actualOperations.filter((operation) => operation.source.type === 'explicit').length,
-    totalApiOperations: actualOperations.length,
-    infrastructureExcluded: infrastructureOperations.map(stripKey),
+    resources: context.resources.length,
+    routePolicies: context.routePolicies.length,
+    processSpecs: context.processSpecs.length,
+    totalApiOperations: implementedOperations.length,
+    generatedOperations: implementedOperations.filter((item) => item.source.type === 'generated').length,
+    contractProcessOperations: implementedOperations.filter((item) => item.source.type === 'contract-process').length,
+    explicitApiOperations: implementedOperations.filter((item) => item.source.type === 'explicit').length,
   },
   matched: {
-    operations: matchedOperations.length,
-    coverage: authoritativeOperations.length === 0 ? 0 : Number((matchedOperations.length / authoritativeOperations.length).toFixed(4)),
+    operations: authoritativeOperations.filter((item) => actualByKey.has(item.key)).length,
+    coverage: authoritativeOperations.length === 0 ? 0 : Number((authoritativeOperations.filter((item) => actualByKey.has(item.key)).length / authoritativeOperations.length).toFixed(4)),
   },
-  missingContractOperations,
-  undocumentedOperations,
-  explicitUndocumentedOperations,
-  genericUndocumentedOperations,
-  readOnlyWriteExposures,
-  nonContractResourceEndpoints,
-  contractExpectations,
+  route: {
+    status: routePass ? 'pass' : 'fail',
+    missingContractOperations,
+    undocumentedOperations,
+    readOnlyWriteExposures,
+  },
+  fieldSchema: {
+    status: fieldPass ? 'pass' : 'fail',
+    errors: schemaErrors,
+    parameterErrors,
+  },
+  statusCodes: {
+    status: statusPass ? 'pass' : 'fail',
+    errors: statusErrors,
+  },
+  checkedOperations,
 };
 
 writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`);
 console.log(JSON.stringify({
   status: result.status,
-  authoritativeOperations: result.authoritative.operations,
-  implementationOperations: result.implementation.totalApiOperations,
-  matched: matchedOperations.length,
+  authoritativeOperations: authoritativeOperations.length,
+  implementationOperations: implementedOperations.length,
+  schemaErrors: schemaErrors.length,
+  statusErrors: statusErrors.length,
+  parameterErrors: parameterErrors.length,
   missing: missingContractOperations.length,
   undocumented: undocumentedOperations.length,
-  explicitUndocumented: explicitUndocumentedOperations.length,
-  genericUndocumented: genericUndocumentedOperations.length,
-  readOnlyWriteExposures: readOnlyWriteExposures.length,
-  nonContractResourceEndpoints: nonContractResourceEndpoints.length,
   outputPath,
 }, null, 2));
-
 if (result.status === 'fail') process.exitCode = 1;
 
-function expectedOperationsForMapping(mapping) {
-  const operations = [
-    { method: 'GET', path: mapping.collection_path },
-    { method: 'GET', path: mapping.item_path },
-  ];
-  if (mapping.mode === 'PROPOSED_CRUD_AND_ACTION') {
-    operations.push(
-      { method: 'POST', path: mapping.collection_path },
-      { method: 'PATCH', path: mapping.item_path },
-      { method: 'POST', path: mapping.action_path },
-    );
+function compareOperation(operation, operationDoc, expected, document) {
+  const errors = { schema: [], statuses: [], parameters: [] };
+  if (expected.body) {
+    const actualSchema = requestSchema(operationDoc, document);
+    errors.schema.push(...compareSchema(expected.body, actualSchema, document, '$'));
   }
-  return operations.map((operation) => ({ ...operation, key: operationKey(operation.method, operation.path) }));
-}
-
-function findRequirementForPath(path) {
-  const mapping = mappingDocument.mappings.find((item) => path.startsWith(item.collection_path));
-  return mapping ? {
-    requirementId: mapping.requirement_id,
-    useCaseId: mapping.use_case_id,
-    mode: mapping.mode,
-  } : undefined;
-}
-
-function operationKey(method, path) {
-  return `${method.toUpperCase()} ${path}`;
-}
-
-function normalizeHonoPath(path) {
-  return path.replace(/:([A-Za-z0-9_]+)/g, '{$1}');
-}
-
-function decodeRouteExpression(expression) {
-  if (expression === 'resource.path' || expression.includes('resource.path')) return undefined;
-  const quoted = expression.match(/^(['"])(.*)\1$/);
-  if (quoted) return quoted[2];
-  const template = expression.match(/^`(.*)`$/);
-  if (template) {
-    if (template[1].includes('${')) return undefined;
-    return template[1];
+  if (expected.multipart) {
+    const content = operationDoc.requestBody?.content?.['multipart/form-data'];
+    if (!content?.schema || !content.schema.properties?.file) errors.schema.push('missing multipart file schema');
   }
-  return undefined;
+  const expectedStatusList = [...expected.statuses].map(String);
+  const actualStatuses = Object.keys(operationDoc.responses ?? {});
+  if (actualStatuses.includes('default')) errors.statuses.push('default response must be replaced by explicit status codes');
+  for (const status of expectedStatusList) if (!actualStatuses.includes(status)) errors.statuses.push(`missing status ${status}`);
+  for (const status of actualStatuses) if (!expectedStatusList.includes(status)) errors.statuses.push(`unexpected status ${status}`);
+
+  const actualQuery = new Set((operationDoc.parameters ?? []).filter((item) => item.in === 'query').map((item) => item.name));
+  for (const name of Object.keys(expected.query ?? {})) if (!actualQuery.has(name)) errors.parameters.push(`missing query parameter ${name}`);
+  return errors;
 }
 
-function lineAt(source, index) {
-  if (index < 0) return undefined;
-  return source.slice(0, index).split('\n').length;
+function requestSchema(operationDoc, document) {
+  const schema = operationDoc.requestBody?.content?.['application/json']?.schema;
+  if (!schema) return undefined;
+  return resolveRef(schema, document);
+}
+
+function resolveRef(schema, document) {
+  let current = schema;
+  const seen = new Set();
+  while (current?.$ref) {
+    if (seen.has(current.$ref)) return current;
+    seen.add(current.$ref);
+    const parts = current.$ref.split('/').slice(1).map((part) => part.replace(/~1/g, '/').replace(/~0/g, '~'));
+    current = parts.reduce((value, part) => value?.[part], document);
+  }
+  return current;
+}
+
+function compareSchema(expected, actual, document, path) {
+  const resolved = resolveRef(actual, document);
+  const errors = [];
+  if (!resolved) return [`${path}: missing schema`];
+  switch (expected.kind) {
+    case 'object': {
+      if (resolved.type !== 'object') errors.push(`${path}: expected object`);
+      if (resolved.additionalProperties !== false) errors.push(`${path}: additionalProperties must be false`);
+      const expectedProps = Object.keys(expected.properties).sort();
+      const actualProps = Object.keys(resolved.properties ?? {}).sort();
+      if (JSON.stringify(expectedProps) !== JSON.stringify(actualProps)) errors.push(`${path}: property keys differ expected=${expectedProps.join(',')} actual=${actualProps.join(',')}`);
+      const expectedRequired = [...(expected.requiredProps ?? [])].sort();
+      const actualRequired = [...(resolved.required ?? [])].sort();
+      if (JSON.stringify(expectedRequired) !== JSON.stringify(actualRequired)) errors.push(`${path}: required differ expected=${expectedRequired.join(',')} actual=${actualRequired.join(',')}`);
+      for (const [name, child] of Object.entries(expected.properties)) errors.push(...compareSchema(child, resolved.properties?.[name], document, `${path}.${name}`));
+      break;
+    }
+    case 'string': {
+      const actualType = Array.isArray(resolved.type) ? resolved.type.find((item) => item !== 'null') : resolved.type;
+      if (actualType !== 'string') errors.push(`${path}: expected string`);
+      if (expected.maxLength !== undefined && resolved.maxLength !== expected.maxLength) errors.push(`${path}: maxLength expected ${expected.maxLength} actual ${resolved.maxLength}`);
+      if (expected.pattern !== undefined && resolved.pattern !== expected.pattern) errors.push(`${path}: pattern mismatch`);
+      if (expected.format !== undefined && resolved.format !== expected.format) errors.push(`${path}: format expected ${expected.format}`);
+      if (expected.enum && JSON.stringify(expected.enum) !== JSON.stringify(resolved.enum)) errors.push(`${path}: enum mismatch`);
+      break;
+    }
+    case 'integer':
+      if (resolved.type !== 'integer') errors.push(`${path}: expected integer`);
+      break;
+    case 'number':
+      if (resolved.type !== 'number') errors.push(`${path}: expected number`);
+      break;
+    case 'boolean':
+      if (resolved.type !== 'boolean') errors.push(`${path}: expected boolean`);
+      break;
+    case 'array':
+      if (resolved.type !== 'array') errors.push(`${path}: expected array`);
+      if (expected.items) errors.push(...compareSchema(expected.items, resolved.items, document, `${path}[]`));
+      break;
+    case 'bigint-input':
+      if (!resolved.oneOf?.some((item) => item.type === 'integer') || !resolved.oneOf.some((item) => item.type === 'string')) errors.push(`${path}: expected integer|string bigint input`);
+      break;
+    case 'numeric-input':
+      if (!resolved.oneOf?.some((item) => item.type === 'number') || !resolved.oneOf.some((item) => item.type === 'string')) errors.push(`${path}: expected number|string numeric input`);
+      break;
+    case 'any-json':
+      if (!resolved.oneOf && resolved.type === undefined) errors.push(`${path}: expected flexible JSON value`);
+      break;
+    case 'any':
+      break;
+    default:
+      errors.push(`${path}: unsupported expected kind ${expected.kind}`);
+  }
+  return errors;
 }
 
 function stripKey(object) {
