@@ -20,3 +20,6 @@ license-check-result.json
 schema-generation-report.json
 playwright-report/
 test-results/
+p2-*-result.json
+k8s-manifest-validate-result.json
+p2-validation/
