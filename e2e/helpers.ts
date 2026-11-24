@@ -1,43 +1,12 @@
-import { createHmac } from 'node:crypto';
 import { expect, type Page } from '@playwright/test';
 
 export type FieldValue = string | number | boolean;
 export type FieldPair = readonly [string, FieldValue];
 
-const BASE32_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-
-export function createTotp(secret: string, at = new Date()): string {
-  let bits = '';
-  for (const character of secret.toUpperCase().replace(/=+$/u, '')) {
-    const index = BASE32_ALPHABET.indexOf(character);
-    if (index < 0) throw new Error('Invalid Base32 secret');
-    bits += index.toString(2).padStart(5, '0');
-  }
-  const bytes: number[] = [];
-  for (let index = 0; index + 8 <= bits.length; index += 8) bytes.push(Number.parseInt(bits.slice(index, index + 8), 2));
-  const counter = Math.floor(at.getTime() / 1000 / 30);
-  const counterBuffer = Buffer.alloc(8);
-  counterBuffer.writeBigUInt64BE(BigInt(counter));
-  const digest = createHmac('sha1', Buffer.from(bytes)).update(counterBuffer).digest();
-  const offset = digest[digest.length - 1]! & 0x0f;
-  const code = ((digest[offset]! & 0x7f) << 24
-    | (digest[offset + 1]! & 0xff) << 16
-    | (digest[offset + 2]! & 0xff) << 8
-    | digest[offset + 3]! & 0xff) >>> 0;
-  return String(code % 1_000_000).padStart(6, '0');
-}
-
-export async function fillOtp(page: Page, code: string): Promise<void> {
-  for (let index = 1; index <= 6; index += 1) {
-    await page.getByRole('textbox', { name: `OTP Input ${index}` }).fill(code[index - 1]!);
-  }
-}
-
-export async function login(page: Page, account: string, password: string, mfaSecret: string): Promise<void> {
+export async function login(page: Page, account: string, password: string): Promise<void> {
   await page.goto('/');
   await page.getByLabel('员工账号').fill(account);
   await page.getByLabel('密码').fill(password);
-  await fillOtp(page, createTotp(mfaSecret));
   await page.getByRole('button', { name: '安全登录' }).click();
   await expect(page.getByRole('menuitem', { name: '经营驾驶舱' })).toBeVisible();
 }

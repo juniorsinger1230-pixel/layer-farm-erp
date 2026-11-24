@@ -45,6 +45,7 @@ export type AuthServiceOptions = {
   issuer: string;
   audience: string;
   signingKey: string;
+  mfaEnabled?: boolean;
   accessTtlSeconds?: number;
   refreshTtlSeconds?: number;
   now?: () => Date;
@@ -171,12 +172,14 @@ export class InMemoryAuthStore implements AuthStore {
 export class AuthService {
   private readonly accessTtlSeconds: number;
   private readonly refreshTtlSeconds: number;
+  private readonly mfaEnabled: boolean;
   private readonly now: () => Date;
 
   constructor(private readonly store: AuthStore, private readonly options: AuthServiceOptions) {
     if (Buffer.byteLength(options.signingKey) < 32) throw new Error('JWT signing key must contain at least 32 bytes');
     this.accessTtlSeconds = options.accessTtlSeconds ?? 900;
     this.refreshTtlSeconds = options.refreshTtlSeconds ?? 604_800;
+    this.mfaEnabled = options.mfaEnabled ?? true;
     this.now = options.now ?? (() => new Date());
     if (this.accessTtlSeconds < 60 || this.accessTtlSeconds > 3600 || this.refreshTtlSeconds < this.accessTtlSeconds || this.refreshTtlSeconds > 2_592_000) throw new Error('Invalid token TTL');
   }
@@ -185,7 +188,7 @@ export class AuthService {
     if (!/^[A-Za-z0-9._-]{4,64}$/.test(account) || (await this.store.findCredential(account, principal.companyCode)) !== null) {
       throw new AppError(400, 'VALIDATION_ERROR', '登录账号不符合要求或已存在');
     }
-    if (principal.roles.some((assignment) => HIGH_PRIVILEGE.has(assignment.role)) && mfaSecret === undefined) {
+    if (this.mfaEnabled && principal.roles.some((assignment) => HIGH_PRIVILEGE.has(assignment.role)) && mfaSecret === undefined) {
       throw new AppError(400, 'VALIDATION_ERROR', '高权限账号必须登记多因素认证');
     }
     await this.store.saveCredential({
@@ -212,7 +215,7 @@ export class AuthService {
       throw unauthorized();
     }
     const highPrivilege = credential.principal.roles.some((assignment) => HIGH_PRIVILEGE.has(assignment.role));
-    if (highPrivilege || credential.principal.mfaEnrolled) {
+    if (this.mfaEnabled && (highPrivilege || credential.principal.mfaEnrolled)) {
       if (credential.mfaSecret === undefined || mfaCode === undefined || !/^\d{6}$/.test(mfaCode)) {
         throw new AppError(401, 'MFA_REQUIRED', '需要有效的多因素认证码');
       }

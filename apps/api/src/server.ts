@@ -17,7 +17,7 @@ import { LocalAttachmentStore } from '../../../packages/integrations/src/attachm
 
 const config = loadConfig();
 const pool = config.databaseUrl ? new Pool({ connectionString: config.databaseUrl, max: 20, idleTimeoutMillis: 30000, connectionTimeoutMillis: 5000, ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: true } : undefined }) : undefined;
-const auth = pool && config.jwtSigningKey ? new AuthService(new PostgresAuthStore(pool), { issuer: 'layer-farm-erp', audience: 'layer-farm-web', signingKey: config.jwtSigningKey }) : undefined;
+const auth = pool && config.jwtSigningKey ? new AuthService(new PostgresAuthStore(pool), { issuer: 'layer-farm-erp', audience: 'layer-farm-web', signingKey: config.jwtSigningKey, mfaEnabled: config.mfaEnabled }) : undefined;
 const redis = config.valkeyUrl ? new Redis(config.valkeyUrl, { maxRetriesPerRequest: null, enableReadyCheck: true, lazyConnect: true }) : undefined;
 const rateLimitRedis = config.valkeyUrl ? new Redis(config.valkeyUrl, { maxRetriesPerRequest: 2, enableReadyCheck: true, commandTimeout: 2000 }) : undefined;
 const queueConnection: ConnectionOptions | undefined = config.valkeyUrl ? (() => {

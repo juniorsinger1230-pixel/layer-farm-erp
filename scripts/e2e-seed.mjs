@@ -81,18 +81,18 @@ try {
     companyCode: testData.companyCode,
     companyId: Number(company.id),
     roles: [{ role: 'admin', companyCode: testData.companyCode }],
-    mfaEnrolled: true,
+    mfaEnrolled: false,
   };
   const passwordHash = await hashPassword(testData.password);
   await pool.query(
     `INSERT INTO app_auth.credential
      (employee_id, account, company_code, password_hash, principal, status, failed_attempts, locked_until, mfa_secret)
-     VALUES ($1, $2, $3, $4, $5::jsonb, 'active', 0, NULL, $6)
+     VALUES ($1, $2, $3, $4, $5::jsonb, 'active', 0, NULL, NULL)
      ON CONFLICT (employee_id) DO UPDATE SET
        account=EXCLUDED.account, company_code=EXCLUDED.company_code, password_hash=EXCLUDED.password_hash,
        principal=EXCLUDED.principal, status=EXCLUDED.status, failed_attempts=0, locked_until=NULL,
        mfa_secret=EXCLUDED.mfa_secret, updated_at=now()`,
-    [employee.id, testData.account, testData.companyCode, passwordHash, JSON.stringify(principal), testData.mfaSecret],
+    [employee.id, testData.account, testData.companyCode, passwordHash, JSON.stringify(principal)],
   );
 
   let printTemplate = await findOne('SELECT id FROM app.print_template WHERE template_code=$1 AND company_code=$2', ['E2E-LABEL', testData.companyCode]);

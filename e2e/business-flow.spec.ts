@@ -13,7 +13,6 @@ const testData = JSON.parse(readFileSync(new URL('./test-data.json', import.meta
   companyCode: string;
   account: string;
   password: string;
-  mfaSecret: string;
 };
 const runtimeData = JSON.parse(readFileSync(new URL('./runtime-data.json', import.meta.url), 'utf8')) as {
   companyId: number;
@@ -43,7 +42,7 @@ const salesOrderNo = `SO${runId}`;
 test.describe.configure({ mode: 'serial' });
 
 test.beforeEach(async ({ page }) => {
-  await login(page, testData.account, testData.password, testData.mfaSecret);
+  await login(page, testData.account, testData.password);
 });
 
 test('浏览器端完成采购入库、生产集蛋、销售出库、财务留痕与打印设计闭环', async ({ page }) => {

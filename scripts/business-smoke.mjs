@@ -1,5 +1,4 @@
 import { readFileSync, writeFileSync } from 'node:fs';
-import { totp } from '../dist/packages/security/src/auth.js';
 
 const testData = JSON.parse(readFileSync(new URL('../e2e/test-data.json', import.meta.url), 'utf8'));
 const runtimeData = JSON.parse(readFileSync(new URL('../e2e/runtime-data.json', import.meta.url), 'utf8'));
@@ -18,14 +17,13 @@ async function request(name, path, options = {}, requireData = true) {
 
 await request('API live probe', '/health/live', {}, false);
 await request('API ready probe', '/health/ready', {}, false);
-const loginBody = await request('Administrator MFA login', '/api/v1/auth/login', {
+const loginBody = await request('Administrator login', '/api/v1/auth/login', {
   method: 'POST',
   headers: { 'content-type': 'application/json' },
   body: JSON.stringify({
     account: testData.account,
     password: testData.password,
     companyCode: testData.companyCode,
-    mfaCode: totp(testData.mfaSecret),
   }),
 });
 const token = loginBody.data.accessToken;

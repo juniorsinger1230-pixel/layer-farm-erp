@@ -54,6 +54,7 @@ services:
       DATABASE_SSL: "false"
       VALKEY_URL: redis://valkey:6379
       JWT_SIGNING_KEY: ${JWT_SIGNING_KEY:?JWT_SIGNING_KEY is required}
+      MFA_ENABLED: "${MFA_ENABLED:-false}"
       EVENT_QUEUE_NAME: layer-farm-events
       ATTACHMENT_DIR: /data/attachments
       ATTACHMENT_RETENTION_DAYS: ${ATTACHMENT_RETENTION_DAYS:-3650}
