@@ -192,7 +192,6 @@ test('浏览器端完成采购入库、生产集蛋、销售出库、财务留�
     ['credit_amount', 10000],
     ['occupied_amount', 0],
     ['over_limit_block', true],
-    ['manual_adjust', false],
     ['ceo_approval', 'not_required'],
     ['company_code', testData.companyCode],
   ]);
