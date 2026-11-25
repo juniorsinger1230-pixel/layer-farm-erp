@@ -95,6 +95,16 @@ page.on('console', (message) => {
   if (message.type() === 'error') currentEvents.consoleErrors.push(message.text());
 });
 
+async function waitForApiResponse(path) {
+  const existing = currentEvents.apiResponses.find((item) => item.path === path);
+  if (existing) return existing;
+  const response = await page.waitForResponse(
+    (candidate) => new URL(candidate.url()).pathname === path,
+    { timeout: 30000 },
+  );
+  return { path, status: response.status() };
+}
+
 async function loginAs(account) {
   for (let attempt = 1; attempt <= 3; attempt += 1) {
     await page.goto(`${baseUrl}/login`, { waitUntil: 'domcontentloaded' });
@@ -192,8 +202,8 @@ try {
 
       if (kind === 'business') {
         await page.locator('.ant-table').first().waitFor({ timeout: 15000 });
-        const apiResponse = currentEvents.apiResponses.find((item) => item.path === contract.path);
-        checks.api200 = apiResponse?.status === 200;
+        const apiResponse = await waitForApiResponse(contract.path);
+        checks.api200 = apiResponse.status === 200;
         checks.noUnexpectedDenied = !currentEvents.apiResponses.some((item) => item.path === contract.path && item.status === 403);
       } else {
         checks.api200 = true;

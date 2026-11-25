@@ -33,6 +33,20 @@ type DashboardRow = {
   error: string;
 };
 
+async function mapWithConcurrency<T, R>(items: T[], limit: number, worker: (item: T, index: number) => Promise<R>): Promise<R[]> {
+  const results = Array.from({ length: items.length }, () => undefined as R);
+  let nextIndex = 0;
+  const runners = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (nextIndex < items.length) {
+      const index = nextIndex;
+      nextIndex += 1;
+      results[index] = await worker(items[index]!, index);
+    }
+  });
+  await Promise.all(runners);
+  return results;
+}
+
 export default function DashboardPage({ page }: { page: PageDefinition }) {
   const { profile } = useSession();
   const [rows, setRows] = useState<DashboardRow[]>([]);
@@ -45,10 +59,14 @@ export default function DashboardPage({ page }: { page: PageDefinition }) {
   const load = async () => {
     if (!profile) return;
     setLoading(true);
-    const results = await Promise.allSettled(contracts.map(async ([pageId, contract]) => {
-      const result = await api<ListResponse>(`${contract.path}?page=1&pageSize=1`);
-      return { pageId, total: result.total, path: contract.path };
-    }));
+    const results = await mapWithConcurrency(contracts, 6, async ([pageId, contract]) => {
+      try {
+        const result = await api<ListResponse>(`${contract.path}?page=1&pageSize=1`);
+        return { status: 'fulfilled' as const, value: { pageId, total: result.total, path: contract.path } };
+      } catch (reason) {
+        return { status: 'rejected' as const, reason };
+      }
+    });
     const next = results.map((result, index) => {
       const [pageId, contract] = contracts[index] ?? ['', { path: '' }];
       const definition = PAGE_MAP[pageId];
