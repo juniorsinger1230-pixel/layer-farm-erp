@@ -4,6 +4,7 @@ import { Alert, Button, Card, Col, Progress, Row, Space, Spin, Statistic, Table,
 import { ReloadOutlined } from '@ant-design/icons';
 import { api } from '../api';
 import { useSession } from '../auth/SessionContext';
+import { hasPermission } from '../auth/permissions';
 import { CHART_PALETTE } from '../designTokens';
 import { PAGE_MAP } from '../data/registry';
 import pageApiMap from '../generated/page-api-map.json';
@@ -36,7 +37,10 @@ export default function DashboardPage({ page }: { page: PageDefinition }) {
   const { profile } = useSession();
   const [rows, setRows] = useState<DashboardRow[]>([]);
   const [loading, setLoading] = useState(false);
-  const contracts = Object.entries(pageApiMap.mapped);
+  const contracts = profile
+    ? Object.entries(pageApiMap.mapped).filter(([, contract]) =>
+      hasPermission(profile.permissions, `${contract.permission}:read`))
+    : [];
 
   const load = async () => {
     if (!profile) return;
@@ -64,11 +68,13 @@ export default function DashboardPage({ page }: { page: PageDefinition }) {
     rows.forEach((row) => groups.set(row.domain, (groups.get(row.domain) ?? 0) + row.total));
     return [...groups].map(([domain, total]) => ({ domain, total }));
   }, [rows]);
+  const inaccessibleCount = pageApiMap.mappedCount - contracts.length;
   const statusData = useMemo(() => [
     { type: '有数据', count: rows.filter((row) => row.total > 0).length },
     { type: '空数据', count: rows.filter((row) => row.total === 0 && row.status === 'loaded').length },
     { type: '加载失败', count: rows.filter((row) => row.status === 'failed').length },
-  ], [rows]);
+    { type: '无权限', count: inaccessibleCount },
+  ], [rows, inaccessibleCount]);
   const totalRecords = rows.reduce((sum, row) => sum + row.total, 0);
   const failed = rows.filter((row) => row.status === 'failed');
   const zeroData = rows.filter((row) => row.status === 'loaded' && row.total === 0);
@@ -86,9 +92,9 @@ export default function DashboardPage({ page }: { page: PageDefinition }) {
 
       <Row gutter={[16, 16]} className="metric-row">
         <Col xs={12} xl={6}><Card><Statistic title="真实记录总数" value={totalRecords} /></Card></Col>
-        <Col xs={12} xl={6}><Card><Statistic title="已接入 API" value={pageApiMap.mappedCount} /></Card></Col>
+        <Col xs={12} xl={6}><Card><Statistic title="可访问 API" value={contracts.length} /></Card></Col>
         <Col xs={12} xl={6}><Card><Statistic title="空数据资源" value={zeroData.length} /></Card></Col>
-        <Col xs={12} xl={6}><Card><Statistic title="契约缺口" value={pageApiMap.gapCount} /></Card></Col>
+        <Col xs={12} xl={6}><Card><Statistic title="无权限 API" value={inaccessibleCount} /></Card></Col>
       </Row>
 
       <Row gutter={[16, 16]}>
@@ -122,7 +128,7 @@ export default function DashboardPage({ page }: { page: PageDefinition }) {
 
       <Card title="页面接入进度">
         <Progress percent={Math.round((pageApiMap.mappedCount / pageApiMap.total) * 100)} status="active" />
-        <span>{pageApiMap.mappedCount}/{pageApiMap.total} 页面已接入真实 API，其余 {pageApiMap.gapCount} 页显示契约缺口而非 Mock 数据。</span>
+        <span>{pageApiMap.mappedCount}/{pageApiMap.total} 页面已接入真实 API，当前账号可访问 {contracts.length} 个；其余 {pageApiMap.gapCount} 页显示契约缺口而非 Mock 数据。</span>
       </Card>
     </div>
   );

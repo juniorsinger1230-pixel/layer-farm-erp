@@ -19,6 +19,7 @@
     "trial:seed": "node scripts/trial-account-seed.mjs",
     "trial:rotate": "node scripts/trial-password-rotate.mjs",
     "trial:verify": "node scripts/verify-trial-accounts.mjs",
+    "pages:verify": "node scripts/verify-public-pages.mjs",
     "e2e:cleanup": "node scripts/e2e-cleanup.mjs",
     "e2e": "playwright test --config=playwright.config.ts",
     "e2e:report": "playwright show-report --config=playwright.config.ts",
