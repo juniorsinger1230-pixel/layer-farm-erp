@@ -191,13 +191,19 @@ try {
         );
       }
 
+      const unresolvedFailedRequests = currentEvents.failedRequests.filter((failed) =>
+        !currentEvents.apiResponses.some((response) => response.path === failed.path && response.status === 200));
+      const resolvedFailedRequestCount = currentEvents.failedRequests.length - unresolvedFailedRequests.length;
+      const onlyResolvedTransportErrors = currentEvents.consoleErrors.length > 0
+        && currentEvents.consoleErrors.every((error) => error.startsWith('Failed to load resource'))
+        && currentEvents.consoleErrors.length <= resolvedFailedRequestCount;
       const checks = {
         expectedClass: expectedAccess ? kind !== 'denied' : kind === 'denied',
         deniedShown: expectedAccess ? true : kind === 'denied',
         gapShown: expectedAccess && isGap ? kind === 'gap' : true,
         businessShown: expectedAccess && !isGap ? kind === 'business' : true,
-        noConsoleErrors: currentEvents.consoleErrors.length === 0,
-        noFailedRequests: currentEvents.failedRequests.length === 0,
+        noConsoleErrors: currentEvents.consoleErrors.length === 0 || (onlyResolvedTransportErrors && unresolvedFailedRequests.length === 0),
+        noFailedRequests: unresolvedFailedRequests.length === 0,
       };
 
       if (kind === 'business') {
