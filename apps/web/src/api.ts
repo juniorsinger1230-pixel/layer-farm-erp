@@ -7,9 +7,19 @@ export function session(): Session | null { try { const value: unknown = JSON.pa
 function save(value: unknown): void { sessionStorage.setItem(sessionKey, JSON.stringify(value)); }
 export function logoutLocal(): void { sessionStorage.removeItem(sessionKey); }
 function message(result: Envelope, fallback: string): string { return typeof result.error?.message === 'string' ? result.error.message : fallback; }
+async function fetchWithGetRetry(path: string, options: RequestInit, retry: boolean): Promise<Response> {
+  const request = new Request(path, options);
+  try {
+    return await fetch(request);
+  } catch (error) {
+    if (!retry || request.method !== 'GET' || !(error instanceof TypeError)) throw error;
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    return fetch(new Request(path, options));
+  }
+}
 export async function api<T>(path: string, options: RequestInit = {}, retry = true): Promise<T> {
   const token = session()?.accessToken;
-  const response = await fetch(path, { ...options, headers: { ...(options.body instanceof FormData ? {} : { 'content-type': 'application/json' }), ...(token ? { authorization: `Bearer ${token}` } : {}), ...(options.body && !(options.body instanceof FormData) && options.method !== 'GET' ? { 'idempotency-key': crypto.randomUUID() } : {}), ...options.headers } });
+  const response = await fetchWithGetRetry(path, { ...options, headers: { ...(options.body instanceof FormData ? {} : { 'content-type': 'application/json' }), ...(token ? { authorization: `Bearer ${token}` } : {}), ...(options.body && !(options.body instanceof FormData) && options.method !== 'GET' ? { 'idempotency-key': crypto.randomUUID() } : {}), ...options.headers } }, retry);
   if (response.status === 401 && retry && session()?.refreshToken) {
     const refreshed = await fetch('/api/v1/auth/refresh', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ refreshToken: session()!.refreshToken }) });
     const refreshResult = await refreshed.json() as Envelope;
@@ -22,7 +32,7 @@ export async function api<T>(path: string, options: RequestInit = {}, retry = tr
 }
 export async function apiBlob(path: string): Promise<Blob> {
   const token = session()?.accessToken;
-  const response = await fetch(path, { headers: token ? { authorization: `Bearer ${token}` } : {} });
+  const response = await fetchWithGetRetry(path, { headers: token ? { authorization: `Bearer ${token}` } : {} }, true);
   if (!response.ok) throw new Error(`导出失败 (${response.status})`);
   return response.blob();
 }
