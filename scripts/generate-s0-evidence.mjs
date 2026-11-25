@@ -11,7 +11,6 @@ const projectRoot = resolve(scriptDir, '..');
 const mainDir = resolve(scriptDir, '../../../..');
 const evidenceDir = resolve(mainDir, 'S0预检证据');
 const composeDir = resolve(projectRoot, 'deploy/compose');
-const composeFile = resolve(composeDir, 'docker-compose.yml');
 const envFile = resolve(composeDir, '.env');
 const applicationBaselineCommit = '4fd2b891eaa496ed73cdef69aa40ca669e476b48';
 const sourceDatabase = 'layer_farm';
@@ -23,7 +22,6 @@ const containers = {
   web: 'layer-farm-erp-p2-web-1',
 };
 
-const now = new Date();
 const iso = () => new Date().toISOString();
 
 function parseEnvFile(path) {
