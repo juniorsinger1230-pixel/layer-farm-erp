@@ -137,7 +137,7 @@ function parseProcessSpecs(source, fieldMaps) {
   const block = source.match(/export const contractProcessSpecs[^=]*= \[([\s\S]*?)\n\];/);
   if (!block) throw new Error('contractProcessSpecs not found');
   const specs = [];
-  const specRegex = /\{\n\s+requirementId: '([^']+)', path: '([^']+)', schema: '([^']+)', table: '([^']+)'[\s\S]*?\n\s+\}/g;
+  const specRegex = /\{\s+requirementId:\s*'([^']+)',\s*path:\s*'([^']+)',\s*schema:\s*'([^']+)',\s*table:\s*'([^']+)'[\s\S]*?\n\s+\}/g;
   for (const match of block[1].matchAll(specRegex)) {
     const text = match[0];
     const fieldsVar = text.match(/fields:\s*(\w+Fields)/)?.[1];

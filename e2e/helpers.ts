@@ -7,7 +7,7 @@ export async function login(page: Page, account: string, password: string): Prom
   await page.goto('/');
   await page.getByLabel('员工账号').fill(account);
   await page.getByLabel('密码').fill(password);
-  await page.getByRole('button', { name: '安全登录' }).click();
+  await page.getByRole('button', { name: '登录工作台' }).click();
   await expect(page.getByRole('menuitem', { name: '经营驾驶舱' })).toBeVisible();
 }
 

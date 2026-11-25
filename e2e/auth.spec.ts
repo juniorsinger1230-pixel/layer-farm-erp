@@ -12,7 +12,7 @@ test.describe('认证与登录', () => {
     await page.goto('/');
     await page.getByLabel('员工账号').fill(testData.account);
     await page.getByLabel('密码').fill('Wrong-Password-0000!');
-    await page.getByRole('button', { name: '安全登录' }).click();
+    await page.getByRole('button', { name: '登录工作台' }).click();
     await expect(page.getByText('账号或凭据无效')).toBeVisible();
     await expect(page.getByRole('menuitem', { name: '经营驾驶舱' })).toBeHidden();
   });

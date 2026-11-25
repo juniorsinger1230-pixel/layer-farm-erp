@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { appendFileSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
@@ -8,12 +8,20 @@ const baseUrl = (process.env.BASE_URL ?? '').replace(/\/$/, '');
 const companyCode = process.env.TRIAL_COMPANY_CODE ?? 'THL';
 const passwordFile = resolve(process.env.TRIAL_PASSWORD_FILE ?? '.runtime/trial-passwords.json');
 const outputFile = resolve(process.env.PUBLIC_PAGE_VERIFY_OUTPUT ?? '.runtime/public-page-acceptance-result.json');
+const debugLogFile = process.env.PAGE_DEBUG_LOG ? resolve(process.env.PAGE_DEBUG_LOG) : '';
+const debugLog = (event, payload = {}) => {
+  if (!debugLogFile) return;
+  appendFileSync(debugLogFile, `${JSON.stringify({ at: new Date().toISOString(), event, ...payload })}\n`);
+};
 
 if (!baseUrl) throw new Error('BASE_URL is required');
 
 const allPages = JSON.parse(readFileSync(resolve(root, 'apps/web/src/data/pageRegistry.json'), 'utf8'));
 const pageLimit = Number(process.env.PAGE_LIMIT ?? 0);
-const pages = pageLimit > 0 ? allPages.slice(0, pageLimit) : allPages;
+const pageOffset = Number(process.env.PAGE_OFFSET ?? 0);
+const pageStart = Number.isInteger(pageOffset) && pageOffset >= 0 ? pageOffset : 0;
+const pageEnd = pageLimit > 0 ? pageStart + pageLimit : allPages.length;
+const pages = allPages.slice(pageStart, pageEnd);
 const pageMap = JSON.parse(readFileSync(resolve(root, 'apps/web/src/generated/page-api-map.json'), 'utf8'));
 const passwordPayload = JSON.parse(readFileSync(passwordFile, 'utf8'));
 const allAccounts = passwordPayload.accounts;
@@ -53,7 +61,17 @@ function canRead(profile, page) {
   return hasPermission(profile.permissions, required);
 }
 
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({
+  headless: true,
+  timeout: 30000,
+  args: [
+    '--disable-gpu',
+    '--disable-dev-shm-usage',
+    '--disable-extensions',
+    '--no-first-run',
+    '--no-default-browser-check',
+  ],
+});
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, ignoreHTTPSErrors: true });
 const page = await context.newPage();
 
@@ -135,11 +153,14 @@ const roleResults = [];
 try {
   for (const account of accounts) {
     currentEvents = { apiResponses: [], failedRequests: [], consoleErrors: [] };
+    debugLog('role_login_start', { account: account.account, role: account.role });
     const { profile } = await loginAs(account);
+    debugLog('role_login_end', { account: account.account, role: account.role });
 
     const pageResults = [];
     for (const businessPage of pages) {
       currentEvents = { apiResponses: [], failedRequests: [], consoleErrors: [] };
+      debugLog('page_start', { account: account.account, pageId: businessPage.pageId, route: businessPage.route });
       const expectedAccess = canRead(profile, businessPage);
       const contract = mappedContracts[businessPage.pageId];
       const isGap = gapPageIds.has(businessPage.pageId);
@@ -240,6 +261,7 @@ try {
         checks,
         passed,
       });
+      debugLog('page_end', { account: account.account, pageId: businessPage.pageId, passed });
     }
 
     const passCount = pageResults.filter((item) => item.passed).length;
