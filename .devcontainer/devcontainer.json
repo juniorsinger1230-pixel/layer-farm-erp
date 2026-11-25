@@ -1,0 +1,29 @@
+{
+  "name": "layer-farm-erp",
+  "forwardPorts": [8080, 3100, 55432, 56379],
+  "portsAttributes": {
+    "8080": {
+      "label": "layer-farm web",
+      "onAutoForward": "silent"
+    },
+    "3100": {
+      "label": "layer-farm api",
+      "onAutoForward": "silent"
+    },
+    "55432": {
+      "label": "postgresql",
+      "onAutoForward": "silent"
+    },
+    "56379": {
+      "label": "valkey",
+      "onAutoForward": "silent"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "remote.autoForwardPorts": true
+      }
+    }
+  }
+}
