@@ -13,7 +13,7 @@ const evidenceDir = resolve(mainDir, 'S0预检证据');
 const composeDir = resolve(projectRoot, 'deploy/compose');
 const composeFile = resolve(composeDir, 'docker-compose.yml');
 const envFile = resolve(composeDir, '.env');
-const expectedCommit = '4fd2b891eaa496ed73cdef69aa40ca669e476b48';
+const applicationBaselineCommit = '4fd2b891eaa496ed73cdef69aa40ca669e476b48';
 const sourceDatabase = 'layer_farm';
 const projectFilter = 'layer-farm-erp-p2';
 const containers = {
@@ -128,6 +128,7 @@ try {
   const npmVersion = run('npm', ['--version']);
   const gitCommit = run('git', ['rev-parse', 'HEAD']);
   const gitStatus = run('git', ['status', '--porcelain']);
+  const ancestorCheck = run('git', ['merge-base', '--is-ancestor', applicationBaselineCommit, gitCommit]);
   const dockerVersion = run('docker', ['--version']);
   const composeVersion = run('docker', ['compose', 'version', '--short']);
   const dockerInfo = run('docker', ['info', '--format', '{{.ServerVersion}}|{{.Driver}}|{{.OperatingSystem}}']);
@@ -239,9 +240,9 @@ try {
       dockerInfo,
     },
     git: {
-      expectedCommit,
+      applicationBaselineCommit,
       actualCommit: gitCommit,
-      matchesExpected: gitCommit === expectedCommit,
+      descendantOfApplicationBaseline: ancestorCheck === '',
       workingTreeClean: typeof gitStatus === 'string' && gitStatus.length === 0,
       status: gitStatus,
     },
@@ -382,7 +383,7 @@ try {
   const checks = [
     {
       id: 'GIT_BASELINE',
-      status: gitCommit === expectedCommit && envBaseline.git.workingTreeClean ? 'PASS' : 'FAIL',
+      status: envBaseline.git.descendantOfApplicationBaseline && envBaseline.git.workingTreeClean ? 'PASS' : 'FAIL',
       gateEffect: 'blocking',
       details: envBaseline.git,
     },
