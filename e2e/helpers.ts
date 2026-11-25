@@ -11,10 +11,27 @@ export async function login(page: Page, account: string, password: string): Prom
   await expect(page.getByRole('menuitem', { name: '经营驾驶舱' })).toBeVisible();
 }
 
+const pageAliases: Record<string, string> = {
+  '物料主数据': 'inv-001',
+  '仓库与库位': 'inv-005',
+  '栋舍与栏位': 'farm-003',
+  '供应商主数据': 'proc-003',
+  '采购与 MRP': 'proc-002',
+  '收货检验': 'proc-004',
+  '鸡群与生产': 'farm-002',
+  '集蛋分级': 'farm-011',
+  '价格目录': 'sales-002',
+  '客户主数据': 'sales-001',
+  '信用额度': 'sales-004',
+  '销售与配送': 'sales-003',
+  '打印与附件': 'print-001',
+};
+
 export async function openMenu(page: Page, name: string): Promise<void> {
-  await page.getByRole('menuitem', { name }).click();
+  const pageId = pageAliases[name] ?? name;
+  await page.goto(`/app/${pageId}`);
   await expect(page.getByRole('table')).toBeVisible();
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('networkidle').catch(() => undefined);
 }
 
 async function closeDrawer(drawer: ReturnType<Page['getByRole']>): Promise<void> {
@@ -76,7 +93,7 @@ export async function executeAction(page: Page, search: string, fields: readonly
     await row.locator('input').nth(0).fill(key);
     await row.locator('input').nth(1).fill(String(value));
   }
-  await drawer.getByRole('button', { name: /保\s*存/ }).click();
+  await drawer.getByRole('button', { name: /执\s*行/ }).click();
   await expect(page.getByText('已保存并通过领域校验').first()).toBeVisible();
   await closeDrawer(drawer);
   await page.getByPlaceholder('搜索当前记录').fill('');

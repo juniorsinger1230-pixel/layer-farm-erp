@@ -1,7 +1,7 @@
 {
   "total": 87,
-  "mappedCount": 58,
-  "gapCount": 29,
+  "mappedCount": 60,
+  "gapCount": 27,
   "mapped": {
     "org-001": {
       "requirementId": "SRS-FR-ORG-001",
@@ -806,6 +806,34 @@
       "permission": "platform",
       "companyScope": true,
       "contractPath": true
+    },
+    "farm-011": {
+      "requirementId": "SRS-FR-FARM-011",
+      "table": "egg_collection",
+      "path": "/api/v1/farm/egg-collection-grading",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "production",
+      "companyScope": true,
+      "contractPath": true
+    },
+    "print-001": {
+      "requirementId": "SRS-FR-PRINT-001",
+      "table": "print_template_design",
+      "path": "/api/v1/print/print-template-versions",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "print",
+      "companyScope": true,
+      "contractPath": true
     }
   },
   "gap": [
@@ -826,12 +854,6 @@
       "requirementId": "SRS-FR-FARM-001",
       "domain": "FARM",
       "title": "批次立项管理"
-    },
-    {
-      "pageId": "farm-011",
-      "requirementId": "SRS-FR-FARM-011",
-      "domain": "FARM",
-      "title": "集蛋与蛋品分级"
     },
     {
       "pageId": "farm-012",
@@ -940,12 +962,6 @@
       "requirementId": "SRS-FR-RPT-005",
       "domain": "RPT",
       "title": "报表导出与权限"
-    },
-    {
-      "pageId": "print-001",
-      "requirementId": "SRS-FR-PRINT-001",
-      "domain": "PRINT",
-      "title": "打印模板版本管理"
     },
     {
       "pageId": "print-002",

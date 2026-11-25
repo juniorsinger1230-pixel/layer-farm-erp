@@ -1,164 +1,407 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, Button, Card, Col, Descriptions, Drawer, Empty, Input, Row, Space, Statistic, Steps, Table, Tag } from 'antd';
-import type { TableColumnsType } from 'antd';
-import { DownloadOutlined, EyeOutlined, PrinterOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { Alert, Button, Card, Drawer, Input, Space, Table, Tag } from 'antd';
+import { DownloadOutlined, PlusOutlined, PrinterOutlined, ReloadOutlined } from '@ant-design/icons';
 import { api } from '../api';
-import { useSession } from '../auth/SessionContext';
-import { getMappedContract, canCreatePage, canUpdatePage } from '../auth/permissions';
+import { getMappedContract } from '../auth/permissions';
 import type { PageDefinition } from '../types';
-import ContractGapPage from './ContractGapPage';
+import PrintDesignerCard from './PrintDesignerCard';
 
-type BusinessRow = Record<string, unknown>;
+type BusinessRow = { id?: string | number; [key: string]: unknown };
 type ListResponse = { items: BusinessRow[]; total: number };
+type EditorRow = { id: string; key: string; value: string };
+type EditorState = {
+  open: boolean;
+  mode: 'create' | 'edit';
+  submitting: boolean;
+  rows: EditorRow[];
+  target?: BusinessRow;
+};
+type ActionState = { open: boolean; submitting: boolean; rows: EditorRow[]; target?: BusinessRow };
 
-function displayValue(value: unknown): string {
-  if (value === null || value === undefined || value === '') return '—';
-  if (typeof value === 'boolean') return value ? '是' : '否';
-  if (typeof value === 'object') return JSON.stringify(value);
+const createLabels: Record<string, string> = {
+  'inv-001': '新建物料',
+  'inv-005': '新建库位',
+  'farm-003': '新建栋舍',
+  'proc-003': '新建供应商',
+  'proc-002': '新建采购订单',
+  'proc-004': '新建收货单',
+  'farm-002': '新建鸡苗批次',
+  'farm-011': '新建记录',
+  'sales-002': '新建价格',
+  'sales-001': '新建客户',
+  'sales-004': '新建信用额度',
+  'sales-003': '新建销售订单',
+  'print-001': '新建设计版本',
+};
+
+function blankRow(): EditorRow {
+  return { id: `row-${Date.now()}-${Math.random().toString(36).slice(2)}`, key: '', value: '' };
+}
+
+function parseDynamicValue(raw: string): unknown {
+  const value = raw.trim();
+  if (value === '') return '';
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  if (value === 'null') return null;
+  if (/^-?\d+$/.test(value)) {
+    const numberValue = Number(value);
+    return Number.isSafeInteger(numberValue) ? numberValue : value;
+  }
+  if (/^-?\d+\.\d+$/.test(value)) return Number(value);
+  if ((value.startsWith('{') && value.endsWith('}')) || (value.startsWith('[') && value.endsWith(']'))) {
+    try {
+      return JSON.parse(value) as unknown;
+    } catch {
+      return raw;
+    }
+  }
+  return raw;
+}
+
+function stringifyValue(value: unknown): string {
+  if (value === null || value === undefined) return '';
   if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') return value.toString();
+  if (typeof value === 'symbol') return value.description ?? '';
   return JSON.stringify(value);
 }
 
+function renderValue(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') return value.toString();
+  if (typeof value === 'symbol') return value.description ?? '';
+  return JSON.stringify(value);
+}
+
+function downloadBlob(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function BusinessPage({ page }: { page: PageDefinition }) {
-  const { profile } = useSession();
   const contract = getMappedContract(page.pageId);
   const [rows, setRows] = useState<BusinessRow[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [keyword, setKeyword] = useState('');
-  const [detail, setDetail] = useState<BusinessRow | null>(null);
-  const [requirementOpen, setRequirementOpen] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+  const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+  const [editor, setEditor] = useState<EditorState>({ open: false, mode: 'create', submitting: false, rows: [] });
+  const [actionDrawer, setActionDrawer] = useState<ActionState>({ open: false, submitting: false, rows: [] });
 
-  const load = useCallback(async () => {
+  const canCreate = contract?.allowedMethods.includes('POST') ?? false;
+  const canUpdate = contract?.allowedMethods.includes('PATCH') ?? false;
+
+  const load = useCallback(async (): Promise<void> => {
     if (!contract) return;
     setLoading(true);
     setError('');
     try {
-      const result = await api<ListResponse>(`${contract.path}?page=1&pageSize=50`);
-      setRows(result.items);
-      setTotal(result.total);
+      const query = new URLSearchParams({ page: String(pageNumber), pageSize: String(pageSize) });
+      const response = await api<ListResponse>(`${contract.path}?${query.toString()}`);
+      setRows(response.items ?? []);
+      setTotal(response.total ?? 0);
     } catch (err) {
       setError(err instanceof Error ? err.message : '真实数据加载失败');
     } finally {
       setLoading(false);
     }
-  }, [contract]);
+  }, [contract, pageNumber, pageSize]);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  useEffect(() => {
+    if (!notice) return;
+    const timer = window.setTimeout(() => setNotice(''), 5000);
+    return () => window.clearTimeout(timer);
+  }, [notice]);
 
   const filteredRows = useMemo(() => {
-    const normalized = keyword.trim().toLowerCase();
-    if (!normalized) return rows;
-    return rows.filter((row) => Object.values(row).map(displayValue).join(' ').toLowerCase().includes(normalized));
-  }, [keyword, rows]);
+    const term = keyword.trim().toLowerCase();
+    if (!term) return rows;
+    return rows.filter((row) => Object.values(row).some((value) => renderValue(value).toLowerCase().includes(term)));
+  }, [rows, keyword]);
 
-  const columns = useMemo<TableColumnsType<BusinessRow>>(() => {
-    const first = rows[0];
-    const keys = first ? Object.keys(first) : [];
+  const columns = useMemo(() => {
+    const keys = Array.from(new Set(filteredRows.flatMap((row) => Object.keys(row)))).slice(0, 12);
+    const dataColumns = keys.map((key) => ({
+      title: key,
+      dataIndex: key,
+      key,
+      ellipsis: true,
+      render: (value: unknown) => renderValue(value),
+    }));
     return [
-      ...keys.map((key) => ({
-        title: key,
-        dataIndex: key,
-        key,
-        width: 150,
-        ellipsis: true,
-        render: (value: unknown) => displayValue(value),
-      })),
+      ...dataColumns,
       {
-        title: '操作', key: 'actions', width: 96, fixed: 'right',
-        render: (_: unknown, row: BusinessRow) => <Button type="link" size="small" icon={<EyeOutlined />} onClick={() => setDetail(row)}>详情</Button>,
+        title: '操作',
+        key: '__actions',
+        fixed: 'right' as const,
+        width: 170,
+        render: (_: unknown, record: BusinessRow) => (
+          <Space size="small">
+            {canUpdate ? (
+              <Button size="small" onClick={() => openEdit(record)}>
+                编辑
+              </Button>
+            ) : null}
+            <Button size="small" onClick={() => openAction(record)}>
+              动作
+            </Button>
+          </Space>
+        ),
       },
     ];
-  }, [rows]);
+  }, [filteredRows, canUpdate]);
 
-  const exportCsv = () => {
-    const first = rows[0];
-    const keys = first ? Object.keys(first) : [];
-    const escape = (value: unknown) => `"${displayValue(value).replace(/"/g, '""')}"`;
-    const lines = filteredRows.map((row) => keys.map((key) => escape(row[key])));
-    const csv = [keys.map(escape), ...lines].join('\r\n');
-    const url = URL.createObjectURL(new Blob([`\ufeff${csv}`], { type: 'text/csv;charset=utf-8' }));
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = `${page.pageId}_真实数据导出.csv`;
-    anchor.click();
-    URL.revokeObjectURL(url);
+  const updateEditorRow = (id: string, field: 'key' | 'value', value: string): void => {
+    setEditor((previous) => ({
+      ...previous,
+      rows: previous.rows.map((row) => (row.id === id ? { ...row, [field]: value } : row)),
+    }));
   };
 
-  if (!contract || !profile) return <ContractGapPage page={page} />;
-  const writeReady = canCreatePage(profile, page.pageId) || canUpdatePage(profile, page.pageId);
+  const updateActionRow = (id: string, field: 'key' | 'value', value: string): void => {
+    setActionDrawer((previous) => ({
+      ...previous,
+      rows: previous.rows.map((row) => (row.id === id ? { ...row, [field]: value } : row)),
+    }));
+  };
+
+  const buildPayload = (editorRows: EditorRow[]): Record<string, unknown> => {
+    const payload: Record<string, unknown> = {};
+    for (const row of editorRows) {
+      const key = row.key.trim();
+      if (!key) continue;
+      payload[key] = parseDynamicValue(row.value);
+    }
+    return payload;
+  };
+
+  const openCreate = (): void => {
+    setError('');
+    setEditor({ open: true, mode: 'create', submitting: false, rows: [] });
+  };
+
+  function openEdit(record: BusinessRow): void {
+    const editorRows = Object.entries(record)
+      .filter(([key]) => !['id', 'created_at', 'updated_at', 'created_by', 'updated_by'].includes(key))
+      .map(([key, value]) => ({ id: `row-${key}-${Math.random().toString(36).slice(2)}`, key, value: stringifyValue(value) }));
+    setEditor({ open: true, mode: 'edit', submitting: false, rows: editorRows, target: record });
+  }
+
+  function openAction(record?: BusinessRow): void {
+    const target = record ?? filteredRows[0];
+    if (!target || target.id === undefined) {
+      setError('请先选择要执行动作的真实记录');
+      return;
+    }
+    setError('');
+    setActionDrawer({ open: true, submitting: false, target, rows: [blankRow()] });
+  }
+
+  const saveEditor = async (): Promise<void> => {
+    if (!contract) return;
+    setEditor((previous) => ({ ...previous, submitting: true }));
+    setError('');
+    try {
+      const payload = buildPayload(editor.rows);
+      if (editor.mode === 'create') {
+        await api(contract.path, { method: 'POST', body: JSON.stringify(payload) });
+      } else {
+        const id = editor.target?.id;
+        if (id === undefined) throw new Error('缺少记录 ID');
+        await api(`${contract.path}/${id}`, { method: 'PATCH', body: JSON.stringify(payload) });
+      }
+      setNotice('已保存并通过领域校验');
+      setEditor((previous) => ({ ...previous, open: false, submitting: false }));
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '保存失败');
+      setEditor((previous) => ({ ...previous, submitting: false }));
+    }
+  };
+
+  const saveAction = async (): Promise<void> => {
+    if (!contract) return;
+    setActionDrawer((previous) => ({ ...previous, submitting: true }));
+    setError('');
+    try {
+      const id = actionDrawer.target?.id;
+      if (id === undefined) throw new Error('缺少记录 ID');
+      const payload = buildPayload(actionDrawer.rows);
+      await api(`${contract.path}/${id}/actions`, { method: 'POST', body: JSON.stringify(payload) });
+      setNotice('已保存并通过领域校验');
+      setActionDrawer({ open: false, submitting: false, rows: [] });
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '业务动作执行失败');
+      setActionDrawer((previous) => ({ ...previous, submitting: false }));
+    }
+  };
+
+  const exportCsv = (): void => {
+    if (!contract) return;
+    const keys = Array.from(new Set(filteredRows.flatMap((row) => Object.keys(row))));
+    const escapeCsv = (value: unknown): string => `"${renderValue(value).replace(/"/g, '""')}"`;
+    const lines = [
+      keys.map(escapeCsv).join(','),
+      ...filteredRows.map((row) => keys.map((key) => escapeCsv(row[key])).join(',')),
+    ];
+    downloadBlob(new Blob([`\uFEFF${lines.join('\r\n')}`], { type: 'text/csv;charset=utf-8' }), `${page.title}.csv`);
+  };
+
+  if (!contract) {
+    return <Alert type="warning" showIcon message="该页面尚未登记真实 API 映射" />;
+  }
 
   return (
     <div className="business-page" data-page-id={page.pageId} data-requirement-id={page.requirementId}>
-      <Card className="page-intro" bordered={false}>
-        <Space wrap size={8} className="page-intro__eyebrow">
-          <span className="domain-kicker">{page.domain} · {page.domainName}</span>
-          <Tag color={page.priority === 'P0' ? 'red' : 'blue'}>{page.priority}</Tag>
-          <Tag color="green">真实 API</Tag>
-        </Space>
-        <h2>{page.title}</h2>
-        <p>{page.description}</p>
-        <Space wrap className="requirement-meta">
-          <span>{page.requirementId}</span>
-          <span>{page.useCaseId}</span>
-          <span>AC {page.acceptanceIds.length}</span>
-          <span>BR {page.businessRuleIds.length}</span>
-          <Button size="small" onClick={() => setRequirementOpen(true)}>需求详情</Button>
-        </Space>
-      </Card>
-
-      {error && <Alert type="error" showIcon message={error} action={<Button onClick={() => { void load(); }}>重试</Button>} />}
-      {writeReady && <Alert type="info" showIcon message="当前批次已接入真实读取和后端权限；写入 DTO 字段契约将在后续批次闭合，不使用前端本地 Mock 写入。" />}
-
-      <Row gutter={[16, 16]} className="metric-row">
-        <Col xs={12} xl={6}><Card><Statistic title="服务端总量" value={total} /></Card></Col>
-        <Col xs={12} xl={6}><Card><Statistic title="当前加载" value={rows.length} /></Card></Col>
-        <Col xs={12} xl={6}><Card><Statistic title="筛选结果" value={filteredRows.length} /></Card></Col>
-        <Col xs={12} xl={6}><Card><Statistic title="当前公司" value={profile.companyCode} /></Card></Col>
-      </Row>
-
-      <Card className="flow-card" title="标准业务流">
-        <Steps size="small" current={1} items={(page.flow.length ? page.flow : ['发起', '校验', '审批', '归档']).map((item) => ({ title: item }))} />
-      </Card>
-
-      <Card className="filter-card">
-        <Row gutter={[12, 12]} align="middle">
-          <Col xs={24} md={12}><Input allowClear prefix={<SearchOutlined />} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="在当前已加载真实数据中搜索" /></Col>
-          <Col xs={24} md={12}>
+      <Space direction="vertical" size="large" style={{ width: '100%' }}>
+        <Card>
+          <Space direction="vertical" size="middle" style={{ width: '100%' }}>
             <Space wrap>
-              <Button type="primary" icon={<ReloadOutlined />} onClick={() => { void load(); }} loading={loading}>刷新真实数据</Button>
-              <Button icon={<DownloadOutlined />} onClick={exportCsv}>导出 CSV</Button>
-              <Button icon={<PrinterOutlined />} onClick={() => window.print()}>打印</Button>
+              <Tag color="blue">{page.domainName}</Tag>
+              <Tag color={page.priority === 'P0' ? 'red' : 'default'}>{page.priority}</Tag>
+              <Tag>{page.requirementId}</Tag>
+              <Tag color="green">真实 API</Tag>
             </Space>
-          </Col>
-        </Row>
-      </Card>
+            <Space wrap>
+              {canCreate ? (
+                <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
+                  {createLabels[page.pageId] ?? '新建记录'}
+                </Button>
+              ) : null}
+              <Button icon={<PlusOutlined />} onClick={() => openAction()} disabled={filteredRows.length === 0}>
+                执行动作
+              </Button>
+              <Button icon={<ReloadOutlined />} loading={loading} onClick={() => void load()}>
+                刷新
+              </Button>
+              <Button icon={<DownloadOutlined />} onClick={() => void exportCsv()}>
+                导出 CSV
+              </Button>
+              <Button icon={<PrinterOutlined />} onClick={() => window.print()}>
+                打印
+              </Button>
+            </Space>
+            <Input.Search
+              allowClear
+              placeholder="搜索当前记录"
+              value={keyword}
+              onChange={(event) => setKeyword(event.target.value)}
+              style={{ maxWidth: 420 }}
+            />
+            {notice ? <Alert type="success" showIcon message={notice} /> : null}
+            {error ? <Alert type="error" showIcon message={error} /> : null}
+          </Space>
+        </Card>
 
-      <Card className="table-card" title={<Space><span>业务记录</span><Tag color="blue">{contract.table}</Tag></Space>}>
-        <Table
-          rowKey={(row) => displayValue(row.id ?? row.updated_at ?? JSON.stringify(row))}
-          columns={columns}
-          dataSource={filteredRows}
-          loading={loading}
-          scroll={{ x: 'max-content' }}
-          pagination={{ pageSize: 8, showSizeChanger: true, showTotal: (count) => `共 ${count} 条` }}
-          locale={{ emptyText: <Empty description="当前公司暂无真实业务数据" /> }}
-        />
-      </Card>
+        <Card title={page.title}>
+          <Table<BusinessRow>
+            rowKey={(record) => String(record.id ?? Math.random())}
+            columns={columns}
+            dataSource={filteredRows}
+            loading={loading}
+            scroll={{ x: 1200 }}
+            pagination={{
+              current: pageNumber,
+              pageSize,
+              total,
+              showSizeChanger: true,
+              onChange: (nextPage, nextPageSize) => {
+                setPageNumber(nextPage);
+                setPageSize(nextPageSize);
+              },
+            }}
+          />
+        </Card>
 
-      <Drawer title={page.title} open={requirementOpen} onClose={() => setRequirementOpen(false)} width={640}>
-        <Descriptions bordered column={1} size="small" items={[
-          { key: 'requirement', label: '需求', children: page.requirementId },
-          { key: 'useCase', label: '用例', children: page.useCaseId },
-          { key: 'preconditions', label: '前置条件', children: page.preconditions.join('；') || '无' },
-          { key: 'outputs', label: '输出', children: page.outputs.join('；') || '无' },
-          { key: 'exceptions', label: '异常', children: page.exceptions.join('；') || '无' },
-        ]} />
+        {page.pageId === 'print-001' ? <PrintDesignerCard /> : null}
+
+        <Card title="需求详情">
+          <Space wrap>
+            <Tag>{page.requirementId}</Tag>
+            <Tag>{page.pageId}</Tag>
+          </Space>
+          <p style={{ marginTop: 16 }}>{page.description}</p>
+        </Card>
+      </Space>
+
+      <Drawer
+        open={editor.open}
+        title={editor.mode === 'create' ? `新建${page.title}` : `编辑${page.title}`}
+        width={560}
+        onClose={() => setEditor((previous) => ({ ...previous, open: false }))}
+        extra={
+          <Space>
+            <Button onClick={() => setEditor((previous) => ({ ...previous, open: false }))}>取消</Button>
+            <Button type="primary" loading={editor.submitting} onClick={() => void saveEditor()}>
+              保存
+            </Button>
+          </Space>
+        }
+      >
+        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+          <Button block icon={<PlusOutlined />} onClick={() => setEditor((previous) => ({ ...previous, rows: [...previous.rows, blankRow()] }))}>
+            添加字段
+          </Button>
+          {editor.rows.map((row) => (
+            <div className="editor-row" key={row.id} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 8 }}>
+              <Input aria-label="字段名" placeholder="字段名" value={row.key} onChange={(event) => updateEditorRow(row.id, 'key', event.target.value)} />
+              <Input aria-label="字段值" placeholder="字段值" value={row.value} onChange={(event) => updateEditorRow(row.id, 'value', event.target.value)} />
+              <Button
+                danger
+                onClick={() => setEditor((previous) => ({ ...previous, rows: previous.rows.filter((item) => item.id !== row.id) }))}
+              >
+                删除
+              </Button>
+            </div>
+          ))}
+        </Space>
       </Drawer>
 
-      <Drawer title="业务详情" open={Boolean(detail)} onClose={() => setDetail(null)} width={680}>
-        {detail && <Descriptions bordered column={1} size="small" items={Object.entries(detail).map(([key, value]) => ({ key, label: key, children: displayValue(value) }))} />}
+      <Drawer
+        open={actionDrawer.open}
+        title="执行业务动作"
+        width={560}
+        onClose={() => setActionDrawer((previous) => ({ ...previous, open: false }))}
+        extra={
+          <Space>
+            <Button onClick={() => setActionDrawer((previous) => ({ ...previous, open: false }))}>取消</Button>
+            <Button type="primary" loading={actionDrawer.submitting} onClick={() => void saveAction()}>
+              执行
+            </Button>
+          </Space>
+        }
+      >
+        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+          <Button block icon={<PlusOutlined />} onClick={() => setActionDrawer((previous) => ({ ...previous, rows: [...previous.rows, blankRow()] }))}>
+            添加字段
+          </Button>
+          {actionDrawer.rows.map((row) => (
+            <div className="editor-row" key={row.id} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 8 }}>
+              <Input aria-label="字段名" placeholder="字段名" value={row.key} onChange={(event) => updateActionRow(row.id, 'key', event.target.value)} />
+              <Input aria-label="字段值" placeholder="字段值" value={row.value} onChange={(event) => updateActionRow(row.id, 'value', event.target.value)} />
+              <Button
+                danger
+                onClick={() => setActionDrawer((previous) => ({ ...previous, rows: previous.rows.filter((item) => item.id !== row.id) }))}
+              >
+                删除
+              </Button>
+            </div>
+          ))}
+        </Space>
       </Drawer>
     </div>
   );

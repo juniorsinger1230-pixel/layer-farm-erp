@@ -37,6 +37,17 @@ export async function apiBlob(path: string): Promise<Blob> {
   return response.blob();
 }
 
+export async function apiPdf(path: string, body: Json): Promise<Blob> {
+  const token = session()?.accessToken;
+  const response = await fetch(path, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', ...(token ? { authorization: `Bearer ${token}` } : {}) },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) throw new Error(`PDF 生成失败 (${response.status})`);
+  return response.blob();
+}
+
 export async function login(input: { account: string; password: string; companyCode: string }): Promise<void> {
   const response = await fetch('/api/v1/auth/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(input) });
   const result = await response.json() as Envelope;
