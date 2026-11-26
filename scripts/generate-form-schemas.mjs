@@ -1,10 +1,8 @@
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 
-const require = createRequire(import.meta.url);
 const root = resolve(dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..');
 const options = parseArgs(process.argv.slice(2));
 const openapiPath = resolve(root, options.openapi ?? 'contracts/openapi.json');
@@ -58,7 +56,7 @@ for (const [pageId, pageContract] of createPages) {
     const databaseRequired = existingColumn
       ? !existingColumn.nullable && !existingColumn.identity && !existingColumn.actorContext && !existingColumn.hasDatabaseDefault
       : false;
-    const hidden = isHiddenField(name, column) || Object.prototype.hasOwnProperty.call(fixedValues, name);
+    const hidden = (name === 'company_code' && pageId === 'org-001' ? false : isHiddenField(name, column)) || Object.prototype.hasOwnProperty.call(fixedValues, name);
     if (hidden) {
       hiddenFields.push(name);
       continue;
@@ -99,6 +97,7 @@ for (const [pageId, pageContract] of createPages) {
   }
   if (fields.length === 0) throw new Error(`No visible create fields: ${pageId}`);
   applyKnownOverrides(pageContract.table, fields);
+  applyPrintJobOverrides(pageContract.table, fields);
   const companyColumn = tableCatalog.columns.find((column) => column.name === 'company_code');
   pages[pageId] = {
     path: pageContract.path,
@@ -258,7 +257,7 @@ function buildTablePaths(map) {
     vaccination_execution: '/api/v1/vet/vaccination-records',
     goods_receipt: '/api/v1/proc/receipt-inspections',
     vehicle_route: '/api/v1/log/vehicles',
-    print_template: '/api/v1/print/print-template-versions',
+    print_template: '/api/v1/print/print-template',
   };
   return new Map(Object.entries({
     ...Object.fromEntries(Object.entries(paths).map(([table, entries]) => [table, entries[0].path])),
@@ -351,7 +350,7 @@ function buildSyntheticTable(tableName, schema) {
 function humanize(name) {
   return name
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-    .replace(/[_\-]+/g, ' ')
+    .replace(/[_-]+/g, ' ')
     .replace(/^./, (character) => character.toUpperCase());
 }
 function numericConstraints(column) {
@@ -426,12 +425,31 @@ function buildField({ name, property, column, required, referencedTable, busines
     field.reference = {
       table: referencedTable,
       path: referencePath,
-      valueField: referencedTable === 'print_template' ? 'template_id' : 'id',
+      valueField: 'id',
       labelFields,
     };
   }
   return field;
 }
+function applyPrintJobOverrides(tableName, fields) {
+  if (tableName !== 'print_job') return;
+  const inputs = [
+    { name: 'templateId', property: { type: 'integer', minimum: 1 }, required: true, reference: 'print_template' },
+    { name: 'deviceId', property: { type: 'integer', minimum: 1 }, required: true, reference: 'printer_device' },
+    { name: 'lines', property: { type: 'array', items: { type: 'string' }, minItems: 1 }, required: true, reference: null },
+    { name: 'designVersion', property: { type: 'integer', minimum: 1 }, required: false, reference: null },
+  ];
+  fields.splice(0, fields.length, ...inputs.map((input) => {
+    const column = buildSyntheticColumn(input.name, input.property, input.required);
+    const field = buildField({
+      name: input.name, property: input.property, column, required: input.required,
+      referencedTable: input.reference, businessEnum: null,
+    });
+    if (input.name === 'lines') field.jsonShape = 'array';
+    return field;
+  }));
+}
+
 function applyKnownOverrides(tableName, fields) {
   if (tableName !== 'print_template_design') return;
   for (const field of fields) {

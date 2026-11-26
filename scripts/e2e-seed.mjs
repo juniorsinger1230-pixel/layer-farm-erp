@@ -29,6 +29,11 @@ try {
   );
   await pool.query("SELECT set_config('app.company_code', $1, false)", [testData.companyCode]);
   await pool.query("SELECT set_config('app.actor_id', 'BOOTSTRAP', false)");
+  await pool.query(
+    `INSERT INTO app.company (company_code, company_name, base_currency, status, created_by, remark)
+     VALUES ($1, 'E2E Test Company', 'PHP', 'active', 'BOOTSTRAP', 'E2E primary company')`,
+    [testData.companyCode],
+  );
 
   let orgUnit = await findOne(
     'SELECT id FROM app.organization_unit WHERE unit_code=$1 AND company_code=$2',
@@ -88,6 +93,44 @@ try {
     [employee.id, testData.account, testData.companyCode, passwordHash, JSON.stringify(principal)],
   );
 
+  await pool.query("SELECT set_config('app.company_code', 'TGE', false)");
+  const isolationCompany = await findOne(
+    `INSERT INTO app.company (company_code, company_name, base_currency, status, created_by, remark)
+     VALUES ('TGE', 'E2E Isolation Company', 'PHP', 'active', 'BOOTSTRAP', 'E2E isolation company') RETURNING id`,
+  );
+  const isolationUnit = await findOne(
+    `INSERT INTO app.organization_unit (unit_code, unit_name, parent_unit_id, org_level, status, company_code, created_by, remark)
+     VALUES ('E2E-ISO-HQ', 'E2E Isolation HQ', NULL, 1, 'active', 'TGE', 'BOOTSTRAP', 'E2E isolation unit') RETURNING id`,
+  );
+  const isolationPosition = await findOne(
+    `INSERT INTO app.position
+     (position_code, position_name, unit_id, headcount, reports_to_id, effective_date, status, company_code, created_by, remark)
+     VALUES ('E2E-ISO-ADMIN', 'E2E Isolation Administrator', $1, 1, NULL, CURRENT_DATE, 'active', 'TGE',
+             'BOOTSTRAP', 'E2E isolation position') RETURNING id`,
+    [isolationUnit.id],
+  );
+  const isolationEmployee = await findOne(
+    `INSERT INTO app.employee (employee_no, employee_name, position_id, account, employment_status, company_code, created_by, remark)
+     VALUES ('E2E-ISO-ADMIN', 'E2E Isolation Administrator', $1, 0, 'active', 'TGE', 'BOOTSTRAP',
+             'E2E isolation employee') RETURNING id`,
+    [isolationPosition.id],
+  );
+  const isolationPrincipal = {
+    employeeId: isolationEmployee.id,
+    employeeNo: 'E2E-ISO-ADMIN',
+    companyCode: 'TGE',
+    companyId: Number(isolationCompany.id),
+    roles: [{ role: 'admin', companyCode: 'TGE' }],
+    mfaEnrolled: false,
+  };
+  await pool.query(
+    `INSERT INTO app_auth.credential
+     (employee_id, account, company_code, password_hash, principal, status, failed_attempts, locked_until, mfa_secret)
+     VALUES ($1, 'e2e.isolation.admin', 'TGE', $2, $3::jsonb, 'active', 0, NULL, NULL)`,
+    [isolationEmployee.id, passwordHash, JSON.stringify(isolationPrincipal)],
+  );
+  await pool.query("SELECT set_config('app.company_code', $1, false)", [testData.companyCode]);
+
   let printTemplate = await findOne('SELECT id FROM app.print_template WHERE template_code=$1 AND company_code=$2', ['E2E-LABEL', testData.companyCode]);
   if (!printTemplate) {
     printTemplate = await findOne(
@@ -99,6 +142,32 @@ try {
        RETURNING id`,
       [testData.companyCode],
     );
+  }
+
+  const printPrerequisites = [
+    { code: 'E2E-DELIVERY', name: 'E2E Delivery Note', type: 'delivery', paper: 'legal', dimensions: '216x356mm', brand: 'EPSON', model: 'L3110' },
+    { code: 'E2E-CASH', name: 'E2E Cash Voucher', type: 'cash_voucher', paper: 'half_a4', dimensions: '148x210mm', brand: 'EPSON', model: 'LX-310' },
+    { code: 'E2E-LABEL-DEVICE', name: 'E2E Label Device', type: 'label', paper: '80x60', dimensions: '80x60mm', brand: 'Gprinter', model: 'M421' },
+  ];
+  for (const item of printPrerequisites) {
+    let template = await findOne('SELECT id FROM app.print_template WHERE template_code=$1 AND company_code=$2', [item.code, testData.companyCode]);
+    if (!template && item.type !== 'label') {
+      await pool.query(
+        `INSERT INTO app.print_template
+         (template_code,template_name,template_type,paper_spec,company_code,created_by,paper_size_code,paper_dimensions_mm,applicable_document_type,target_printer_models,margin_config)
+         VALUES ($1,$2,$3,$4,$5,'BOOTSTRAP',$4,$6,'e2e',$7,'{"top":2,"right":2,"bottom":2,"left":2}'::jsonb)`,
+        [item.code, item.name, item.type, item.paper, testData.companyCode, item.dimensions, `${item.brand} ${item.model}`],
+      );
+    }
+    const deviceCode = `DEV-${item.code}`;
+    const device = await findOne('SELECT id FROM app.printer_device WHERE device_code=$1 AND company_code=$2', [deviceCode, testData.companyCode]);
+    if (!device) {
+      await pool.query(
+        `INSERT INTO app.printer_device (device_code,device_brand,device_model,supported_paper,device_status,company_code,created_by)
+         VALUES ($1,$2,$3,$4,'online',$5,'BOOTSTRAP')`,
+        [deviceCode, item.brand, item.model, item.paper, testData.companyCode],
+      );
+    }
   }
 
   let priceList = await findOne(

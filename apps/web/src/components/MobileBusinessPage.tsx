@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Card, ErrorBlock, List, Popup, PullToRefresh, SearchBar, Tag } from 'antd-mobile';
 import { api } from '../api';
 import { canCreatePage, getMappedContract } from '../auth/permissions';
@@ -32,6 +32,7 @@ export default function MobileBusinessPage({ page }: { page: PageDefinition }) {
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [pageError, setPageError] = useState('');
+  const createSubmitLock = useRef(false);
   const canCreate = profile ? canCreatePage(profile, page.pageId) : false;
 
   const load = useCallback(async () => {
@@ -58,7 +59,8 @@ export default function MobileBusinessPage({ page }: { page: PageDefinition }) {
   }, [keyword, rows]);
 
   const saveCreate = async (payload: Record<string, unknown>): Promise<void> => {
-    if (!contract) return;
+    if (!contract || createSubmitLock.current) return;
+    createSubmitLock.current = true;
     setSubmitting(true);
     setPageError('');
     try {
@@ -68,6 +70,7 @@ export default function MobileBusinessPage({ page }: { page: PageDefinition }) {
     } catch (err) {
       setPageError(err instanceof Error ? err.message : '创建失败');
     } finally {
+      createSubmitLock.current = false;
       setSubmitting(false);
     }
   };

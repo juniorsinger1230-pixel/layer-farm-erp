@@ -75,8 +75,11 @@ function parseData(sql, values) {
 }
 
 function rowFor(sql) {
+  if (sql.includes('mortality_cull_record')) {
+    return { id: 1, batch_id: 1, company_code: 'THL' };
+  }
   if (sql.includes('farm_batch')) {
-    return { id: 1, batch_no: 'BATCH-001', stage: 'open', company_code: 'THL' };
+    return { id: 1, batch_no: 'BATCH-001', stage: sql.trim().startsWith('UPDATE') ? 'closed' : 'open', company_code: 'THL' };
   }
   if (sql.includes('data_permission')) {
     return { id: 1, approval_status: 'draft', module: 'position_role', company_id: 1 };
@@ -133,7 +136,7 @@ test('ContractProcessService 创建、修改和通用动作执行字段白名单
 
 test('ContractProcessService 支持结项、作废、重打、取消和会话吊销动作', async () => {
   const settled = await service().action(settlementPath, '1', { action: 'settle' });
-  assert.equal(settled.batch.stage, 'open');
+  assert.equal(settled.batch.stage, 'closed');
   assert.equal(settled.profit, 0);
 
   const voided = await service().action(printLogPath, '1', { action: 'void', reason: 'damaged' });
@@ -146,6 +149,12 @@ test('ContractProcessService 支持结项、作废、重打、取消和会话吊
 
   const revoked = await service().action(sessionPath, 'session-1', { action: 'revoke' });
   assert.ok(revoked.revoked_at);
+});
+
+test('ContractProcessService 通过死亡淘汰动作结清已零存栏批次', async () => {
+  const result = await service().action('/api/v1/farm/culling-and-batch-closing', '1', { action: 'close_batch' });
+  assert.equal(result.batch.stage, 'closed');
+  assert.equal(result.profit, 0);
 });
 
 test('ContractProcessService 阻断只读写入、非法动作、非法ID、未知字段和状态冲突', async () => {

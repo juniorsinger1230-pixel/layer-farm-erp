@@ -218,7 +218,7 @@ export function validateBusinessRules(table: string, input: Record<string, unkno
       break;
     case 'print_job':
       nonNegative(input, 'reprint_count');
-      oneOf(input, 'queue_status', ['queued', 'printing', 'completed', 'failed', 'cancelled']);
+      oneOf(input, 'queue_status', ['pending', 'printing', 'completed', 'failed', 'cancelled']);
       break;
     case 'notification':
       oneOf(input, 'read_status', ['unread', 'read']);

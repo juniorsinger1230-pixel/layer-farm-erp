@@ -63,3 +63,23 @@ test('临时保留且已使用的资源仍可执行受控写入', async () => {
   assert.equal(response.status, 400);
   await db.close();
 });
+
+test('启用公司目录公开可查且系统会话仅允许受控吊销', async () => {
+  const { db, app, tokens } = await fixture();
+  const companies = await app.request('/api/v1/auth/companies');
+  assert.equal(companies.status, 200);
+  assert.deepEqual((await companies.json()).data, [{ company_code: 'THL', company_name: 'Synthetic THL' }]);
+  const sessionId = crypto.randomUUID();
+  await db.query(
+    'INSERT INTO app_auth.session (session_id,employee_id,access_expires_at,refresh_expires_at,refresh_hash) VALUES ($1,1,now()+interval \'1 hour\',now()+interval \'1 day\',$2)',
+    [sessionId, 'a'.repeat(64)],
+  );
+  const response = await app.request(`/api/v1/plat/authentication-sessions/${sessionId}/actions`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${tokens.accessToken}`, 'content-type': 'application/json', 'idempotency-key': `KEY-${crypto.randomUUID()}` },
+    body: JSON.stringify({ action: 'revoke' }),
+  });
+  assert.equal(response.status, 200);
+  assert.ok((await response.json()).data.revoked_at);
+  await db.close();
+});

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Button, Card, Drawer, Input, Space, Table, Tag } from 'antd';
 import { DownloadOutlined, PlusOutlined, PrinterOutlined, ReloadOutlined } from '@ant-design/icons';
 import { api } from '../api';
@@ -61,14 +61,6 @@ function parseDynamicValue(raw: string): unknown {
   return raw;
 }
 
-function stringifyValue(value: unknown): string {
-  if (value === null || value === undefined) return '';
-  if (typeof value === 'string') return value;
-  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') return value.toString();
-  if (typeof value === 'symbol') return value.description ?? '';
-  return JSON.stringify(value);
-}
-
 function renderValue(value: unknown): string {
   if (value === null || value === undefined) return '';
   if (typeof value === 'string') return value;
@@ -107,6 +99,7 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
   const [notice, setNotice] = useState('');
   const [editor, setEditor] = useState<EditorState>({ open: false, mode: 'create', submitting: false });
   const [actionDrawer, setActionDrawer] = useState<ActionState>({ open: false, submitting: false, rows: [] });
+  const editorSubmitLock = useRef(false);
 
   const canCreate = profile ? canCreatePage(profile, page.pageId) : false;
   const canUpdate = profile ? canUpdatePage(profile, page.pageId) : false;
@@ -220,7 +213,8 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
   }
 
   const saveEditor = async (payload: Record<string, unknown>): Promise<void> => {
-    if (!contract) return;
+    if (!contract || editorSubmitLock.current) return;
+    editorSubmitLock.current = true;
     setEditor((previous) => ({ ...previous, submitting: true }));
     setError('');
     setNotice('');
@@ -238,6 +232,8 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
     } catch (err) {
       setError(err instanceof Error ? err.message : '保存失败');
       setEditor((previous) => ({ ...previous, submitting: false }));
+    } finally {
+      editorSubmitLock.current = false;
     }
   };
 
@@ -268,7 +264,7 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
       keys.map(escapeCsv).join(','),
       ...filteredRows.map((row) => keys.map((key) => escapeCsv(row[key])).join(',')),
     ];
-    downloadBlob(new Blob([`﻿${lines.join('\r\n')}`], { type: 'text/csv;charset=utf-8' }), `${page.title}.csv`);
+    downloadBlob(new Blob([`\uFEFF${lines.join('\r\n')}`], { type: 'text/csv;charset=utf-8' }), `${page.title}.csv`);
   };
 
   if (!contract) {
@@ -353,7 +349,7 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
       <Drawer
         open={editor.open}
         title={editor.mode === 'create' ? `新建${page.title}` : `编辑${page.title}`}
-        width={560}
+        width={720}
         closable={!editor.submitting}
         maskClosable={false}
         keyboard={!editor.submitting}

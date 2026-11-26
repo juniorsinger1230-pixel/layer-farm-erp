@@ -1,10 +1,12 @@
 import { Alert, Button, Card, Form, Input, Select, Tag } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api';
 import { useSession } from '../auth/SessionContext';
 import { COVERAGE } from '../data/registry';
+
+interface CompanyOption { company_code: string; company_name: string }
 
 interface LoginFormValues {
   companyCode: string;
@@ -17,6 +19,23 @@ export default function LoginPage() {
   const { refreshProfile } = useSession();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [companies, setCompanies] = useState<CompanyOption[]>([{ company_code: 'THL', company_name: 'Tyranids Holdings Layer' }]);
+
+  useEffect(() => {
+    let active = true;
+    const loadCompanies = async (): Promise<void> => {
+      try {
+        const response = await fetch('/api/v1/auth/companies');
+        if (!response.ok) return;
+        const body = await response.json() as { data?: CompanyOption[] };
+        if (active && body.data && body.data.length > 0) setCompanies(body.data);
+      } catch {
+        // Keep the default company option when the directory is temporarily unavailable.
+      }
+    };
+    void loadCompanies();
+    return () => { active = false; };
+  }, []);
 
   const submit = async (values: LoginFormValues): Promise<void> => {
     setError('');
@@ -58,7 +77,7 @@ export default function LoginPage() {
           {error && <Alert type="error" showIcon message={error} className="prototype-notice" />}
           <Form<LoginFormValues> layout="vertical" initialValues={{ companyCode: 'THL' }} onFinish={(values) => { void submit(values); }}>
             <Form.Item name="companyCode" label="公司" rules={[{ required: true, message: '请选择公司' }]}>
-              <Select options={[{ label: 'THL · Tyranids Holdings Layer', value: 'THL' }]} />
+              <Select options={companies.map((company) => ({ label: `${company.company_code} · ${company.company_name}`, value: company.company_code }))} />
             </Form.Item>
             <Form.Item name="account" label="员工账号" rules={[{ required: true, message: '请输入员工账号' }]}>
               <Input prefix={<UserOutlined />} autoComplete="username" placeholder="例如 trial.admin" />

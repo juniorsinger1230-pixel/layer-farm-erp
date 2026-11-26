@@ -334,7 +334,7 @@ function applyRuleEnums(tableName, fields) {
     disbursement_voucher: { planned_payment_method: ['cash', 'check', 'bank_transfer'], approval_status: ['draft', 'pending', 'approved', 'rejected', 'paid'] },
     equipment_check: { result: ['passed', 'failed', 'blocked'] },
     maintenance_work_order: { acceptance_close: ['open', 'repairing', 'pending_acceptance', 'closed', 'cancelled'] },
-    print_job: { queue_status: ['queued', 'printing', 'completed', 'failed', 'cancelled'] },
+    print_job: { queue_status: ['pending', 'printing', 'completed', 'failed', 'cancelled'] },
     notification: { read_status: ['unread', 'read'] },
   };
   for (const [field, values] of Object.entries(enumMap[tableName] ?? {})) {

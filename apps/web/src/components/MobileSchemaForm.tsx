@@ -13,6 +13,17 @@ interface MobileSchemaFormProps {
 
 type FieldErrors = Record<string, string>;
 
+function displayInputValue(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') return String(value);
+  return JSON.stringify(value);
+}
+
+function pickerValue(value: unknown): (string | number)[] {
+  return typeof value === 'string' || typeof value === 'number' ? [value] : [];
+}
+
 function asDate(value: unknown): Date {
   if (value instanceof Date) return value;
   if (typeof value === 'string') {
@@ -48,9 +59,14 @@ export default function MobileSchemaForm({
       if (field.required && (value === undefined || value === null || value === '')) {
         nextErrors[field.name] = `请填写${field.label}`;
       }
+      if (field.control === 'number' && value !== undefined && value !== null && value !== '') {
+        const numericValue = Number(value);
+        if (!Number.isFinite(numericValue)) nextErrors[field.name] = '请输入合法数字';
+        else if (field.type === 'integer' && !Number.isInteger(numericValue)) nextErrors[field.name] = '请输入整数';
+      }
       if (field.control === 'json' && value !== undefined && value !== null && value !== '') {
         try {
-          const parsed = JSON.parse(String(value));
+          const parsed = JSON.parse(displayInputValue(value)) as unknown;
           if (field.jsonShape === 'array' && !Array.isArray(parsed)) {
             nextErrors[field.name] = '请输入 JSON 数组';
           }
@@ -68,9 +84,9 @@ export default function MobileSchemaForm({
       const value = values[field.name];
       if (value === undefined || value === null || value === '') continue;
       if (field.control === 'number') {
-        payload[field.name] = field.type === 'integer' ? Number.parseInt(String(value), 10) : Number.parseFloat(String(value));
+        payload[field.name] = field.type === 'integer' ? Number.parseInt(displayInputValue(value), 10) : Number.parseFloat(displayInputValue(value));
       } else if (field.control === 'json') {
-        payload[field.name] = JSON.parse(String(value));
+        payload[field.name] = JSON.parse(displayInputValue(value));
       } else {
         payload[field.name] = value;
       }
@@ -83,9 +99,9 @@ export default function MobileSchemaForm({
       {referenceError ? <div style={{ color: '#ff3141', marginBottom: 12 }}>{referenceError}</div> : null}
       {loading ? <div style={{ color: '#666', marginBottom: 12 }}>正在加载外键选项...</div> : null}
       {schema.fields.map((field) => (
-        <div key={field.name} style={{ marginBottom: 18 }}>
+        <div key={field.name} data-field={field.name} style={{ marginBottom: 18 }}>
           <div style={{ marginBottom: 8, fontWeight: 600 }}>
-            {field.label}{field.required ? <span style={{ color: '#ff3141' }}> *</span> : null}
+            {field.label}{field.required ? <span className="mobile-required-mark" style={{ color: '#ff3141' }}> *</span> : null}
           </div>
           {field.description ? <div style={{ color: '#888', fontSize: 12, marginBottom: 8 }}>{field.description}</div> : null}
           {renderField(field, values, updateValue, optionsByPath, setOpenPicker, setOpenDate)}
@@ -96,9 +112,11 @@ export default function MobileSchemaForm({
         visible={openPicker !== null && fieldByName.get(openPicker)?.control !== 'date' && fieldByName.get(openPicker)?.control !== 'date-time'}
         title={openPicker ? fieldByName.get(openPicker)?.label : ''}
         columns={[pickerColumns(openPicker, fieldByName, optionsByPath, values)]}
-        value={openPicker ? [values[openPicker]] as (string | number)[] : []}
+        value={openPicker ? pickerValue(values[openPicker]) : []}
         onConfirm={(selected) => {
-          if (openPicker) updateValue(openPicker, selected[0]);
+          if (openPicker) {
+            updateValue(openPicker, selected[0]);
+          }
           setOpenPicker(null);
         }}
         onCancel={() => setOpenPicker(null)}
@@ -117,7 +135,7 @@ export default function MobileSchemaForm({
         }}
         onCancel={() => setOpenDate(null)}
       />
-      <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
+      <div style={{ display: 'flex', gap: 12, marginTop: 20, position: 'sticky', bottom: 0, zIndex: 20, background: '#fff', padding: '12px 0 calc(12px + env(safe-area-inset-bottom))' }}>
         <Button block disabled={submitting} onClick={onCancel}>取消</Button>
         <Button block color="primary" loading={submitting} onClick={submit}>保存</Button>
       </div>
@@ -138,13 +156,13 @@ function renderField(
     return <Switch checked={Boolean(value)} onChange={(checked) => updateValue(field.name, checked)} />;
   }
   if (field.control === 'textarea' || field.control === 'json') {
-    return <TextArea rows={field.control === 'json' ? 6 : 4} value={String(value ?? '')} onChange={(event) => updateValue(field.name, event)} />;
+    return <TextArea rows={field.control === 'json' ? 6 : 4} value={displayInputValue(value)} onChange={(event) => updateValue(field.name, event)} />;
   }
   if (field.control === 'number') {
-    return <Input type="number" value={String(value ?? '')} placeholder={field.placeholder} onChange={(event) => updateValue(field.name, event)} />;
+    return <Input type="number" value={displayInputValue(value)} placeholder={field.placeholder} onChange={(event) => updateValue(field.name, event)} />;
   }
   if (field.control === 'date' || field.control === 'date-time') {
-    return <Button block fill="outline" onClick={() => setOpenDate(field.name)}>{value ? String(value) : '请选择日期'}</Button>;
+    return <Button block fill="outline" onClick={() => setOpenDate(field.name)}>{value ? displayInputValue(value) : '请选择日期'}</Button>;
   }
   if (field.control === 'select') {
     const options = (field.enum ?? []).map((item) => ({ label: item, value: item }));
@@ -157,12 +175,12 @@ function renderField(
         />
       );
     }
-    return <Button block fill="outline" onClick={() => setOpenPicker(field.name)}>{value ? String(value) : '请选择'}</Button>;
+    return <Button block fill="outline" onClick={() => setOpenPicker(field.name)}>{value ? displayInputValue(value) : '请选择'}</Button>;
   }
   if (field.control === 'reference' && field.reference) {
-    return <Button block fill="outline" onClick={() => setOpenPicker(field.name)}>{value ? String(value) : '请选择'}</Button>;
+    return <Button block fill="outline" onClick={() => setOpenPicker(field.name)}>{value ? displayInputValue(value) : '请选择'}</Button>;
   }
-  return <Input value={String(value ?? '')} maxLength={field.maxLength ?? undefined} placeholder={field.placeholder} onChange={(event) => updateValue(field.name, event)} />;
+  return <Input value={displayInputValue(value)} maxLength={field.maxLength ?? undefined} placeholder={field.placeholder} onChange={(event) => updateValue(field.name, event)} />;
 }
 
 function pickerColumns(
@@ -178,5 +196,5 @@ function pickerColumns(
     return (field.enum ?? []).map((value) => ({ label: value, value }));
   }
   const current = values[openPicker];
-  return current === undefined ? [] : [{ label: String(current), value: current as string | number }];
+  return current === undefined ? [] : [{ label: displayInputValue(current), value: current as string | number }];
 }

@@ -53,7 +53,6 @@ test('浏览器端完成采购入库、生产集蛋、销售出库、财务留�
     ['category', 'egg'],
     ['pack_uom', 'tray'],
     ['uom', 'piece'],
-    ['company_code', testData.companyCode],
   ]);
   const material = await findItem<CodeRow>(page, '/api/v1/inv/materials', (item: CodeRow) => item.material_code === materialCode);
 
@@ -62,7 +61,6 @@ test('浏览器端完成采购入库、生产集蛋、销售出库、财务留�
     ['warehouse_code', locationCode],
     ['warehouse_name', 'E2E Cold Warehouse'],
     ['location_code', `${locationCode}-L`],
-    ['company_code', runtimeData.companyId],
   ]);
   const location = await findItem<CodeRow>(page, '/api/v1/inv/stock-locations', (item: CodeRow) => item.warehouse_code === locationCode);
 
@@ -73,7 +71,6 @@ test('浏览器端完成采购入库、生产集蛋、销售出库、财务留�
     ['pen_count', 10],
     ['floor_count', 1],
     ['farm_mode', 'cage'],
-    ['company_code', runtimeData.companyId],
     ['house_status', 'active'],
   ]);
   const house = await findItem<CodeRow>(page, '/api/v1/farm/houses-and-pens', (item: CodeRow) => item.house_code === houseCode);
@@ -87,7 +84,6 @@ test('浏览器端完成采购入库、生产集蛋、销售出库、财务留�
     ['qualification', 'BIR and FDA qualified'],
     ['brand', 'E2E Brand'],
     ['status', 'active'],
-    ['company_code', testData.companyCode],
   ]);
   const supplier = await findItem<CodeRow>(page, '/api/v1/proc/suppliers', (item: CodeRow) => item.supplier_code === supplierCode);
 
@@ -99,7 +95,6 @@ test('浏览器端完成采购入库、生产集蛋、销售出库、财务留�
     ['quantity', 100],
     ['price', 12],
     ['execution_close', 'draft'],
-    ['company_code', testData.companyCode],
   ]);
   const purchaseOrder = await findItem<CodeRow>(page, '/api/v1/proc/purchase-orders', (item: CodeRow) => item.order_no === purchaseOrderNo);
   await executeAction(page, purchaseOrderNo, [['action', 'approve']]);
@@ -111,7 +106,6 @@ test('浏览器端完成采购入库、生产集蛋、销售出库、财务留�
     ['order_id', purchaseOrder.id],
     ['quantity', 100],
     ['quality_status', 'accepted'],
-    ['company_code', testData.companyCode],
   ]);
   const receipt = await findItem<CodeRow>(page, '/api/v1/proc/receipt-inspections', (item: CodeRow) => item.receipt_no === receiptNo);
   await executeAction(page, receiptNo, [
@@ -133,7 +127,6 @@ test('浏览器端完成采购入库、生产集蛋、销售出库、财务留�
     ['initial_quantity', 1000],
     ['day_age', 120],
     ['stage', 'laying'],
-    ['company_code', testData.companyCode],
   ]);
   const flockBatch = await findItem<CodeRow>(page, '/api/v1/farm/flock-batches', (item: CodeRow) => item.batch_no === batchNo);
   await executeAction(page, batchNo, [
@@ -168,20 +161,20 @@ test('浏览器端完成采购入库、生产集蛋、销售出库、财务留�
     ['product_name', 'E2E Shell Egg Price'],
     ['price', 30],
     ['effective_date', '2026-01-01'],
-    ['company_code', testData.companyCode],
   ]);
   const price = await findItem<CodeRow>(page, '/api/v1/sales/price-lists', (item: CodeRow) => item.price_list_code === priceCode);
 
+  const bootstrapCustomer = await findItem<CodeRow>(page, '/api/v1/sales/customers', (item: CodeRow) => item.customer_code === 'E2E-CUSTOMER');
+  const bootstrapCredit = await findItem<CodeRow>(page, '/api/v1/sales/credit-checks', (item: CodeRow) => item.customer_id === bootstrapCustomer.id);
   await openMenu(page, '客户主数据');
   await createRecord(page, '新建客户', [
     ['customer_code', customerCode],
     ['customer_name', 'E2E Manila Customer'],
     ['address', 'E2E Manila Address'],
     ['payment_term', 30],
-    ['credit_ref', 0],
+    ['credit_ref', bootstrapCredit.id],
     ['price_id', price.id],
     ['status', 'active'],
-    ['company_code', testData.companyCode],
   ]);
   const customer = await findItem<CodeRow>(page, '/api/v1/sales/customers', (item: CodeRow) => item.customer_code === customerCode);
 
@@ -192,7 +185,6 @@ test('浏览器端完成采购入库、生产集蛋、销售出库、财务留�
     ['occupied_amount', 0],
     ['over_limit_block', true],
     ['ceo_approval', 'not_required'],
-    ['company_code', testData.companyCode],
   ]);
 
   await openMenu(page, '销售与配送');
@@ -202,7 +194,6 @@ test('浏览器端完成采购入库、生产集蛋、销售出库、财务留�
     ['order_mode', 'standard'],
     ['inventory_quantity', 10],
     ['status', 'draft'],
-    ['company_code', testData.companyCode],
   ]);
   const salesOrder = await findItem<CodeRow>(page, '/api/v1/sales/sales-orders', (item: CodeRow) => item.order_no === salesOrderNo);
   await executeAction(page, salesOrderNo, [['action', 'submit']]);

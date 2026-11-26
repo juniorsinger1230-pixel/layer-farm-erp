@@ -67,7 +67,7 @@ export const resourceRoutePolicies = [
   {"table":"print_job","path":"/api/v1/print/print-job","mode":"TEMPORARY_UNMAPPED","requirementId":"","useCaseId":"","allowedMethods":["GET","POST","PATCH"]},
   {"table":"printer_device","path":"/api/v1/print/printer-paper-adaptation","mode":"CRUD_AND_ACTION","requirementId":"SRS-FR-PRINT-006","useCaseId":"UC-PRINT-006","allowedMethods":["GET","POST","PATCH"]},
   {"table":"audit_log","path":"/api/v1/trace/operation-audit-logs","mode":"READ_ONLY","requirementId":"SRS-FR-TRACE-002","useCaseId":"UC-TRACE-002","allowedMethods":["GET"]},
-  {"table":"version_history","path":"/api/v1/trace/document-archives","mode":"CRUD_AND_ACTION","requirementId":"SRS-FR-TRACE-004","useCaseId":"UC-TRACE-004","allowedMethods":["GET","POST","PATCH"]},
+  {"table":"version_history","path":"/api/v1/trace/document-archives","mode":"READ_ONLY","requirementId":"SRS-FR-TRACE-004","useCaseId":"UC-TRACE-004","allowedMethods":["GET"]},
   {"table":"traceability_link","path":"/api/v1/trace/material-vaccination-trace","mode":"READ_ONLY","requirementId":"SRS-FR-TRACE-003","useCaseId":"UC-TRACE-003","allowedMethods":["GET"]},
   {"table":"attachment","path":"/api/v1/plat/attachments-import-export","mode":"CRUD_AND_ACTION","requirementId":"SRS-FR-PLAT-004","useCaseId":"UC-PLAT-004","allowedMethods":["GET","POST","PATCH"]},
   {"table":"notification","path":"/api/v1/plat/notifications","mode":"CRUD_AND_ACTION","requirementId":"SRS-FR-PLAT-003","useCaseId":"UC-PLAT-003","allowedMethods":["GET","POST","PATCH"]},

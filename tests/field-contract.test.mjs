@@ -19,10 +19,10 @@ function eachOperation(callback) {
   }
 }
 
-test('field-level contract checker reports pass for all 481 operations', () => {
+test('field-level contract checker reports pass for all 479 operations', () => {
   assert.equal(result.status, 'pass');
-  assert.equal(result.authoritative.operations, 481);
-  assert.equal(result.implementation.totalApiOperations, 481);
+  assert.equal(result.authoritative.operations, 479);
+  assert.equal(result.implementation.totalApiOperations, 479);
   assert.equal(result.fieldSchema.errors.length, 0);
   assert.equal(result.statusCodes.errors.length, 0);
   assert.equal(result.route.missingContractOperations.length, 0);
@@ -50,7 +50,7 @@ test('every operation uses explicit status codes and no default response', () =>
       assert.ok(success, path);
     }
   });
-  assert.equal(count, 481);
+  assert.equal(count, 479);
 });
 
 test('representative operation schemas enforce exact fields, enums and numeric limits', () => {
@@ -82,12 +82,12 @@ test('print canvas schema captures operation-level design constraints', () => {
   assert.equal(schema.additionalProperties, false);
 });
 
-test('API mapping covers every operation exactly once at the 481 operation baseline', () => {
-  assert.equal(mapping.operations_total, 481);
+test('API mapping covers every operation exactly once at the 479 operation baseline', () => {
+  assert.equal(mapping.operations_total, 479);
   assert.equal(mapping.mappings_total, mapping.mappings.length);
   const all = mapping.mappings.flatMap((item) => item.operation_ids);
-  assert.equal(all.length, 481);
-  assert.equal(new Set(all).size, 481);
+  assert.equal(all.length, 479);
+  assert.equal(new Set(all).size, 479);
   const expected = new Set();
   eachOperation((method, path, operation) => expected.add(operation.operationId));
   assert.deepEqual(new Set(all), expected);

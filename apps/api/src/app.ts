@@ -160,6 +160,13 @@ export function createApp(options: AppOptions) {
     return c.json({ status: 'ok', queues: await options.queueStatus(), requestId: c.get('requestId') });
   });
 
+  app.get('/api/v1/auth/companies', async (c) => {
+    const result = await options.database!.query<{ company_code: string; company_name: string }>(
+      "SELECT company_code,company_name FROM app.company WHERE status='active' ORDER BY company_code",
+    );
+    return c.json({ data: result.rows });
+  });
+
   app.post('/api/v1/auth/login', async (c) => {
     if (options.auth === undefined) throw new AppError(503, 'SERVICE_UNAVAILABLE', '认证服务尚未配置');
     const body = await readJsonObject(c.req.raw, options.config.bodyLimitBytes);
@@ -185,18 +192,20 @@ export function createApp(options: AppOptions) {
     if (requestedCompany !== undefined) {
       assertCompanyScope(authenticated.access, requestedCompany);
     }
-    const company = await options.database!.query<{ id: string }>(
-      'SELECT id FROM app.company WHERE company_code=$1',
-      [effectiveCompany],
-    );
-    if (company.rowCount === 1) {
-      authenticated.principal.companyId = Number(company.rows[0]!.id);
-    } else if (
-      !(c.req.method === 'POST' && c.req.path === '/api/v1/org/organizations')
-      && !(c.req.method === 'GET' && c.req.path === '/api/v1/org/organizations')
-      && !(c.req.method === 'GET' && c.req.path === '/api/v1/auth/me')
-    ) {
-      throw new AppError(400, 'VALIDATION_ERROR', '公司不存在或已停用');
+    if (options.database) {
+      const company = await options.database.query<{ id: string }>(
+        'SELECT id FROM app.company WHERE company_code=$1',
+        [effectiveCompany],
+      );
+      if (company.rowCount === 1) {
+        authenticated.principal.companyId = Number(company.rows[0]!.id);
+      } else if (
+        !(c.req.method === 'POST' && c.req.path === '/api/v1/org/organizations')
+        && !(c.req.method === 'GET' && c.req.path === '/api/v1/org/organizations')
+        && !(c.req.method === 'GET' && c.req.path === '/api/v1/auth/me')
+      ) {
+        throw new AppError(400, 'VALIDATION_ERROR', '公司不存在或已停用');
+      }
     }
     await next();
   });
@@ -728,6 +737,15 @@ export function createApp(options: AppOptions) {
       });
     }
   }
+
+  app.post('/api/v1/plat/authentication-sessions/:id/actions', async (c) => {
+    const body = await readJsonObject(c.req.raw, options.config.bodyLimitBytes);
+    const actionName = typeof body.action === 'string' ? body.action : '';
+    options.auth!.authorize(c.get('auth'), contractPermission('/api/v1/plat/authentication-sessions', 'action', actionName));
+    const { contractProcess, roles } = domainFor(c, 'session');
+    const result = await contractProcess.action('/api/v1/plat/authentication-sessions', c.req.param('id'), body, c.req.header('idempotency-key'));
+    return c.json({ data: projectFields(result, roles) });
+  });
 
   for (const resource of resources) {
     const policy = resourceRoutePolicyByPath.get(resource.path);

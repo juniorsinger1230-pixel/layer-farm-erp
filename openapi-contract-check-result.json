@@ -1,32 +1,32 @@
 {
-  "checkedAt": "2026-11-25T15:44:13.356Z",
+  "checkedAt": "2026-11-26T15:21:52.606Z",
   "status": "pass",
   "scope": "route, HTTP method, field-level schema, query parameters and status-code contract",
   "inputs": {
-    "openapiPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\SRS_需求规格化与基线\\SRS08_OpenAPI3.1初版.json",
-    "mappingPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\SRS_需求规格化与基线\\SRS08_API需求操作映射.json",
-    "appPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\apps\\api\\src\\app.ts",
-    "resourcesPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\packages\\domain\\src\\generated\\resources.ts",
-    "policyPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\packages\\domain\\src\\generated\\resource-route-policy.ts",
-    "contractProcessPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\packages\\domain\\src\\contract-process.ts"
+    "openapiPath": "/workspaces/layer-farm-erp/contracts/openapi.json",
+    "mappingPath": "/SRS_需求规格化与基线/SRS08_API需求操作映射.json",
+    "appPath": "/workspaces/layer-farm-erp/apps/api/src/app.ts",
+    "resourcesPath": "/workspaces/layer-farm-erp/packages/domain/src/generated/resources.ts",
+    "policyPath": "/workspaces/layer-farm-erp/packages/domain/src/generated/resource-route-policy.ts",
+    "contractProcessPath": "/workspaces/layer-farm-erp/packages/domain/src/contract-process.ts"
   },
   "authoritative": {
     "openapi": "3.1.0",
-    "paths": 319,
-    "operations": 481,
+    "paths": 321,
+    "operations": 479,
     "mappings": 99
   },
   "implementation": {
     "resources": 71,
     "routePolicies": 62,
-    "processSpecs": 29,
-    "totalApiOperations": 481,
-    "generatedOperations": 298,
-    "contractProcessOperations": 122,
-    "explicitApiOperations": 61
+    "processSpecs": 30,
+    "totalApiOperations": 479,
+    "generatedOperations": 295,
+    "contractProcessOperations": 121,
+    "explicitApiOperations": 63
   },
   "matched": {
-    "operations": 481,
+    "operations": 479,
     "coverage": 1
   },
   "route": {
@@ -9005,36 +9005,6 @@
       ]
     },
     {
-      "key": "POST /api/v1/trace/document-archives",
-      "expectedStatuses": [
-        201,
-        400,
-        401,
-        403,
-        409,
-        413,
-        415,
-        429,
-        500,
-        503
-      ],
-      "expectedFields": [
-        "id",
-        "entity_ref",
-        "before_value",
-        "after_value",
-        "employee_no",
-        "time_reason",
-        "company_code",
-        "created_by",
-        "created_at",
-        "updated_by",
-        "updated_at",
-        "remark"
-      ],
-      "expectedQuery": []
-    },
-    {
       "key": "GET /api/v1/trace/document-archives/{id}",
       "expectedStatuses": [
         200,
@@ -9048,53 +9018,6 @@
         503
       ],
       "expectedFields": [],
-      "expectedQuery": []
-    },
-    {
-      "key": "PATCH /api/v1/trace/document-archives/{id}",
-      "expectedStatuses": [
-        200,
-        400,
-        401,
-        403,
-        404,
-        409,
-        413,
-        415,
-        429,
-        500,
-        503
-      ],
-      "expectedFields": [
-        "entity_ref",
-        "before_value",
-        "after_value",
-        "employee_no",
-        "time_reason",
-        "remark"
-      ],
-      "expectedQuery": []
-    },
-    {
-      "key": "POST /api/v1/trace/document-archives/{id}/actions",
-      "expectedStatuses": [
-        200,
-        400,
-        401,
-        403,
-        404,
-        409,
-        413,
-        415,
-        429,
-        500,
-        503
-      ],
-      "expectedFields": [
-        "action",
-        "lines",
-        "data"
-      ],
       "expectedQuery": []
     },
     {
@@ -9116,32 +9039,6 @@
       ]
     },
     {
-      "key": "POST /api/v1/plat/authentication-sessions",
-      "expectedStatuses": [
-        201,
-        400,
-        401,
-        403,
-        409,
-        413,
-        415,
-        429,
-        500,
-        503
-      ],
-      "expectedFields": [
-        "session_id",
-        "employee_id",
-        "access_expires_at",
-        "refresh_expires_at",
-        "refresh_hash",
-        "previous_refresh_hash",
-        "rotated_at",
-        "revoked_at"
-      ],
-      "expectedQuery": []
-    },
-    {
       "key": "GET /api/v1/plat/authentication-sessions/{id}",
       "expectedStatuses": [
         200,
@@ -9155,33 +9052,6 @@
         503
       ],
       "expectedFields": [],
-      "expectedQuery": []
-    },
-    {
-      "key": "PATCH /api/v1/plat/authentication-sessions/{id}",
-      "expectedStatuses": [
-        200,
-        400,
-        401,
-        403,
-        404,
-        409,
-        413,
-        415,
-        429,
-        500,
-        503
-      ],
-      "expectedFields": [
-        "session_id",
-        "employee_id",
-        "access_expires_at",
-        "refresh_expires_at",
-        "refresh_hash",
-        "previous_refresh_hash",
-        "rotated_at",
-        "revoked_at"
-      ],
       "expectedQuery": []
     },
     {
@@ -10547,6 +10417,21 @@
       "expectedQuery": []
     },
     {
+      "key": "GET /api/v1/auth/companies",
+      "expectedStatuses": [
+        200,
+        400,
+        401,
+        403,
+        409,
+        429,
+        500,
+        503
+      ],
+      "expectedFields": [],
+      "expectedQuery": []
+    },
+    {
       "key": "POST /api/v1/auth/login",
       "expectedStatuses": [
         200,
@@ -11684,6 +11569,40 @@
         409,
         413,
         415,
+        429,
+        500,
+        503
+      ],
+      "expectedFields": [],
+      "expectedQuery": []
+    },
+    {
+      "key": "GET /api/v1/print/print-template",
+      "expectedStatuses": [
+        200,
+        400,
+        401,
+        403,
+        409,
+        429,
+        500,
+        503
+      ],
+      "expectedFields": [],
+      "expectedQuery": [
+        "page",
+        "pageSize"
+      ]
+    },
+    {
+      "key": "GET /api/v1/print/print-template/{id}",
+      "expectedStatuses": [
+        200,
+        400,
+        401,
+        403,
+        404,
+        409,
         429,
         500,
         503

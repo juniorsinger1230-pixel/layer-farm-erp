@@ -8,6 +8,8 @@ type FormFieldSchema = {
   name: string;
   label: string;
   control: string;
+  reference?: { path: string; valueField: string; labelFields: string[] };
+  enum?: string[] | null;
 };
 type PageFormSchema = {
   path: string;
@@ -19,8 +21,21 @@ type FormSchemas = {
 
 const formSchemas = rawFormSchemas as FormSchemas;
 
-export async function login(page: Page, account: string, password: string): Promise<void> {
+function formatFieldValue(value: FieldValue): string {
+  return typeof value === 'object' ? JSON.stringify(value) : String(value);
+}
+
+export async function login(page: Page, account: string, password: string, companyCode = 'THL'): Promise<void> {
+  const companyDirectory = page.waitForResponse((response) => new URL(response.url()).pathname === '/api/v1/auth/companies' && response.status() === 200);
   await page.goto('/');
+  if (companyCode !== 'THL') {
+    await companyDirectory;
+    await page.locator('.ant-select-selector').first().click();
+    const companyInput = page.getByLabel('公司');
+    await companyInput.press('ArrowUp');
+    await companyInput.press('Enter');
+    await expect(page.locator('.ant-select-selection-item')).toHaveAttribute('title', new RegExp(`^${companyCode}\\b`));
+  }
   await page.getByLabel('员工账号').fill(account);
   await page.getByLabel('密码').fill(password);
   await page.getByRole('button', { name: '登录工作台' }).click();
@@ -102,8 +117,9 @@ async function fillField(
   dialog: ReturnType<Page['getByRole']>,
   field: FormFieldSchema,
   value: FieldValue,
+  fieldIndex: number,
 ): Promise<void> {
-  const item = dialog.locator('.ant-form-item').filter({ hasText: field.label }).first();
+  const item = dialog.locator('.ant-form-item').nth(fieldIndex);
   if (field.control === 'switch') {
     const control = item.getByRole('switch');
     const checked = (await control.getAttribute('aria-checked')) === 'true';
@@ -111,26 +127,50 @@ async function fillField(
     return;
   }
   if (field.control === 'select' || field.control === 'reference') {
-    await item.getByRole('combobox').click();
-    await page.getByRole('option', { name: String(value) }).first().click();
+    let optionLabel = formatFieldValue(value);
+    const reference = field.reference;
+    if (field.control === 'reference' && reference) {
+      const records = await listItems<Record<string, unknown>>(page, reference.path);
+      const record = records.find((candidate) => {
+        const selected = candidate[reference.valueField];
+        return (typeof selected === 'string' || typeof selected === 'number') && String(selected) === optionLabel;
+      });
+      if (!record) throw new Error(`Reference value not found: ${field.name}=${optionLabel}`);
+      const labelField = reference.labelFields.find((name) => {
+        const candidate = record[name];
+        return (typeof candidate === 'string' || typeof candidate === 'number') && String(candidate) !== '';
+      });
+      optionLabel = labelField ? String(record[labelField]) : optionLabel;
+    }
+    const combobox = item.getByRole('combobox');
+    await combobox.click();
+    if (field.control === 'select') {
+      const optionIndex = field.enum?.indexOf(optionLabel) ?? -1;
+      if (optionIndex < 0) throw new Error(`Enum option not found: ${field.name}=${optionLabel}`);
+      for (let index = 0; index < optionIndex; index += 1) await combobox.press('ArrowDown');
+      await combobox.press('Enter');
+    } else {
+      await combobox.fill(optionLabel);
+      await combobox.press('Enter');
+    }
     return;
   }
   if (field.control === 'number') {
-    await item.getByRole('spinbutton').fill(String(value));
+    await item.getByRole('spinbutton').fill(formatFieldValue(value));
     return;
   }
   if (field.control === 'date' || field.control === 'date-time') {
     const control = item.locator('input').first();
-    await control.fill(String(value));
+    await control.fill(formatFieldValue(value));
     await control.press('Tab');
     return;
   }
   if (field.control === 'json' || field.control === 'textarea') {
-    const rendered = typeof value === 'object' ? JSON.stringify(value) : String(value);
+    const rendered = typeof value === 'object' ? JSON.stringify(value) : formatFieldValue(value);
     await item.locator('textarea').first().fill(rendered);
     return;
   }
-  await item.getByRole('textbox').first().fill(String(value));
+  await item.getByRole('textbox').first().fill(formatFieldValue(value));
 }
 
 export async function createRecord(
@@ -149,9 +189,10 @@ export async function createRecord(
   const drawer = page.getByRole('dialog');
   await expect(drawer).toBeVisible();
   for (const [name, value] of fields) {
-    const field = schema.fields.find((candidate) => candidate.name === name);
+    const fieldIndex = schema.fields.findIndex((candidate) => candidate.name === name);
+    const field = schema.fields[fieldIndex];
     if (!field) throw new Error(`Missing field schema for ${name}`);
-    await fillField(page, drawer, field, value);
+    await fillField(page, drawer, field, value, fieldIndex);
   }
   await drawer.getByRole('button', { name: /保\s*存/ }).click();
   await responsePromise;
@@ -191,7 +232,7 @@ export async function executeAction(
     if (index > 0) await drawer.getByRole('button', { name: '添加字段' }).click();
     const row = drawer.locator('.editor-row').nth(index);
     await row.locator('input').nth(0).fill(key);
-    await row.locator('input').nth(1).fill(String(value));
+    await row.locator('input').nth(1).fill(formatFieldValue(value));
   }
   await drawer.getByRole('button', { name: /执\s*行/ }).click();
   await responsePromise;

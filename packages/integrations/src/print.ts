@@ -316,7 +316,7 @@ export class PrintService {
     return renderDesignedArtifact(design, format, this.fontPath);
   }
 
-  async submit(input: Record<string, unknown>, idempotencyKey: string): Promise<unknown> {
+  async submit(input: Record<string, unknown>, idempotencyKey: string, expectedTemplateTypes?: readonly string[]): Promise<unknown> {
     const templateId = Number(input.templateId); const deviceId = Number(input.deviceId); const designVersion = Number(input.designVersion);
     const hasLines = Array.isArray(input.lines) && input.lines.every((line) => typeof line === 'string');
     const hasDesign = Number.isSafeInteger(designVersion) && designVersion >= 1;
@@ -325,6 +325,7 @@ export class PrintService {
       const records = await client.query<{ device_status: string; supported_paper: string; paper_size_code: string; device_model: string; device_brand: string; paper_dimensions_mm: string; template_type: string }>('SELECT t.*,d.device_code,d.device_model,d.device_brand,d.supported_paper,d.device_status FROM app.print_template t,app.printer_device d WHERE t.id=$1 AND d.id=$2 AND t.company_code=$3 AND d.company_code=$3', [templateId, deviceId, this.context.companyCode]);
       if (records.rowCount !== 1 || records.rows[0]!.device_status !== 'online') throw new AppError(409, 'CONFLICT', '模板或在线打印设备不可用');
       const row = records.rows[0]!;
+      if (expectedTemplateTypes !== undefined && !expectedTemplateTypes.includes(row.template_type.toLowerCase())) throw new AppError(409, 'CONFLICT', '打印模板类型与当前业务入口不匹配');
       if (typeof row.supported_paper === 'string' && !row.supported_paper.includes(row.paper_size_code)) throw new AppError(409, 'CONFLICT', '打印设备不支持模板纸张');
       const profile = printerProfile(row.device_brand, row.device_model);
       assertDocumentPaper(row.template_type, row.paper_size_code, profile.model);

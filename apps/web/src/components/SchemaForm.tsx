@@ -3,6 +3,13 @@ import { Button, DatePicker, Form, Input, InputNumber, Select, Space, Switch } f
 import type { FormFieldSchema, PageFormSchema } from './form-schema';
 import { useReferenceOptions } from './reference-options';
 
+function displayInputValue(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') return String(value);
+  return JSON.stringify(value);
+}
+
 interface SchemaFormProps {
   schema: PageFormSchema;
   initialValues: Record<string, unknown>;
@@ -18,14 +25,18 @@ function fieldRules(field: FormFieldSchema) {
   if (field.maxLength !== null) rules.push({ max: field.maxLength, message: `最多 ${field.maxLength} 个字符` });
   if (field.control === 'json') {
     rules.push({
-      validator: async (_rule, value: unknown) => {
-        if (value === undefined || value === null || value === '') return;
-        const parsed = JSON.parse(String(value));
-        if (field.jsonShape === 'array' && !Array.isArray(parsed)) {
-          throw new Error('请输入 JSON 数组');
+      validator: (_rule, value: unknown) => {
+        if (value === undefined || value === null || value === '') return Promise.resolve();
+        try {
+          const parsed = JSON.parse(displayInputValue(value)) as unknown;
+          if (field.jsonShape === 'array' && !Array.isArray(parsed)) {
+            return Promise.reject(new Error('请输入 JSON 数组'));
+          }
+          return Promise.resolve();
+        } catch {
+          return Promise.reject(new Error('请输入合法 JSON'));
         }
       },
-      message: '请输入合法 JSON',
     });
   }
   return rules;
@@ -43,7 +54,7 @@ export default function SchemaForm({ schema, initialValues, submitting, onCancel
       if (dayjs.isDayjs(value)) {
         result[field.name] = field.control === 'date' ? value.format('YYYY-MM-DD') : value.toISOString();
       } else if (field.control === 'json') {
-        result[field.name] = JSON.parse(String(value));
+        result[field.name] = JSON.parse(displayInputValue(value));
       } else if (field.type === 'integer' || field.type === 'number') {
         result[field.name] = Number(value);
       } else {
@@ -59,7 +70,7 @@ export default function SchemaForm({ schema, initialValues, submitting, onCancel
       layout="vertical"
       initialValues={initialValues}
       disabled={submitting}
-      onFinish={(values) => void onSubmit(transformValues(values))}
+      onFinish={(values: Record<string, unknown>) => void onSubmit(transformValues(values))}
     >
       {error ? <div className="ant-form-item-explain-error" style={{ marginBottom: 16 }}>{error}</div> : null}
       {schema.fields.map((field) => (

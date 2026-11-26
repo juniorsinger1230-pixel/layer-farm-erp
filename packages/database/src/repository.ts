@@ -41,7 +41,7 @@ export class PostgresRepository {
   async create<T extends QueryResultRow>(tableName: string, input: Record<string, unknown>): Promise<T> {
     const model = table(tableName);
     const data = { ...input };
-    if (model.companyScope) {
+    if (model.companyScope && !(tableName === 'company' && this.context.companyCode !== '*')) {
       if (this.context.companyCode === '*') {
         if (companyUsesId(model)) {
           if (!Number.isSafeInteger(data.company_code) || (data.company_code as number) < 1) throw new Error('Company id scope is required');
