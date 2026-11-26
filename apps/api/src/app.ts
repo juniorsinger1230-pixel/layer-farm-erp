@@ -181,11 +181,22 @@ export function createApp(options: AppOptions) {
     const authenticated = await options.auth.authenticate(c.req.header('authorization'));
     c.set('auth', authenticated);
     const requestedCompany = c.req.header('x-company-code');
-    if (requestedCompany !== undefined && requestedCompany !== authenticated.principal.companyCode) {
+    const effectiveCompany = requestedCompany ?? authenticated.principal.companyCode;
+    if (requestedCompany !== undefined) {
       assertCompanyScope(authenticated.access, requestedCompany);
-      const company = await options.database!.query<{ id: string }>('SELECT id FROM app.company WHERE company_code=$1', [requestedCompany]);
-      if (company.rowCount !== 1) throw new AppError(400, 'VALIDATION_ERROR', '公司不存在或已停用');
+    }
+    const company = await options.database!.query<{ id: string }>(
+      'SELECT id FROM app.company WHERE company_code=$1',
+      [effectiveCompany],
+    );
+    if (company.rowCount === 1) {
       authenticated.principal.companyId = Number(company.rows[0]!.id);
+    } else if (
+      !(c.req.method === 'POST' && c.req.path === '/api/v1/org/organizations')
+      && !(c.req.method === 'GET' && c.req.path === '/api/v1/org/organizations')
+      && !(c.req.method === 'GET' && c.req.path === '/api/v1/auth/me')
+    ) {
+      throw new AppError(400, 'VALIDATION_ERROR', '公司不存在或已停用');
     }
     await next();
   });

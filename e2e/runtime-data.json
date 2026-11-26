@@ -1,4 +1,8 @@
 {
-  "companyId": 1,
-  "printTemplateId": 1
+  "companyId": 0,
+  "printTemplateId": 1,
+  "priceListId": 1,
+  "customerId": 1,
+  "creditLimitId": 1,
+  "printDesignId": 1
 }

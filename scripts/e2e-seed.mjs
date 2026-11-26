@@ -27,15 +27,8 @@ try {
   await pool.query(
     `TRUNCATE TABLE ${tableResult.rows.map((row) => row.qualified_name).join(', ')} RESTART IDENTITY CASCADE`,
   );
-
-  let company = await findOne('SELECT id FROM app.company WHERE company_code=$1', [testData.companyCode]);
-  if (!company) {
-    company = await findOne(
-      `INSERT INTO app.company (company_code, company_name, base_currency, status, created_by, remark)
-       VALUES ($1, $2, 'PHP', 'active', 'BOOTSTRAP', 'E2E bootstrap company') RETURNING id`,
-      [testData.companyCode, 'THL Poultry Farm Inc.'],
-    );
-  }
+  await pool.query("SELECT set_config('app.company_code', $1, false)", [testData.companyCode]);
+  await pool.query("SELECT set_config('app.actor_id', 'BOOTSTRAP', false)");
 
   let orgUnit = await findOne(
     'SELECT id FROM app.organization_unit WHERE unit_code=$1 AND company_code=$2',
@@ -79,7 +72,7 @@ try {
     employeeId: employee.id,
     employeeNo: testData.employeeNo,
     companyCode: testData.companyCode,
-    companyId: Number(company.id),
+    companyId: 0,
     roles: [{ role: 'admin', companyCode: testData.companyCode }],
     mfaEnrolled: false,
   };
@@ -107,9 +100,75 @@ try {
       [testData.companyCode],
     );
   }
+
+  let priceList = await findOne(
+    'SELECT id FROM app.price_list WHERE price_list_code=$1 AND company_code=$2',
+    ['E2E-PRICE', testData.companyCode],
+  );
+  if (!priceList) {
+    priceList = await findOne(
+      `INSERT INTO app.price_list
+       (price_list_code, price_type, product_name, price, effective_rule, effective_date, company_code, created_by, remark)
+       VALUES ('E2E-PRICE', 'standard', 'E2E Eggs', 10.50, 'E2E seed price', CURRENT_DATE, $1, 'BOOTSTRAP',
+               'E2E bootstrap price list') RETURNING id`,
+      [testData.companyCode],
+    );
+  }
+
+  let customer = await findOne(
+    'SELECT id FROM app.customer WHERE customer_code=$1 AND company_code=$2',
+    ['E2E-CUSTOMER', testData.companyCode],
+  );
+  if (!customer) {
+    customer = await findOne(
+      `INSERT INTO app.customer
+       (customer_code, customer_name, contact_person, address, payment_term, credit_ref, price_id, status,
+        company_code, created_by, remark)
+       VALUES ('E2E-CUSTOMER', 'E2E Customer', 'E2E Contact', 'E2E Address', 30, 0, $1, 'active', $2,
+               'BOOTSTRAP', 'E2E bootstrap customer') RETURNING id`,
+      [priceList.id, testData.companyCode],
+    );
+  }
+
+  let creditLimit = await findOne(
+    'SELECT id FROM app.credit_limit WHERE customer_id=$1 AND company_code=$2',
+    [customer.id, testData.companyCode],
+  );
+  if (!creditLimit) {
+    creditLimit = await findOne(
+      `INSERT INTO app.credit_limit
+       (customer_id, credit_amount, occupied_amount, over_limit_block, manual_adjust, ceo_approval, company_code,
+        created_by, remark)
+       VALUES ($1, 100000, 0, true, NULL, 'not_required', $2, 'BOOTSTRAP', 'E2E bootstrap credit limit')
+       RETURNING id`,
+      [customer.id, testData.companyCode],
+    );
+  }
+  await pool.query('UPDATE app.customer SET credit_ref=$1 WHERE id=$2', [creditLimit.id, customer.id]);
+
+  let printDesign = await findOne(
+    'SELECT id FROM app_ops.print_template_design WHERE company_code=$1 AND template_id=$2 AND version=1',
+    [testData.companyCode, printTemplate.id],
+  );
+  if (!printDesign) {
+    printDesign = await findOne(
+      `INSERT INTO app_ops.print_template_design
+       (company_code, template_id, version, canvas_width_mm, canvas_height_mm, elements, status, created_by)
+       VALUES ($1, $2, 1, 80, 60, '[]'::jsonb, 'draft', 'BOOTSTRAP') RETURNING id`,
+      [testData.companyCode, printTemplate.id],
+    );
+  }
+
   writeFileSync(
     new URL('../e2e/runtime-data.json', import.meta.url),
-    `${JSON.stringify({ companyId: Number(company.id), printTemplateId: Number(printTemplate.id) }, null, 2)}\n`,
+    `${JSON.stringify({
+      companyId: 0,
+      printTemplateId: Number(printTemplate.id),
+      priceListId: Number(priceList.id),
+      customerId: Number(customer.id),
+      creditLimitId: Number(creditLimit.id),
+      printDesignId: Number(printDesign.id),
+    }, null, 2)}\n`,
   );
   console.log(JSON.stringify({ event: 'e2e_bootstrap_ready', companyCode: testData.companyCode, account: testData.account }));
 } finally {

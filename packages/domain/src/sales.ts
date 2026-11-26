@@ -143,7 +143,7 @@ export class SalesService {
 
   async createReturn(input: Record<string, unknown>, idempotencyKey: string): Promise<unknown> {
     const salesOrderId = id(input.salesOrderId);
-    const reservationId = id(input.reservationId);
+    const reservationId = id(input.reservationId ?? input.originalReservationId);
     const quantity = amount(input.quantity);
     const returnNo = text(input.returnNo, 40);
     const reason = text(input.reason, 500);

@@ -1,14 +1,30 @@
 import { expect, type Page, type Response } from '@playwright/test';
+import rawFormSchemas from '../apps/web/src/generated/form-schemas.json' with { type: 'json' };
 
-export type FieldValue = string | number | boolean;
+export type FieldValue = string | number | boolean | Record<string, unknown>;
 export type FieldPair = readonly [string, FieldValue];
+
+type FormFieldSchema = {
+  name: string;
+  label: string;
+  control: string;
+};
+type PageFormSchema = {
+  path: string;
+  fields: FormFieldSchema[];
+};
+type FormSchemas = {
+  pages: Record<string, PageFormSchema>;
+};
+
+const formSchemas = rawFormSchemas as FormSchemas;
 
 export async function login(page: Page, account: string, password: string): Promise<void> {
   await page.goto('/');
   await page.getByLabel('员工账号').fill(account);
   await page.getByLabel('密码').fill(password);
   await page.getByRole('button', { name: '登录工作台' }).click();
-  await expect(page.getByRole('menuitem', { name: '经营驾驶舱' })).toBeVisible();
+  await expect(page.getByRole('menuitem', { name: '我的工作台' })).toBeVisible();
 }
 
 const pageAliases: Record<string, string> = {
@@ -68,25 +84,74 @@ function waitForApiResponse(
   );
 }
 
+function getPageId(page: Page): string {
+  const match = /\/(?:app|h5)\/([^/?#]+)/.exec(page.url());
+  if (!match?.[1]) throw new Error('Unable to resolve page id');
+  return match[1];
+}
+
+function getSchema(page: Page): PageFormSchema {
+  const pageId = getPageId(page);
+  const schema = formSchemas.pages[pageId];
+  if (!schema) throw new Error(`Missing form schema for ${pageId}`);
+  return schema;
+}
+
+async function fillField(
+  page: Page,
+  dialog: ReturnType<Page['getByRole']>,
+  field: FormFieldSchema,
+  value: FieldValue,
+): Promise<void> {
+  const item = dialog.locator('.ant-form-item').filter({ hasText: field.label }).first();
+  if (field.control === 'switch') {
+    const control = item.getByRole('switch');
+    const checked = (await control.getAttribute('aria-checked')) === 'true';
+    if (checked !== Boolean(value)) await control.click();
+    return;
+  }
+  if (field.control === 'select' || field.control === 'reference') {
+    await item.getByRole('combobox').click();
+    await page.getByRole('option', { name: String(value) }).first().click();
+    return;
+  }
+  if (field.control === 'number') {
+    await item.getByRole('spinbutton').fill(String(value));
+    return;
+  }
+  if (field.control === 'date' || field.control === 'date-time') {
+    const control = item.locator('input').first();
+    await control.fill(String(value));
+    await control.press('Tab');
+    return;
+  }
+  if (field.control === 'json' || field.control === 'textarea') {
+    const rendered = typeof value === 'object' ? JSON.stringify(value) : String(value);
+    await item.locator('textarea').first().fill(rendered);
+    return;
+  }
+  await item.getByRole('textbox').first().fill(String(value));
+}
+
 export async function createRecord(
   page: Page,
   buttonName: string,
   fields: readonly FieldPair[],
 ): Promise<void> {
+  const schema = getSchema(page);
   const responsePromise = waitForApiResponse(
     page,
     'POST',
     [200, 201],
-    (url) => url.includes('/api/v1/') && !url.includes('/actions'),
+    (url) => new URL(url).pathname === schema.path,
   );
   await page.getByRole('button', { name: buttonName }).click();
   const drawer = page.getByRole('dialog');
   await expect(drawer).toBeVisible();
-  for (const [index, [key, value]] of fields.entries()) {
-    await drawer.getByRole('button', { name: '添加字段' }).click();
-    const row = drawer.locator('.editor-row').nth(index);
-    await row.locator('input').nth(0).fill(key);
-    await row.locator('input').nth(1).fill(String(value));
+  for (const [name, value] of fields) {
+    const field = schema.fields.find((candidate) => candidate.name === name);
+    if (!field) throw new Error(`Missing field schema for ${name}`);
+    await fillField(page, drawer, field, value);
   }
   await drawer.getByRole('button', { name: /保\s*存/ }).click();
   await responsePromise;

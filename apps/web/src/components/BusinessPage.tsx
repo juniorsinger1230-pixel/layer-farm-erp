@@ -6,6 +6,8 @@ import { canApprovePage, canCreatePage, canUpdatePage, getMappedContract } from 
 import { useSession } from '../auth/SessionContext';
 import type { PageDefinition } from '../types';
 import PrintDesignerCard from './PrintDesignerCard';
+import SchemaForm from './SchemaForm';
+import { buildInitialValues, getPageFormSchema } from './form-schema';
 
 type BusinessRow = { id?: string | number; [key: string]: unknown };
 type ListResponse = { items: BusinessRow[]; total: number };
@@ -14,7 +16,6 @@ type EditorState = {
   open: boolean;
   mode: 'create' | 'edit';
   submitting: boolean;
-  rows: EditorRow[];
   target?: BusinessRow;
 };
 type ActionState = { open: boolean; submitting: boolean; rows: EditorRow[]; target?: BusinessRow };
@@ -93,6 +94,7 @@ function downloadBlob(blob: Blob, filename: string): void {
 
 export default function BusinessPage({ page }: { page: PageDefinition }) {
   const contract = getMappedContract(page.pageId);
+  const formSchema = getPageFormSchema(page.pageId);
   const { profile } = useSession();
   const itemKey = contract?.itemKey ?? 'id';
   const [rows, setRows] = useState<BusinessRow[]>([]);
@@ -103,7 +105,7 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
   const [pageSize, setPageSize] = useState(20);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
-  const [editor, setEditor] = useState<EditorState>({ open: false, mode: 'create', submitting: false, rows: [] });
+  const [editor, setEditor] = useState<EditorState>({ open: false, mode: 'create', submitting: false });
   const [actionDrawer, setActionDrawer] = useState<ActionState>({ open: false, submitting: false, rows: [] });
 
   const canCreate = profile ? canCreatePage(profile, page.pageId) : false;
@@ -180,13 +182,6 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
     ];
   }, [filteredRows, canUpdate, canAction, itemKey]);
 
-  const updateEditorRow = (id: string, field: 'key' | 'value', value: string): void => {
-    setEditor((previous) => ({
-      ...previous,
-      rows: previous.rows.map((row) => (row.id === id ? { ...row, [field]: value } : row)),
-    }));
-  };
-
   const updateActionRow = (id: string, field: 'key' | 'value', value: string): void => {
     setActionDrawer((previous) => ({
       ...previous,
@@ -206,15 +201,12 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
 
   const openCreate = (): void => {
     setError('');
-    setEditor({ open: true, mode: 'create', submitting: false, rows: [] });
+    setEditor({ open: true, mode: 'create', submitting: false });
   };
 
   function openEdit(record: BusinessRow): void {
-    const immutableKeys = new Set([itemKey, 'created_at', 'updated_at', 'created_by', 'updated_by']);
-    const editorRows = Object.entries(record)
-      .filter(([key]) => !immutableKeys.has(key))
-      .map(([key, value]) => ({ id: `row-${key}-${Math.random().toString(36).slice(2)}`, key, value: stringifyValue(value) }));
-    setEditor({ open: true, mode: 'edit', submitting: false, rows: editorRows, target: record });
+    setError('');
+    setEditor({ open: true, mode: 'edit', submitting: false, target: record });
   }
 
   function openAction(record?: BusinessRow): void {
@@ -227,13 +219,12 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
     setActionDrawer({ open: true, submitting: false, target, rows: [blankRow()] });
   }
 
-  const saveEditor = async (): Promise<void> => {
+  const saveEditor = async (payload: Record<string, unknown>): Promise<void> => {
     if (!contract) return;
     setEditor((previous) => ({ ...previous, submitting: true }));
     setError('');
     setNotice('');
     try {
-      const payload = buildPayload(editor.rows);
       if (editor.mode === 'create') {
         await api(contract.path, { method: 'POST', body: JSON.stringify(payload) });
       } else {
@@ -277,7 +268,7 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
       keys.map(escapeCsv).join(','),
       ...filteredRows.map((row) => keys.map((key) => escapeCsv(row[key])).join(',')),
     ];
-    downloadBlob(new Blob([`\uFEFF${lines.join('\r\n')}`], { type: 'text/csv;charset=utf-8' }), `${page.title}.csv`);
+    downloadBlob(new Blob([`﻿${lines.join('\r\n')}`], { type: 'text/csv;charset=utf-8' }), `${page.title}.csv`);
   };
 
   if (!contract) {
@@ -369,42 +360,19 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
         onClose={() => {
           if (!editor.submitting) setEditor((previous) => ({ ...previous, open: false }));
         }}
-        extra={
-          <Space>
-            <Button
-              disabled={editor.submitting}
-              onClick={() => setEditor((previous) => ({ ...previous, open: false }))}
-            >
-              取消
-            </Button>
-            <Button type="primary" loading={editor.submitting} onClick={() => void saveEditor()}>
-              保存
-            </Button>
-          </Space>
-        }
       >
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-          <Button
-            block
-            icon={<PlusOutlined />}
-            disabled={editor.submitting}
-            onClick={() => setEditor((previous) => ({ ...previous, rows: [...previous.rows, blankRow()] }))}
-          >
-            添加字段
-          </Button>
-          {editor.rows.map((row) => (
-            <div className="editor-row" key={row.id} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 8 }}>
-              <Input aria-label="字段名" placeholder="字段名" value={row.key} onChange={(event) => updateEditorRow(row.id, 'key', event.target.value)} />
-              <Input aria-label="字段值" placeholder="字段值" value={row.value} onChange={(event) => updateEditorRow(row.id, 'value', event.target.value)} />
-              <Button
-                danger
-                onClick={() => setEditor((previous) => ({ ...previous, rows: previous.rows.filter((item) => item.id !== row.id) }))}
-              >
-                删除
-              </Button>
-            </div>
-          ))}
-        </Space>
+        {formSchema ? (
+          <SchemaForm
+            key={`${editor.mode}-${page.pageId}`}
+            schema={formSchema}
+            initialValues={buildInitialValues(formSchema, editor.mode === 'edit' ? editor.target : undefined)}
+            submitting={editor.submitting}
+            onCancel={() => setEditor((previous) => ({ ...previous, open: false }))}
+            onSubmit={saveEditor}
+          />
+        ) : (
+          <Alert type="error" showIcon message="缺少该页面的创建表单 Schema" />
+        )}
       </Drawer>
 
       <Drawer

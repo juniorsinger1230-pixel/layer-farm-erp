@@ -565,10 +565,10 @@ export class ContractProcessService {
       return this.procurement.returnReceipt(body, idempotencyKey);
     }
     if (spec.requirementId === 'SRS-FR-SALES-006') {
-      return this.sales.createReturn(body, idempotencyKey);
+      return this.sales.createReturn(withCamelAliases(body), idempotencyKey);
     }
     if (spec.requirementId === 'SRS-FR-SALES-007') {
-      return this.sales.createLivestockSale(body, idempotencyKey);
+      return this.sales.createLivestockSale(withCamelAliases(body), idempotencyKey);
     }
     if (spec.requirementId === 'SRS-FR-LOG-003' || spec.requirementId === 'SRS-FR-LOG-006') {
       return this.sales.dispatchDeliveryTask(body, idempotencyKey);
@@ -819,6 +819,15 @@ export class ContractProcessService {
     if (this.context.companyId === undefined) throw new AppError(500, 'INTERNAL_ERROR', '公司数字标识未初始化');
     return spec.companyKind === 'id' ? this.context.companyId : this.context.companyCode;
   }
+}
+
+function withCamelAliases(body: Record<string, unknown>): Record<string, unknown> {
+  const result: Record<string, unknown> = { ...body };
+  for (const [key, value] of Object.entries(body)) {
+    const camelKey = key.replace(/_([a-z0-9])/g, (_match, character: string) => character.toUpperCase());
+    if (camelKey !== key && result[camelKey] === undefined) result[camelKey] = value;
+  }
+  return result;
 }
 
 function requiredSpec(path: string): ProcessSpec {
