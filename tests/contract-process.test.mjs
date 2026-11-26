@@ -66,7 +66,7 @@ function parseData(sql, values) {
     columns.forEach((column, index) => { output[column] = values[placeholders[index] - 1]; });
     return output;
   }
-  const update = sql.match(/SET (.*?) WHERE/);
+  const update = sql.match(/SET ([\s\S]*?) WHERE/);
   for (const assignment of update ? update[1].split(',') : []) {
     const match = assignment.trim().match(/^"?([^"=]+)"?=\$(\d+)$/);
     if (match) output[match[1]] = values[Number(match[2]) - 1];

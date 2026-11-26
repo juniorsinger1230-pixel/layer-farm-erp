@@ -1,6 +1,7 @@
 import type { QueryResultRow } from 'pg';
 import { tableCatalogByName, type TableCatalog } from './generated/catalog.js';
 import type { ActorContext, Queryable } from './client.js';
+import { buildObjectScope, renderObjectScope } from './object-scope.js';
 
 export interface ListOptions {
   page: number;
@@ -53,6 +54,21 @@ export class PostgresRepository {
         data.company_code = scoped;
       }
     }
+    const houseIds = this.context.houseIds ?? [];
+    if (houseIds.length > 0 && data.house_id !== undefined && !houseIds.includes(Number(data.house_id))) {
+      throw new Error('House scope denied');
+    }
+    const warehouseIds = this.context.warehouseIds ?? [];
+    if (warehouseIds.length > 0 && data.warehouse_id !== undefined && !warehouseIds.includes(Number(data.warehouse_id))) {
+      throw new Error('Warehouse scope denied');
+    }
+    if (this.context.selfOnly === true && tableName === 'employee' && data.employee_no !== undefined && data.employee_no !== this.context.actorId) {
+      throw new Error('Self scope denied');
+    }
+    if (this.context.taskOnly === true && tableName === 'delivery_task' && this.context.employeeId !== undefined &&
+      Number(data.driver_no) !== this.context.employeeId && Number(data.courier_no) !== this.context.employeeId) {
+      throw new Error('Task scope denied');
+    }
     for (const column of model.columns) {
       if (column.actorContext) data[column.name] = this.context.actorId;
     }
@@ -82,6 +98,13 @@ export class PostgresRepository {
       values.push(value);
       return `"${key}" = $${values.length}`;
     });
+    const columnNames = new Set(model.columns.map((column) => column.name));
+    const scopeClauses = buildObjectScope(tableName, columnNames, this.context);
+    const renderedScope = renderObjectScope(scopeClauses, values.length + 1);
+    if (renderedScope.sql !== '') {
+      where.push(renderedScope.sql);
+      values.push(...renderedScope.values);
+    }
     const whereSql = where.length > 0 ? ` WHERE ${where.join(' AND ')}` : '';
     const orderBy = options.orderBy ?? model.primaryKey[0] ?? 'id';
     if (!model.columns.some((column) => column.name === orderBy)) throw new Error('Invalid order column');
@@ -104,7 +127,11 @@ export class PostgresRepository {
       values.push(scopedCompanyValue(model, this.context));
       company = ' AND company_code = $2';
     }
-    const result = await this.db.query<T>(`SELECT * FROM app."${model.tableName}" WHERE id = $1${company}`, values);
+    const columnNames = new Set(model.columns.map((column) => column.name));
+    const renderedScope = renderObjectScope(buildObjectScope(tableName, columnNames, this.context), values.length + 1);
+    const scopeSql = renderedScope.sql === '' ? '' : ` AND ${renderedScope.sql}`;
+    values.push(...renderedScope.values);
+    const result = await this.db.query<T>(`SELECT * FROM app."${model.tableName}" WHERE id = $1${company}${scopeSql}`, values);
     return result.rows[0] ?? null;
   }
 
@@ -126,6 +153,12 @@ export class PostgresRepository {
     if (model.companyScope && this.context.companyCode !== '*') {
       values.push(scopedCompanyValue(model, this.context));
       where.push(`company_code = $${values.length}`);
+    }
+    const columnNames = new Set(model.columns.map((column) => column.name));
+    const renderedScope = renderObjectScope(buildObjectScope(tableName, columnNames, this.context), values.length + 1);
+    if (renderedScope.sql !== '') {
+      where.push(renderedScope.sql);
+      values.push(...renderedScope.values);
     }
     if (expectedUpdatedAt !== undefined) {
       values.push(expectedUpdatedAt);

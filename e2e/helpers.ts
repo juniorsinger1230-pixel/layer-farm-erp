@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test';
+import { expect, type Page, type Response } from '@playwright/test';
 
 export type FieldValue = string | number | boolean;
 export type FieldPair = readonly [string, FieldValue];
@@ -53,7 +53,32 @@ async function closeDrawer(drawer: ReturnType<Page['getByRole']>): Promise<void>
   await expect(drawer).toBeHidden();
 }
 
-export async function createRecord(page: Page, buttonName: string, fields: readonly FieldPair[]): Promise<void> {
+function waitForApiResponse(
+  page: Page,
+  method: string,
+  statuses: number[],
+  urlMatcher: (url: string) => boolean,
+): Promise<Response> {
+  return page.waitForResponse(
+    (response) =>
+      response.request().method() === method &&
+      statuses.includes(response.status()) &&
+      urlMatcher(response.url()),
+    { timeout: 30000 },
+  );
+}
+
+export async function createRecord(
+  page: Page,
+  buttonName: string,
+  fields: readonly FieldPair[],
+): Promise<void> {
+  const responsePromise = waitForApiResponse(
+    page,
+    'POST',
+    [200, 201],
+    (url) => url.includes('/api/v1/') && !url.includes('/actions'),
+  );
   await page.getByRole('button', { name: buttonName }).click();
   const drawer = page.getByRole('dialog');
   await expect(drawer).toBeVisible();
@@ -64,7 +89,7 @@ export async function createRecord(page: Page, buttonName: string, fields: reado
     await row.locator('input').nth(1).fill(String(value));
   }
   await drawer.getByRole('button', { name: /保\s*存/ }).click();
-  await expect(page.getByText('已保存并通过领域校验').first()).toBeVisible();
+  await responsePromise;
   await closeDrawer(drawer);
 }
 
@@ -74,7 +99,7 @@ type ItemEnvelope<T> = { items: T[] };
 async function readJson<T>(page: Page, path: string): Promise<Envelope<T>> {
   return page.evaluate(async (url): Promise<Envelope<T>> => {
     const rawSession = sessionStorage.getItem('layer-erp-session');
-    const parsedSession = rawSession ? JSON.parse(rawSession) as { accessToken?: string } : {};
+    const parsedSession = rawSession ? (JSON.parse(rawSession) as { accessToken?: string }) : {};
     const headers = parsedSession.accessToken ? { authorization: `Bearer ${parsedSession.accessToken}` } : {};
     const response = await fetch(url, { headers, cache: 'no-store' });
     if (!response.ok) throw new Error(`Request failed: ${response.status}`);
@@ -82,7 +107,17 @@ async function readJson<T>(page: Page, path: string): Promise<Envelope<T>> {
   }, path);
 }
 
-export async function executeAction(page: Page, search: string, fields: readonly FieldPair[]): Promise<void> {
+export async function executeAction(
+  page: Page,
+  search: string,
+  fields: readonly FieldPair[],
+): Promise<void> {
+  const responsePromise = waitForApiResponse(
+    page,
+    'POST',
+    [200],
+    (url) => url.includes('/actions'),
+  );
   await page.getByPlaceholder('搜索当前记录').fill(search);
   await page.getByRole('button', { name: '执行动作' }).first().click();
   const drawer = page.getByRole('dialog');
@@ -94,7 +129,7 @@ export async function executeAction(page: Page, search: string, fields: readonly
     await row.locator('input').nth(1).fill(String(value));
   }
   await drawer.getByRole('button', { name: /执\s*行/ }).click();
-  await expect(page.getByText('已保存并通过领域校验').first()).toBeVisible();
+  await responsePromise;
   await closeDrawer(drawer);
   await page.getByPlaceholder('搜索当前记录').fill('');
 }
@@ -105,7 +140,11 @@ export async function listItems<T>(page: Page, path: string): Promise<T[]> {
   return Array.isArray(payload) ? payload : payload.items;
 }
 
-export async function findItem<T>(page: Page, path: string, predicate: (item: T) => boolean): Promise<T> {
+export async function findItem<T>(
+  page: Page,
+  path: string,
+  predicate: (item: T) => boolean,
+): Promise<T> {
   const item = (await listItems<T>(page, path)).find(predicate);
   if (!item) throw new Error(`Item not found: ${path}`);
   return item;

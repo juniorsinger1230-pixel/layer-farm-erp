@@ -1,5 +1,7 @@
 import type { Pool } from 'pg';
 import { withTransaction, type ActorContext, type Queryable } from '../../database/src/client.js';
+import { buildObjectScope, renderObjectScope } from '../../database/src/object-scope.js';
+import { tableCatalogByName } from '../../database/src/generated/catalog.js';
 import { AppError, validationError } from '../../shared/src/errors.js';
 import { DomainService } from './service.js';
 import { ProductionService } from './production.js';
@@ -368,7 +370,7 @@ export const contractProcessSpecs: readonly ProcessSpec[] = [
     fields: { id: i(false), period_id: i(true), account_code: s(true, 32), debit: n(true), credit: n(true), balance: n(true) }, readOnly: true,
   },
   {
-    requirementId: 'SRS-FR-EQP-001', path: '/api/v1/eqp/equipment-repairs', schema: 'app', table: 'maintenance_work_order',
+    requirementId: 'SRS-FR-EQP-004', path: '/api/v1/eqp/equipment-repairs', schema: 'app', table: 'maintenance_work_order',
     companyKind: 'code', itemKey: 'id', itemType: 'integer', fields: maintenanceFields,
     domainActions: ['start', 'request_acceptance', 'accept', 'cancel'],
   },
@@ -457,6 +459,15 @@ export class ContractProcessService {
     );
   }
 
+  private objectScope(spec: ProcessSpec) {
+    const catalogModel = tableCatalogByName.get(spec.table);
+    const columnNames = new Set([
+      ...(catalogModel?.columns.map((column) => column.name) ?? []),
+      ...Object.keys(spec.fields),
+    ]);
+    return buildObjectScope(spec.table, columnNames, this.context);
+  }
+
   async list(path: string, query: ListQuery): Promise<{ items: Record<string, unknown>[]; total: number; page: number; pageSize: number }> {
     const spec = requiredSpec(path);
     const page = Math.min(10000, Math.max(1, Number(query.page ?? 1)));
@@ -472,6 +483,11 @@ export class ContractProcessService {
         if (raw === undefined || !spec.filterFields?.includes(key) || !/^[A-Za-z0-9_]+$/.test(key)) continue;
         values.push(raw);
         where.push(`${key}=$${values.length}`);
+      }
+      const renderedScope = renderObjectScope(this.objectScope(spec), values.length + 1);
+      if (renderedScope.sql !== '') {
+        where.push(renderedScope.sql);
+        values.push(...renderedScope.values);
       }
       const whereSql = where.length === 0 ? '' : ` WHERE ${where.join(' AND ')}`;
       const count = await client.query<{ count: number }>(`SELECT count(*)::int AS count FROM ${qualifiedTable(spec)}${whereSql}`, values);
@@ -612,7 +628,7 @@ export class ContractProcessService {
       if (actionName === 'recalculate') return this.flockCost.get(id);
       if (actionName === 'settle') return this.settleBatch(id);
     }
-    if (spec.requirementId === 'SRS-FR-EQP-001') {
+    if (spec.requirementId === 'SRS-FR-EQP-004') {
       return this.domain.transition('maintenance_work_order', id, actionName);
     }
     if (spec.requirementId === 'SRS-FR-PRINT-001') {
@@ -677,8 +693,11 @@ export class ContractProcessService {
       values.push(this.companyValue(spec));
       scope = ` AND ${this.companyColumn(spec)}=$2`;
     }
+    const renderedScope = renderObjectScope(this.objectScope(spec), values.length + 1);
+    const scopeSql = renderedScope.sql === '' ? '' : ` AND ${renderedScope.sql}`;
+    values.push(...renderedScope.values);
     const result = await client.query(
-      `${this.selectSql(spec)} WHERE ${this.itemColumn(spec)}=$1${scope}${lock ? ' FOR UPDATE' : ''}`,
+      `${this.selectSql(spec)} WHERE ${this.itemColumn(spec)}=$1${scope}${scopeSql}${lock ? ' FOR UPDATE' : ''}`,
       values,
     );
     if (result.rowCount !== 1) throw new AppError(404, 'NOT_FOUND', '业务记录不存在');
@@ -707,16 +726,22 @@ export class ContractProcessService {
     const keys = Object.keys(changes);
     if (keys.length === 0) return before;
     const assignments = keys.map((key, index) => `"${key}"=$${index + 1}`).join(',');
-    const values = keys.map((key) => changes[key]);
-    const idIndex = values.length + 1;
+    const changeValues = keys.map((key) => changes[key]);
+    const idIndex = changeValues.length + 1;
+    const whereValues: unknown[] = [];
     let scope = '';
     if (spec.companyKind !== 'none') {
-      values.push(this.companyValue(spec));
-      scope = ` AND ${this.companyColumn(spec)}=$${values.length + 1}`;
+      const companyPlaceholder = idIndex + 1 + whereValues.length;
+      whereValues.push(this.companyValue(spec));
+      scope = ` AND ${this.companyColumn(spec)}=$${companyPlaceholder}`;
     }
+    const renderedScope = renderObjectScope(this.objectScope(spec), idIndex + 1 + whereValues.length);
+    const scopeSql = renderedScope.sql === '' ? '' : ` AND ${renderedScope.sql}`;
+    whereValues.push(...renderedScope.values);
     const result = await client.query(
-      `UPDATE ${qualifiedTable(spec)} SET ${assignments}, updated_by=$${idIndex}, updated_at=now() WHERE ${this.itemColumn(spec)}=$${idIndex + 1}${scope} RETURNING *`,
-      [...values, this.context.actorId, before[this.itemColumn(spec)]],
+      `UPDATE ${qualifiedTable(spec)} SET ${assignments}, updated_by=$${idIndex}, updated_at=now()
+       WHERE ${this.itemColumn(spec)}=$${idIndex + 1}${scope}${scopeSql} RETURNING *`,
+      [...changeValues, this.context.actorId, before[this.itemColumn(spec)], ...whereValues],
     );
     if (result.rowCount !== 1) throw new AppError(409, 'CONFLICT', '记录已被其他用户修改');
     return result.rows[0] as Record<string, unknown>;
@@ -778,8 +803,15 @@ export class ContractProcessService {
   }
 
   private companyColumn(spec: ProcessSpec): string {
-    if (spec.companyKind === 'id') return 'company_id';
-    return 'company_code';
+    if (spec.companyKind === 'code') return 'company_code';
+    if (spec.companyKind === 'id') {
+      const model = tableCatalogByName.get(spec.table);
+      const columnNames = new Set(model?.columns.map((column) => column.name));
+      if (columnNames.has('company_id')) return 'company_id';
+      if (columnNames.has('company_code')) return 'company_code';
+      if (!model) return 'company_id';
+    }
+    throw new AppError(500, 'INTERNAL_ERROR', '契约流程缺少公司隔离字段');
   }
 
   private companyValue(spec: ProcessSpec): number | string {

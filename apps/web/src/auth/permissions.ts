@@ -11,10 +11,13 @@ export interface MappedPageContract {
   permission: string;
   companyScope: boolean;
   contractPath: boolean;
+  itemKey?: string;
+  itemType?: 'string' | 'integer';
 }
 
 const mappedContracts = pageApiMap.mapped as Record<string, MappedPageContract>;
-const gapPageIds = new Set(pageApiMap.gap.map((page) => page.pageId));
+const gapPages = pageApiMap.gap as Array<{ pageId: string; domain: PageDefinition['domain'] }>;
+const gapPageIds = new Set(gapPages.map((page) => page.pageId));
 
 export function hasPermission(permissions: string[], required: string): boolean {
   if (permissions.includes('*') || permissions.includes(required)) return true;
@@ -40,12 +43,11 @@ export function pageReadPermission(page: PageDefinition): string {
 }
 
 export function canReadPage(profile: AuthMe, pageId: string): boolean {
-  const page = pageApiMap.gap.find((item) => item.pageId === pageId);
+  const page = gapPages.find((item) => item.pageId === pageId);
   const contract = getMappedContract(pageId);
   if (contract) return hasPermission(profile.permissions, `${contract.permission}:read`);
   if (page) {
-    const domain = page.domain as PageDefinition['domain'];
-    return hasPermission(profile.permissions, gapReadPermissionByDomain[domain]);
+    return hasPermission(profile.permissions, gapReadPermissionByDomain[page.domain]);
   }
   return false;
 }

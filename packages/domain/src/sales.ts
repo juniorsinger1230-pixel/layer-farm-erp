@@ -1,6 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import type { Pool } from 'pg';
 import { withTransaction, type ActorContext } from '../../database/src/client.js';
+import { buildObjectScope, renderObjectScope } from '../../database/src/object-scope.js';
+import { tableCatalogByName } from '../../database/src/generated/catalog.js';
 import { AppError, validationError } from '../../shared/src/errors.js';
 import { DomainService, assertReferences } from './service.js';
 
@@ -14,6 +16,10 @@ export class SalesService {
 
   async listDeliveryTasks(): Promise<{ items: Record<string, unknown>[]; total: number }> {
     return withTransaction(this.pool, this.context, async (client) => {
+      const deliveryModel = tableCatalogByName.get('delivery_task');
+      const deliveryColumns = new Set(deliveryModel?.columns.map((column) => column.name) ?? []);
+      const renderedScope = renderObjectScope(buildObjectScope('delivery_task', deliveryColumns, this.context), 2);
+      const scopeSql = renderedScope.sql === '' ? '' : ` AND ${renderedScope.sql}`;
       const result = await client.query<Record<string, unknown>>(
         `SELECT dt.*, so.order_no, so.customer_id, c.customer_name, latest.status AS latest_status, latest.sequence_no AS latest_sequence
          FROM app.delivery_task dt
@@ -26,9 +32,9 @@ export class SalesService {
            ORDER BY sequence_no DESC
            LIMIT 1
          ) latest ON true
-         WHERE dt.company_code=$1
+         WHERE dt.company_code=$1${scopeSql}
          ORDER BY dt.id DESC`,
-        [this.context.companyCode],
+        [this.context.companyCode, ...renderedScope.values],
       );
       return { items: result.rows, total: Number(result.rowCount) };
     });

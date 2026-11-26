@@ -6,6 +6,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const pages = JSON.parse(fs.readFileSync(path.join(repoRoot, 'apps/web/src/data/pageRegistry.json'), 'utf8'));
 const resourcesSource = fs.readFileSync(path.join(repoRoot, 'packages/domain/src/generated/resources.ts'), 'utf8');
 const policySource = fs.readFileSync(path.join(repoRoot, 'packages/domain/src/generated/resource-route-policy.ts'), 'utf8');
+const processSource = fs.readFileSync(path.join(repoRoot, 'packages/domain/src/contract-process.ts'), 'utf8');
 
 function field(block, key) {
   return block.match(new RegExp(`"${key}"\\s*:\\s*"([^"]*)"`))?.[1] ?? '';
@@ -29,7 +30,54 @@ const policies = policyLines.map((line) => ({
   requirementId: field(line, 'requirementId'),
   allowedMethods: [...line.matchAll(/"(GET|POST|PATCH|PUT|DELETE)"/g)].map((match) => match[1]),
 }));
-const policyByRequirement = new Map(policies.filter((policy) => policy.requirementId).map((policy) => [policy.requirementId, policy]));
+
+const processPermissionBySegment = {
+  org: 'master',
+  farm: 'production',
+  vet: 'vet',
+  proc: 'purchase',
+  sales: 'sales',
+  log: 'delivery',
+  fin: 'finance',
+  eqp: 'equipment',
+  rpt: 'report',
+  print: 'print',
+  trace: 'report',
+  plat: 'master',
+};
+
+function parseContractProcessPolicies(source) {
+  const block = source.match(/export const contractProcessSpecs[^=]*= \[([\s\S]*?)\n\];/);
+  if (!block) throw new Error('contractProcessSpecs not found');
+  const specRegex = /\{\s+requirementId:\s*'([^']+)',\s*path:\s*'([^']+)',\s*schema:\s*'([^']+)',\s*table:\s*'([^']+)'[\s\S]*?\n\s+\}/g;
+  return [...block[1].matchAll(specRegex)].map((match) => {
+    const text = match[0];
+    const readOnly = /readOnly: true/.test(text);
+    const segment = match[2].split('/')[3];
+    return {
+      table: match[4],
+      path: match[2],
+      mode: readOnly ? 'READ_ONLY' : 'CRUD_AND_ACTION',
+      requirementId: match[1],
+      allowedMethods: readOnly ? ['GET'] : ['GET', 'POST', 'PATCH'],
+      permission: processPermissionBySegment[segment],
+      companyScope: !/companyKind: 'none'/.test(text),
+      contractPath: true,
+      itemKey: text.match(/itemKey: '([^']+)'/)?.[1] ?? 'id',
+      itemType: text.match(/itemType: '([^']+)'/)?.[1] ?? 'integer',
+    };
+  });
+}
+
+const contractProcessPolicies = parseContractProcessPolicies(processSource);
+const policyByRequirement = new Map();
+for (const policy of policies.filter((item) => item.requirementId)) {
+  policyByRequirement.set(policy.requirementId, policy);
+}
+for (const policy of contractProcessPolicies) {
+  if (!policyByRequirement.has(policy.requirementId)) policyByRequirement.set(policy.requirementId, policy);
+}
+
 const mapped = {};
 const gap = [];
 for (const page of pages) {
@@ -45,9 +93,11 @@ for (const page of pages) {
     path: policy.path,
     mode: policy.mode,
     allowedMethods: policy.allowedMethods,
-    permission: resource?.permission ?? '',
-    companyScope: resource?.companyScope ?? true,
-    contractPath: resource?.contractPath ?? true,
+    permission: resource?.permission ?? policy.permission ?? '',
+    companyScope: resource?.companyScope ?? policy.companyScope ?? true,
+    contractPath: resource?.contractPath ?? policy.contractPath ?? true,
+    itemKey: policy.itemKey ?? 'id',
+    itemType: policy.itemType ?? 'integer',
   };
 }
 const result = {

@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-25T09:24:55.197Z",
+  "checkedAt": "2026-11-25T15:44:13.356Z",
   "status": "pass",
   "scope": "route, HTTP method, field-level schema, query parameters and status-code contract",
   "inputs": {

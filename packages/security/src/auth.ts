@@ -15,6 +15,8 @@ export type CredentialRecord = {
   status: 'active' | 'disabled';
   failedAttempts: number;
   lockedUntil?: Date;
+  mfaFailedAttempts: number;
+  mfaLockedUntil?: Date;
   mfaSecret?: string;
 };
 
@@ -39,6 +41,7 @@ export interface AuthStore {
   saveSession(record: SessionRecord): Promise<void>;
   rotateSession(record: SessionRecord, expectedRefreshHash: string): Promise<boolean>;
   revokeAllSessions(employeeId: number): Promise<void>;
+  consumeMfaCode(employeeId: number, timeWindow: number, codeHash: string, expiresAt: Date): Promise<boolean>;
 }
 
 export type AuthServiceOptions = {
@@ -124,6 +127,7 @@ export async function verifyPassword(password: string, encoded: string): Promise
 export class InMemoryAuthStore implements AuthStore {
   readonly credentials = new Map<string, CredentialRecord>();
   readonly sessions = new Map<string, SessionRecord>();
+  readonly mfaCodes = new Map<string, { expiresAt: Date }>();
 
   async findCredential(account: string, companyCode: string): Promise<CredentialRecord | null> {
     return this.credentials.get(`${companyCode}:${account}`) ?? null;
@@ -167,6 +171,17 @@ export class InMemoryAuthStore implements AuthStore {
       if (session.employeeId === employeeId) session.revokedAt = new Date();
     }
   }
+
+  async consumeMfaCode(employeeId: number, timeWindow: number, codeHash: string, expiresAt: Date): Promise<boolean> {
+    const now = new Date();
+    for (const [key, record] of this.mfaCodes) {
+      if (record.expiresAt <= now) this.mfaCodes.delete(key);
+    }
+    const key = `${employeeId}:${timeWindow}:${codeHash}`;
+    if (this.mfaCodes.has(key)) return false;
+    this.mfaCodes.set(key, { expiresAt: structuredClone(expiresAt) });
+    return true;
+  }
 }
 
 export class AuthService {
@@ -193,6 +208,7 @@ export class AuthService {
     }
     await this.store.saveCredential({
       account, principal, passwordHash: await hashPassword(password), status: 'active', failedAttempts: 0,
+      mfaFailedAttempts: 0,
       ...(mfaSecret === undefined ? {} : { mfaSecret }),
     });
   }
@@ -219,8 +235,33 @@ export class AuthService {
       if (credential.mfaSecret === undefined || mfaCode === undefined || !/^\d{6}$/.test(mfaCode)) {
         throw new AppError(401, 'MFA_REQUIRED', '需要有效的多因素认证码');
       }
-      const valid = [-1, 0, 1].some((offset) => safeEqualText(totp(credential.mfaSecret!, new Date(now.getTime() + offset * 30_000)), mfaCode));
-      if (!valid) throw unauthorized();
+      if (credential.mfaLockedUntil !== undefined && credential.mfaLockedUntil > now) {
+        throw new AppError(429, 'RATE_LIMITED', '多因素认证尝试过多，请稍后重试');
+      }
+      const matchedOffset = [-1, 0, 1].find((offset) =>
+        safeEqualText(totp(credential.mfaSecret!, new Date(now.getTime() + offset * 30_000)), mfaCode));
+      if (matchedOffset === undefined) {
+        credential.mfaFailedAttempts += 1;
+        if (credential.mfaFailedAttempts >= 5) {
+          credential.mfaLockedUntil = new Date(now.getTime() + 60_000);
+        }
+        await this.store.saveCredential(credential);
+        throw unauthorized();
+      }
+      const matchedAt = new Date(now.getTime() + matchedOffset * 30_000);
+      const timeWindow = Math.floor(matchedAt.getTime() / 30_000);
+      const expiresAt = new Date((timeWindow + 2) * 30_000);
+      const consumed = await this.store.consumeMfaCode(
+        credential.principal.employeeId,
+        timeWindow,
+        digest(mfaCode),
+        expiresAt,
+      );
+      if (!consumed) {
+        throw new AppError(401, 'AUTH_SCOPE_VIOLATION', '多因素认证码已使用，不能重复提交');
+      }
+      credential.mfaFailedAttempts = 0;
+      delete credential.mfaLockedUntil;
     }
     credential.failedAttempts = 0;
     delete credential.lockedUntil;

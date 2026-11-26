@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Button, Card, Drawer, Input, Space, Table, Tag } from 'antd';
 import { DownloadOutlined, PlusOutlined, PrinterOutlined, ReloadOutlined } from '@ant-design/icons';
 import { api } from '../api';
-import { getMappedContract } from '../auth/permissions';
+import { canApprovePage, canCreatePage, canUpdatePage, getMappedContract } from '../auth/permissions';
+import { useSession } from '../auth/SessionContext';
 import type { PageDefinition } from '../types';
 import PrintDesignerCard from './PrintDesignerCard';
 
@@ -75,6 +76,12 @@ function renderValue(value: unknown): string {
   return JSON.stringify(value);
 }
 
+function getRowItemId(record: BusinessRow, key: string): string {
+  const value = record[key];
+  if (typeof value === 'string' || typeof value === 'number') return value.toString();
+  return '';
+}
+
 function downloadBlob(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
@@ -86,6 +93,8 @@ function downloadBlob(blob: Blob, filename: string): void {
 
 export default function BusinessPage({ page }: { page: PageDefinition }) {
   const contract = getMappedContract(page.pageId);
+  const { profile } = useSession();
+  const itemKey = contract?.itemKey ?? 'id';
   const [rows, setRows] = useState<BusinessRow[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -97,8 +106,13 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
   const [editor, setEditor] = useState<EditorState>({ open: false, mode: 'create', submitting: false, rows: [] });
   const [actionDrawer, setActionDrawer] = useState<ActionState>({ open: false, submitting: false, rows: [] });
 
-  const canCreate = contract?.allowedMethods.includes('POST') ?? false;
-  const canUpdate = contract?.allowedMethods.includes('PATCH') ?? false;
+  const canCreate = profile ? canCreatePage(profile, page.pageId) : false;
+  const canUpdate = profile ? canUpdatePage(profile, page.pageId) : false;
+  const canAction = profile
+    ? (canCreatePage(profile, page.pageId) || canUpdatePage(profile, page.pageId) || canApprovePage(profile, page.pageId))
+    : false;
+
+  const getRowKey = (record: BusinessRow): string => getRowItemId(record, itemKey);
 
   const load = useCallback(async (): Promise<void> => {
     if (!contract) return;
@@ -143,11 +157,11 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
     }));
     return [
       ...dataColumns,
-      {
+      ...(canUpdate || canAction ? [{
         title: '操作',
         key: '__actions',
         fixed: 'right' as const,
-        width: 170,
+        width: canUpdate && canAction ? 170 : 90,
         render: (_: unknown, record: BusinessRow) => (
           <Space size="small">
             {canUpdate ? (
@@ -155,14 +169,16 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
                 编辑
               </Button>
             ) : null}
-            <Button size="small" onClick={() => openAction(record)}>
-              动作
-            </Button>
+            {canAction ? (
+              <Button size="small" onClick={() => openAction(record)}>
+                动作
+              </Button>
+            ) : null}
           </Space>
         ),
-      },
+      }] : []),
     ];
-  }, [filteredRows, canUpdate]);
+  }, [filteredRows, canUpdate, canAction, itemKey]);
 
   const updateEditorRow = (id: string, field: 'key' | 'value', value: string): void => {
     setEditor((previous) => ({
@@ -194,15 +210,16 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
   };
 
   function openEdit(record: BusinessRow): void {
+    const immutableKeys = new Set([itemKey, 'created_at', 'updated_at', 'created_by', 'updated_by']);
     const editorRows = Object.entries(record)
-      .filter(([key]) => !['id', 'created_at', 'updated_at', 'created_by', 'updated_by'].includes(key))
+      .filter(([key]) => !immutableKeys.has(key))
       .map(([key, value]) => ({ id: `row-${key}-${Math.random().toString(36).slice(2)}`, key, value: stringifyValue(value) }));
     setEditor({ open: true, mode: 'edit', submitting: false, rows: editorRows, target: record });
   }
 
   function openAction(record?: BusinessRow): void {
     const target = record ?? filteredRows[0];
-    if (!target || target.id === undefined) {
+    if (!target || target[itemKey] === undefined) {
       setError('请先选择要执行动作的真实记录');
       return;
     }
@@ -214,13 +231,14 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
     if (!contract) return;
     setEditor((previous) => ({ ...previous, submitting: true }));
     setError('');
+    setNotice('');
     try {
       const payload = buildPayload(editor.rows);
       if (editor.mode === 'create') {
         await api(contract.path, { method: 'POST', body: JSON.stringify(payload) });
       } else {
-        const id = editor.target?.id;
-        if (id === undefined) throw new Error('缺少记录 ID');
+        const id = editor.target ? getRowItemId(editor.target, itemKey) : '';
+        if (!id) throw new Error('缺少记录标识');
         await api(`${contract.path}/${id}`, { method: 'PATCH', body: JSON.stringify(payload) });
       }
       setNotice('已保存并通过领域校验');
@@ -236,9 +254,10 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
     if (!contract) return;
     setActionDrawer((previous) => ({ ...previous, submitting: true }));
     setError('');
+    setNotice('');
     try {
-      const id = actionDrawer.target?.id;
-      if (id === undefined) throw new Error('缺少记录 ID');
+      const id = actionDrawer.target ? getRowItemId(actionDrawer.target, itemKey) : '';
+      if (!id) throw new Error('缺少记录标识');
       const payload = buildPayload(actionDrawer.rows);
       await api(`${contract.path}/${id}/actions`, { method: 'POST', body: JSON.stringify(payload) });
       setNotice('已保存并通过领域校验');
@@ -282,9 +301,11 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
                   {createLabels[page.pageId] ?? '新建记录'}
                 </Button>
               ) : null}
-              <Button icon={<PlusOutlined />} onClick={() => openAction()} disabled={filteredRows.length === 0}>
-                执行动作
-              </Button>
+              {canAction ? (
+                <Button icon={<PlusOutlined />} onClick={() => openAction()} disabled={filteredRows.length === 0}>
+                  执行动作
+                </Button>
+              ) : null}
               <Button icon={<ReloadOutlined />} loading={loading} onClick={() => void load()}>
                 刷新
               </Button>
@@ -309,7 +330,7 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
 
         <Card title={page.title}>
           <Table<BusinessRow>
-            rowKey={(record) => String(record.id ?? Math.random())}
+            rowKey={getRowKey}
             columns={columns}
             dataSource={filteredRows}
             loading={loading}
@@ -342,10 +363,20 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
         open={editor.open}
         title={editor.mode === 'create' ? `新建${page.title}` : `编辑${page.title}`}
         width={560}
-        onClose={() => setEditor((previous) => ({ ...previous, open: false }))}
+        closable={!editor.submitting}
+        maskClosable={false}
+        keyboard={!editor.submitting}
+        onClose={() => {
+          if (!editor.submitting) setEditor((previous) => ({ ...previous, open: false }));
+        }}
         extra={
           <Space>
-            <Button onClick={() => setEditor((previous) => ({ ...previous, open: false }))}>取消</Button>
+            <Button
+              disabled={editor.submitting}
+              onClick={() => setEditor((previous) => ({ ...previous, open: false }))}
+            >
+              取消
+            </Button>
             <Button type="primary" loading={editor.submitting} onClick={() => void saveEditor()}>
               保存
             </Button>
@@ -353,7 +384,12 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
         }
       >
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-          <Button block icon={<PlusOutlined />} onClick={() => setEditor((previous) => ({ ...previous, rows: [...previous.rows, blankRow()] }))}>
+          <Button
+            block
+            icon={<PlusOutlined />}
+            disabled={editor.submitting}
+            onClick={() => setEditor((previous) => ({ ...previous, rows: [...previous.rows, blankRow()] }))}
+          >
             添加字段
           </Button>
           {editor.rows.map((row) => (
@@ -375,10 +411,20 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
         open={actionDrawer.open}
         title="执行业务动作"
         width={560}
-        onClose={() => setActionDrawer((previous) => ({ ...previous, open: false }))}
+        closable={!actionDrawer.submitting}
+        maskClosable={false}
+        keyboard={!actionDrawer.submitting}
+        onClose={() => {
+          if (!actionDrawer.submitting) setActionDrawer((previous) => ({ ...previous, open: false }));
+        }}
         extra={
           <Space>
-            <Button onClick={() => setActionDrawer((previous) => ({ ...previous, open: false }))}>取消</Button>
+            <Button
+              disabled={actionDrawer.submitting}
+              onClick={() => setActionDrawer((previous) => ({ ...previous, open: false }))}
+            >
+              取消
+            </Button>
             <Button type="primary" loading={actionDrawer.submitting} onClick={() => void saveAction()}>
               执行
             </Button>
@@ -386,7 +432,12 @@ export default function BusinessPage({ page }: { page: PageDefinition }) {
         }
       >
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-          <Button block icon={<PlusOutlined />} onClick={() => setActionDrawer((previous) => ({ ...previous, rows: [...previous.rows, blankRow()] }))}>
+          <Button
+            block
+            icon={<PlusOutlined />}
+            disabled={actionDrawer.submitting}
+            onClick={() => setActionDrawer((previous) => ({ ...previous, rows: [...previous.rows, blankRow()] }))}
+          >
             添加字段
           </Button>
           {actionDrawer.rows.map((row) => (
