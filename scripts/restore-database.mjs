@@ -60,7 +60,7 @@ try {
         return value;
       });
       const placeholders = values.map((_, index) => `$${index + 1}`).join(', ');
-      await client.query(`INSERT INTO ${qualified} (${columns.join(', ')}) VALUES (${placeholders})`, values);
+      await client.query(`INSERT INTO ${qualified} (${columns.join(', ')}) OVERRIDING SYSTEM VALUE VALUES (${placeholders})`, values);
       insertedRows += 1;
     }
   }

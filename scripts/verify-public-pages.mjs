@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { appendFileSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
@@ -8,12 +8,20 @@ const baseUrl = (process.env.BASE_URL ?? '').replace(/\/$/, '');
 const companyCode = process.env.TRIAL_COMPANY_CODE ?? 'THL';
 const passwordFile = resolve(process.env.TRIAL_PASSWORD_FILE ?? '.runtime/trial-passwords.json');
 const outputFile = resolve(process.env.PUBLIC_PAGE_VERIFY_OUTPUT ?? '.runtime/public-page-acceptance-result.json');
+const debugLogFile = process.env.PAGE_DEBUG_LOG ? resolve(process.env.PAGE_DEBUG_LOG) : '';
+const debugLog = (event, payload = {}) => {
+  if (!debugLogFile) return;
+  appendFileSync(debugLogFile, `${JSON.stringify({ at: new Date().toISOString(), event, ...payload })}\n`);
+};
 
 if (!baseUrl) throw new Error('BASE_URL is required');
 
 const allPages = JSON.parse(readFileSync(resolve(root, 'apps/web/src/data/pageRegistry.json'), 'utf8'));
 const pageLimit = Number(process.env.PAGE_LIMIT ?? 0);
-const pages = pageLimit > 0 ? allPages.slice(0, pageLimit) : allPages;
+const pageOffset = Number(process.env.PAGE_OFFSET ?? 0);
+const pageStart = Number.isInteger(pageOffset) && pageOffset >= 0 ? pageOffset : 0;
+const pageEnd = pageLimit > 0 ? pageStart + pageLimit : allPages.length;
+const pages = allPages.slice(pageStart, pageEnd);
 const pageMap = JSON.parse(readFileSync(resolve(root, 'apps/web/src/generated/page-api-map.json'), 'utf8'));
 const passwordPayload = JSON.parse(readFileSync(passwordFile, 'utf8'));
 const allAccounts = passwordPayload.accounts;
@@ -53,7 +61,17 @@ function canRead(profile, page) {
   return hasPermission(profile.permissions, required);
 }
 
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({
+  headless: true,
+  timeout: 30000,
+  args: [
+    '--disable-gpu',
+    '--disable-dev-shm-usage',
+    '--disable-extensions',
+    '--no-first-run',
+    '--no-default-browser-check',
+  ],
+});
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, ignoreHTTPSErrors: true });
 const page = await context.newPage();
 
@@ -79,7 +97,7 @@ async function passTrustScreen() {
   await loginInput.waitFor({ timeout: 30000 });
 }
 
-let currentEvents = { apiResponses: [], failedRequests: [], consoleErrors: [] };
+let currentEvents = { apiResponses: [], failedRequests: [], assetAborts: [], consoleErrors: [] };
 
 page.on('response', (response) => {
   const url = new URL(response.url());
@@ -89,7 +107,12 @@ page.on('response', (response) => {
 });
 page.on('requestfailed', (request) => {
   const url = new URL(request.url());
-  currentEvents.failedRequests.push({ path: url.pathname, error: request.failure()?.errorText ?? 'request failed' });
+  const event = { path: url.pathname, error: request.failure()?.errorText ?? 'request failed' };
+  if (url.pathname.startsWith('/assets/') && event.error === 'net::ERR_ABORTED') {
+    currentEvents.assetAborts.push(event);
+    return;
+  }
+  currentEvents.failedRequests.push(event);
 });
 page.on('console', (message) => {
   if (message.type() === 'error') currentEvents.consoleErrors.push(message.text());
@@ -103,6 +126,16 @@ async function waitForApiResponse(path) {
     { timeout: 30000 },
   );
   return { path, status: response.status() };
+}
+
+async function verifyAssetAborts() {
+  const verified = [];
+  for (const event of currentEvents.assetAborts) {
+    const response = await fetch(new URL(event.path, baseUrl));
+    verified.push({ ...event, verifyStatus: response.status });
+  }
+  currentEvents.verifiedAssetAborts = verified;
+  return verified.every((event) => event.verifyStatus === 200);
 }
 
 async function loginAs(account) {
@@ -134,12 +167,15 @@ const roleResults = [];
 
 try {
   for (const account of accounts) {
-    currentEvents = { apiResponses: [], failedRequests: [], consoleErrors: [] };
+    currentEvents = { apiResponses: [], failedRequests: [], assetAborts: [], consoleErrors: [] };
+    debugLog('role_login_start', { account: account.account, role: account.role });
     const { profile } = await loginAs(account);
+    debugLog('role_login_end', { account: account.account, role: account.role });
 
     const pageResults = [];
     for (const businessPage of pages) {
-      currentEvents = { apiResponses: [], failedRequests: [], consoleErrors: [] };
+      currentEvents = { apiResponses: [], failedRequests: [], assetAborts: [], consoleErrors: [] };
+      debugLog('page_start', { account: account.account, pageId: businessPage.pageId, route: businessPage.route });
       const expectedAccess = canRead(profile, businessPage);
       const contract = mappedContracts[businessPage.pageId];
       const isGap = gapPageIds.has(businessPage.pageId);
@@ -197,13 +233,14 @@ try {
       const onlyResolvedTransportErrors = currentEvents.consoleErrors.length > 0
         && currentEvents.consoleErrors.every((error) => error.startsWith('Failed to load resource'))
         && currentEvents.consoleErrors.length <= resolvedFailedRequestCount;
+      const abortedAssetsRecovered = await verifyAssetAborts();
       const checks = {
         expectedClass: expectedAccess ? kind !== 'denied' : kind === 'denied',
         deniedShown: expectedAccess ? true : kind === 'denied',
         gapShown: expectedAccess && isGap ? kind === 'gap' : true,
         businessShown: expectedAccess && !isGap ? kind === 'business' : true,
         noConsoleErrors: currentEvents.consoleErrors.length === 0 || (onlyResolvedTransportErrors && unresolvedFailedRequests.length === 0),
-        noFailedRequests: unresolvedFailedRequests.length === 0,
+        noFailedRequests: unresolvedFailedRequests.length === 0 && abortedAssetsRecovered,
       };
 
       if (kind === 'business') {
@@ -240,6 +277,7 @@ try {
         checks,
         passed,
       });
+      debugLog('page_end', { account: account.account, pageId: businessPage.pageId, passed });
     }
 
     const passCount = pageResults.filter((item) => item.passed).length;
@@ -296,3 +334,4 @@ try {
   await context.close();
   await browser.close();
 }
+

@@ -18,6 +18,7 @@ function displayValue(value: unknown): string {
 
 export default function MobileBusinessPage({ page }: { page: PageDefinition }) {
   const contract = getMappedContract(page.pageId);
+  const itemKey = contract?.itemKey ?? 'id';
   const [rows, setRows] = useState<BusinessRow[]>([]);
   const [total, setTotal] = useState(0);
   const [keyword, setKeyword] = useState('');
@@ -61,7 +62,7 @@ export default function MobileBusinessPage({ page }: { page: PageDefinition }) {
       <PullToRefresh onRefresh={load}>
         {filtered.length ? filtered.map((row) => {
           const entries = Object.entries(row).slice(0, 4);
-          const id = displayValue(row.id ?? row.updated_at ?? JSON.stringify(row));
+          const id = displayValue(row[itemKey] ?? row.updated_at ?? JSON.stringify(row));
           return (
             <Card key={id} className="mobile-record-card" onClick={() => setDetail(row)}>
               <div className="mobile-record-heading"><strong>{id}</strong></div>

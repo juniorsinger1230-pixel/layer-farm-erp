@@ -1,7 +1,7 @@
 {
   "total": 87,
-  "mappedCount": 58,
-  "gapCount": 29,
+  "mappedCount": 87,
+  "gapCount": 0,
   "mapped": {
     "org-001": {
       "requirementId": "SRS-FR-ORG-001",
@@ -15,7 +15,9 @@
       ],
       "permission": "org",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "org-002": {
       "requirementId": "SRS-FR-ORG-002",
@@ -29,7 +31,9 @@
       ],
       "permission": "org",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "org-003": {
       "requirementId": "SRS-FR-ORG-003",
@@ -43,7 +47,25 @@
       ],
       "permission": "rbac",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "org-004": {
+      "requirementId": "SRS-FR-ORG-004",
+      "table": "data_permission",
+      "path": "/api/v1/org/position-role-mappings",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "master",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "org-005": {
       "requirementId": "SRS-FR-ORG-005",
@@ -57,7 +79,41 @@
       ],
       "permission": "rbac",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "org-006": {
+      "requirementId": "SRS-FR-ORG-006",
+      "table": "data_permission",
+      "path": "/api/v1/org/role-delegations",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "master",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "farm-001": {
+      "requirementId": "SRS-FR-FARM-001",
+      "table": "farm_batch",
+      "path": "/api/v1/farm/flock-projects",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "production",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "farm-002": {
       "requirementId": "SRS-FR-FARM-002",
@@ -71,7 +127,9 @@
       ],
       "permission": "production",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "farm-003": {
       "requirementId": "SRS-FR-FARM-003",
@@ -85,7 +143,9 @@
       ],
       "permission": "production",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "farm-004": {
       "requirementId": "SRS-FR-FARM-004",
@@ -99,7 +159,9 @@
       ],
       "permission": "production",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "farm-005": {
       "requirementId": "SRS-FR-FARM-005",
@@ -113,7 +175,9 @@
       ],
       "permission": "production",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "farm-006": {
       "requirementId": "SRS-FR-FARM-006",
@@ -127,7 +191,9 @@
       ],
       "permission": "production",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "farm-007": {
       "requirementId": "SRS-FR-FARM-007",
@@ -141,7 +207,9 @@
       ],
       "permission": "production",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "farm-008": {
       "requirementId": "SRS-FR-FARM-008",
@@ -155,7 +223,9 @@
       ],
       "permission": "production",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "farm-009": {
       "requirementId": "SRS-FR-FARM-009",
@@ -169,7 +239,9 @@
       ],
       "permission": "production",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "farm-010": {
       "requirementId": "SRS-FR-FARM-010",
@@ -183,7 +255,41 @@
       ],
       "permission": "production",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "farm-011": {
+      "requirementId": "SRS-FR-FARM-011",
+      "table": "egg_collection",
+      "path": "/api/v1/farm/egg-collection-grading",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "production",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "farm-012": {
+      "requirementId": "SRS-FR-FARM-012",
+      "table": "mortality_cull_record",
+      "path": "/api/v1/farm/culling-and-batch-closing",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "production",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "vet-001": {
       "requirementId": "SRS-FR-VET-001",
@@ -197,7 +303,9 @@
       ],
       "permission": "vet",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "vet-002": {
       "requirementId": "SRS-FR-VET-002",
@@ -211,7 +319,9 @@
       ],
       "permission": "vet",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "vet-003": {
       "requirementId": "SRS-FR-VET-003",
@@ -225,7 +335,9 @@
       ],
       "permission": "vet",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "vet-004": {
       "requirementId": "SRS-FR-VET-004",
@@ -239,7 +351,9 @@
       ],
       "permission": "vet",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "vet-005": {
       "requirementId": "SRS-FR-VET-005",
@@ -253,7 +367,9 @@
       ],
       "permission": "vet",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "vet-006": {
       "requirementId": "SRS-FR-VET-006",
@@ -267,7 +383,9 @@
       ],
       "permission": "vet",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "vet-007": {
       "requirementId": "SRS-FR-VET-007",
@@ -281,7 +399,25 @@
       ],
       "permission": "vet",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "vet-008": {
+      "requirementId": "SRS-FR-VET-008",
+      "table": "vaccination_execution",
+      "path": "/api/v1/vet/missed-vaccination-adverse-reactions",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "vet",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "proc-001": {
       "requirementId": "SRS-FR-PROC-001",
@@ -295,7 +431,9 @@
       ],
       "permission": "purchase",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "proc-002": {
       "requirementId": "SRS-FR-PROC-002",
@@ -309,7 +447,9 @@
       ],
       "permission": "purchase",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "proc-003": {
       "requirementId": "SRS-FR-PROC-003",
@@ -323,7 +463,9 @@
       ],
       "permission": "supplier",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "proc-004": {
       "requirementId": "SRS-FR-PROC-004",
@@ -337,7 +479,41 @@
       ],
       "permission": "purchase",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "proc-005": {
+      "requirementId": "SRS-FR-PROC-005",
+      "table": "procurement_return",
+      "path": "/api/v1/proc/purchase-returns",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "purchase",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "proc-006": {
+      "requirementId": "SRS-FR-PROC-006",
+      "table": "purchase_requisition",
+      "path": "/api/v1/proc/emergency-purchases",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "purchase",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "inv-001": {
       "requirementId": "SRS-FR-INV-001",
@@ -351,7 +527,9 @@
       ],
       "permission": "master",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "inv-002": {
       "requirementId": "SRS-FR-INV-002",
@@ -363,7 +541,9 @@
       ],
       "permission": "inventory",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "inv-003": {
       "requirementId": "SRS-FR-INV-003",
@@ -377,7 +557,9 @@
       ],
       "permission": "inventory",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "inv-004": {
       "requirementId": "SRS-FR-INV-004",
@@ -391,7 +573,9 @@
       ],
       "permission": "inventory",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "inv-005": {
       "requirementId": "SRS-FR-INV-005",
@@ -405,7 +589,9 @@
       ],
       "permission": "inventory",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "inv-006": {
       "requirementId": "SRS-FR-INV-006",
@@ -419,7 +605,9 @@
       ],
       "permission": "inventory",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "inv-007": {
       "requirementId": "SRS-FR-INV-007",
@@ -433,7 +621,9 @@
       ],
       "permission": "inventory",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "inv-008": {
       "requirementId": "SRS-FR-INV-008",
@@ -445,7 +635,9 @@
       ],
       "permission": "inventory",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "sales-001": {
       "requirementId": "SRS-FR-SALES-001",
@@ -459,7 +651,9 @@
       ],
       "permission": "customer",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "sales-002": {
       "requirementId": "SRS-FR-SALES-002",
@@ -473,7 +667,9 @@
       ],
       "permission": "sales",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "sales-003": {
       "requirementId": "SRS-FR-SALES-003",
@@ -487,7 +683,9 @@
       ],
       "permission": "sales",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "sales-004": {
       "requirementId": "SRS-FR-SALES-004",
@@ -501,7 +699,57 @@
       ],
       "permission": "sales",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "sales-005": {
+      "requirementId": "SRS-FR-SALES-005",
+      "table": "outbound_record",
+      "path": "/api/v1/sales/sales-fulfilment",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "sales",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "sales-006": {
+      "requirementId": "SRS-FR-SALES-006",
+      "table": "sales_return_execution",
+      "path": "/api/v1/sales/sales-returns-order-changes",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "sales",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "sales-007": {
+      "requirementId": "SRS-FR-SALES-007",
+      "table": "livestock_sale_execution",
+      "path": "/api/v1/sales/pullets-and-culled-birds-sales",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "sales",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "log-001": {
       "requirementId": "SRS-FR-LOG-001",
@@ -515,7 +763,9 @@
       ],
       "permission": "delivery",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "log-002": {
       "requirementId": "SRS-FR-LOG-002",
@@ -529,7 +779,25 @@
       ],
       "permission": "delivery",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "log-003": {
+      "requirementId": "SRS-FR-LOG-003",
+      "table": "delivery_task",
+      "path": "/api/v1/log/night-loading",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "delivery",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "log-004": {
       "requirementId": "SRS-FR-LOG-004",
@@ -543,7 +811,9 @@
       ],
       "permission": "delivery",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "log-005": {
       "requirementId": "SRS-FR-LOG-005",
@@ -557,7 +827,25 @@
       ],
       "permission": "delivery",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "log-006": {
+      "requirementId": "SRS-FR-LOG-006",
+      "table": "delivery_task",
+      "path": "/api/v1/log/driver-tasks",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "delivery",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "fin-001": {
       "requirementId": "SRS-FR-FIN-001",
@@ -571,7 +859,9 @@
       ],
       "permission": "finance",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "fin-002": {
       "requirementId": "SRS-FR-FIN-002",
@@ -585,7 +875,9 @@
       ],
       "permission": "finance",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "fin-003": {
       "requirementId": "SRS-FR-FIN-003",
@@ -599,7 +891,9 @@
       ],
       "permission": "finance",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "fin-004": {
       "requirementId": "SRS-FR-FIN-004",
@@ -613,7 +907,9 @@
       ],
       "permission": "finance",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "fin-005": {
       "requirementId": "SRS-FR-FIN-005",
@@ -627,7 +923,53 @@
       ],
       "permission": "finance",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "fin-006": {
+      "requirementId": "SRS-FR-FIN-006",
+      "table": "flock_cost_snapshot",
+      "path": "/api/v1/fin/batch-cost-cards",
+      "mode": "READ_ONLY",
+      "allowedMethods": [
+        "GET"
+      ],
+      "permission": "finance",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "batch_id",
+      "itemType": "integer"
+    },
+    "fin-007": {
+      "requirementId": "SRS-FR-FIN-007",
+      "table": "flock_cost_snapshot",
+      "path": "/api/v1/fin/profit-and-batch-settlement",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "finance",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "batch_id",
+      "itemType": "integer"
+    },
+    "fin-008": {
+      "requirementId": "SRS-FR-FIN-008",
+      "table": "account_balance_snapshot",
+      "path": "/api/v1/fin/financial-reconciliation-reports",
+      "mode": "READ_ONLY",
+      "allowedMethods": [
+        "GET"
+      ],
+      "permission": "finance",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "fin-009": {
       "requirementId": "SRS-FR-FIN-009",
@@ -641,7 +983,9 @@
       ],
       "permission": "finance",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "fin-010": {
       "requirementId": "SRS-FR-FIN-010",
@@ -655,7 +999,9 @@
       ],
       "permission": "finance",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "eqp-001": {
       "requirementId": "SRS-FR-EQP-001",
@@ -669,7 +1015,9 @@
       ],
       "permission": "equipment",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "eqp-002": {
       "requirementId": "SRS-FR-EQP-002",
@@ -683,7 +1031,9 @@
       ],
       "permission": "equipment",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "eqp-003": {
       "requirementId": "SRS-FR-EQP-003",
@@ -697,7 +1047,25 @@
       ],
       "permission": "equipment",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "eqp-004": {
+      "requirementId": "SRS-FR-EQP-004",
+      "table": "maintenance_work_order",
+      "path": "/api/v1/eqp/equipment-repairs",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "equipment",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "eqp-005": {
       "requirementId": "SRS-FR-EQP-005",
@@ -711,7 +1079,161 @@
       ],
       "permission": "equipment",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "rpt-001": {
+      "requirementId": "SRS-FR-RPT-001",
+      "table": "rm_operational_dashboard",
+      "path": "/api/v1/rpt/management-dashboard",
+      "mode": "READ_ONLY",
+      "allowedMethods": [
+        "GET"
+      ],
+      "permission": "report",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "read_model_key",
+      "itemType": "string"
+    },
+    "rpt-002": {
+      "requirementId": "SRS-FR-RPT-002",
+      "table": "rm_report_snapshot",
+      "path": "/api/v1/rpt/production-reports",
+      "mode": "READ_ONLY",
+      "allowedMethods": [
+        "GET"
+      ],
+      "permission": "report",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "read_model_key",
+      "itemType": "string"
+    },
+    "rpt-003": {
+      "requirementId": "SRS-FR-RPT-003",
+      "table": "rm_report_snapshot",
+      "path": "/api/v1/rpt/inventory-purchase-reports",
+      "mode": "READ_ONLY",
+      "allowedMethods": [
+        "GET"
+      ],
+      "permission": "report",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "read_model_key",
+      "itemType": "string"
+    },
+    "rpt-004": {
+      "requirementId": "SRS-FR-RPT-004",
+      "table": "rm_report_snapshot",
+      "path": "/api/v1/rpt/sales-finance-reports",
+      "mode": "READ_ONLY",
+      "allowedMethods": [
+        "GET"
+      ],
+      "permission": "report",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "read_model_key",
+      "itemType": "string"
+    },
+    "rpt-005": {
+      "requirementId": "SRS-FR-RPT-005",
+      "table": "report_record",
+      "path": "/api/v1/rpt/report-exports",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "report",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "print-001": {
+      "requirementId": "SRS-FR-PRINT-001",
+      "table": "print_template_design",
+      "path": "/api/v1/print/print-template-versions",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "print",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "print-002": {
+      "requirementId": "SRS-FR-PRINT-002",
+      "table": "print_job",
+      "path": "/api/v1/print/delivery-note-printing",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "print",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "print-003": {
+      "requirementId": "SRS-FR-PRINT-003",
+      "table": "print_job",
+      "path": "/api/v1/print/cash-check-printing",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "print",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "print-004": {
+      "requirementId": "SRS-FR-PRINT-004",
+      "table": "print_job",
+      "path": "/api/v1/print/labels-business-document-printing",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "print",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "print-005": {
+      "requirementId": "SRS-FR-PRINT-005",
+      "table": "print_log",
+      "path": "/api/v1/print/reprint-void-audit",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "print",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "print-006": {
       "requirementId": "SRS-FR-PRINT-006",
@@ -725,7 +1247,23 @@
       ],
       "permission": "print",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "trace-001": {
+      "requirementId": "SRS-FR-TRACE-001",
+      "table": "traceability_link",
+      "path": "/api/v1/trace/batch-end-to-end-trace",
+      "mode": "READ_ONLY",
+      "allowedMethods": [
+        "GET"
+      ],
+      "permission": "report",
+      "companyScope": true,
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "trace-002": {
       "requirementId": "SRS-FR-TRACE-002",
@@ -737,7 +1275,9 @@
       ],
       "permission": "audit",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "trace-003": {
       "requirementId": "SRS-FR-TRACE-003",
@@ -749,7 +1289,9 @@
       ],
       "permission": "audit",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "trace-004": {
       "requirementId": "SRS-FR-TRACE-004",
@@ -763,7 +1305,25 @@
       ],
       "permission": "audit",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
+    },
+    "plat-001": {
+      "requirementId": "SRS-FR-PLAT-001",
+      "table": "session",
+      "path": "/api/v1/plat/authentication-sessions",
+      "mode": "CRUD_AND_ACTION",
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "permission": "master",
+      "companyScope": false,
+      "contractPath": true,
+      "itemKey": "session_id",
+      "itemType": "string"
     },
     "plat-002": {
       "requirementId": "SRS-FR-PLAT-002",
@@ -777,7 +1337,9 @@
       ],
       "permission": "platform",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "plat-003": {
       "requirementId": "SRS-FR-PLAT-003",
@@ -791,7 +1353,9 @@
       ],
       "permission": "platform",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     },
     "plat-004": {
       "requirementId": "SRS-FR-PLAT-004",
@@ -805,183 +1369,10 @@
       ],
       "permission": "platform",
       "companyScope": true,
-      "contractPath": true
+      "contractPath": true,
+      "itemKey": "id",
+      "itemType": "integer"
     }
   },
-  "gap": [
-    {
-      "pageId": "org-004",
-      "requirementId": "SRS-FR-ORG-004",
-      "domain": "ORG",
-      "title": "岗位角色映射管理"
-    },
-    {
-      "pageId": "org-006",
-      "requirementId": "SRS-FR-ORG-006",
-      "domain": "ORG",
-      "title": "兼任代理与权限回收"
-    },
-    {
-      "pageId": "farm-001",
-      "requirementId": "SRS-FR-FARM-001",
-      "domain": "FARM",
-      "title": "批次立项管理"
-    },
-    {
-      "pageId": "farm-011",
-      "requirementId": "SRS-FR-FARM-011",
-      "domain": "FARM",
-      "title": "集蛋与蛋品分级"
-    },
-    {
-      "pageId": "farm-012",
-      "requirementId": "SRS-FR-FARM-012",
-      "domain": "FARM",
-      "title": "淘汰决策与批次关闭"
-    },
-    {
-      "pageId": "vet-008",
-      "requirementId": "SRS-FR-VET-008",
-      "domain": "VET",
-      "title": "漏种补种与异常反应"
-    },
-    {
-      "pageId": "proc-005",
-      "requirementId": "SRS-FR-PROC-005",
-      "domain": "PROC",
-      "title": "采购退货管理"
-    },
-    {
-      "pageId": "proc-006",
-      "requirementId": "SRS-FR-PROC-006",
-      "domain": "PROC",
-      "title": "紧急采购与兼任审批"
-    },
-    {
-      "pageId": "sales-005",
-      "requirementId": "SRS-FR-SALES-005",
-      "domain": "SALES",
-      "title": "销售出库协同"
-    },
-    {
-      "pageId": "sales-006",
-      "requirementId": "SRS-FR-SALES-006",
-      "domain": "SALES",
-      "title": "销售退货与订单变更"
-    },
-    {
-      "pageId": "sales-007",
-      "requirementId": "SRS-FR-SALES-007",
-      "domain": "SALES",
-      "title": "青年鸡与淘汰鸡销售"
-    },
-    {
-      "pageId": "log-003",
-      "requirementId": "SRS-FR-LOG-003",
-      "domain": "LOG",
-      "title": "夜间装车管理"
-    },
-    {
-      "pageId": "log-006",
-      "requirementId": "SRS-FR-LOG-006",
-      "domain": "LOG",
-      "title": "司机配送员任务管理"
-    },
-    {
-      "pageId": "fin-006",
-      "requirementId": "SRS-FR-FIN-006",
-      "domain": "FIN",
-      "title": "批次成本卡"
-    },
-    {
-      "pageId": "fin-007",
-      "requirementId": "SRS-FR-FIN-007",
-      "domain": "FIN",
-      "title": "利润核算与批次结项"
-    },
-    {
-      "pageId": "fin-008",
-      "requirementId": "SRS-FR-FIN-008",
-      "domain": "FIN",
-      "title": "财务对账与报表"
-    },
-    {
-      "pageId": "eqp-004",
-      "requirementId": "SRS-FR-EQP-004",
-      "domain": "EQP",
-      "title": "故障维修管理"
-    },
-    {
-      "pageId": "rpt-001",
-      "requirementId": "SRS-FR-RPT-001",
-      "domain": "RPT",
-      "title": "经营驾驶舱"
-    },
-    {
-      "pageId": "rpt-002",
-      "requirementId": "SRS-FR-RPT-002",
-      "domain": "RPT",
-      "title": "生产报表"
-    },
-    {
-      "pageId": "rpt-003",
-      "requirementId": "SRS-FR-RPT-003",
-      "domain": "RPT",
-      "title": "库存采购报表"
-    },
-    {
-      "pageId": "rpt-004",
-      "requirementId": "SRS-FR-RPT-004",
-      "domain": "RPT",
-      "title": "销售财务报表"
-    },
-    {
-      "pageId": "rpt-005",
-      "requirementId": "SRS-FR-RPT-005",
-      "domain": "RPT",
-      "title": "报表导出与权限"
-    },
-    {
-      "pageId": "print-001",
-      "requirementId": "SRS-FR-PRINT-001",
-      "domain": "PRINT",
-      "title": "打印模板版本管理"
-    },
-    {
-      "pageId": "print-002",
-      "requirementId": "SRS-FR-PRINT-002",
-      "domain": "PRINT",
-      "title": "配送单打印"
-    },
-    {
-      "pageId": "print-003",
-      "requirementId": "SRS-FR-PRINT-003",
-      "domain": "PRINT",
-      "title": "现金/支票打印"
-    },
-    {
-      "pageId": "print-004",
-      "requirementId": "SRS-FR-PRINT-004",
-      "domain": "PRINT",
-      "title": "标签与业务单据打印"
-    },
-    {
-      "pageId": "print-005",
-      "requirementId": "SRS-FR-PRINT-005",
-      "domain": "PRINT",
-      "title": "重打、作废与审计"
-    },
-    {
-      "pageId": "trace-001",
-      "requirementId": "SRS-FR-TRACE-001",
-      "domain": "TRACE",
-      "title": "批次全链路穿透"
-    },
-    {
-      "pageId": "plat-001",
-      "requirementId": "SRS-FR-PLAT-001",
-      "domain": "PLAT",
-      "title": "登录认证与会话管理"
-    }
-  ]
+  "gap": []
 }

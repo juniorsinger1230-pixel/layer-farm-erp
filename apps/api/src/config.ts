@@ -6,6 +6,8 @@ export interface AppConfig {
   bodyLimitBytes: number;
   externalIntegrationsEnabled: boolean;
   databaseUrl?: string;
+  databasePoolMax: number;
+  databaseConnectionTimeoutMs: number;
   valkeyUrl?: string;
   jwtSigningKey?: string;
   mfaEnabled: boolean;
@@ -42,6 +44,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     port: parsePositiveInteger(env.PORT, 3100, 65_535),
     bodyLimitBytes: parsePositiveInteger(env.BODY_LIMIT_BYTES, 1_048_576, 10_485_760),
     externalIntegrationsEnabled: env.EXTERNAL_INTEGRATIONS_ENABLED === 'true',
+    databasePoolMax: parsePositiveInteger(env.DATABASE_POOL_MAX, 20, 50),
+    databaseConnectionTimeoutMs: parsePositiveInteger(env.DATABASE_CONNECTION_TIMEOUT_MS, 10000, 30000),
     printSandboxMode: env.PRINT_SANDBOX_MODE === 'true',
     mfaEnabled: env.MFA_ENABLED !== 'false',
     attachmentRetentionDays: parsePositiveInteger(env.ATTACHMENT_RETENTION_DAYS, 3650, 36500),

@@ -226,6 +226,10 @@ export function createApp(options: AppOptions) {
     const context = {
       actorId: authenticated.principal.employeeNo, employeeId: authenticated.principal.employeeId,
       companyCode, companyId: authenticated.principal.companyId,
+      houseIds: [...authenticated.access.houseIds],
+      warehouseIds: [...authenticated.access.warehouseIds],
+      selfOnly: authenticated.access.selfOnly,
+      taskOnly: authenticated.access.taskOnly,
     };
     return {
       service: new DomainService(options.database, context),

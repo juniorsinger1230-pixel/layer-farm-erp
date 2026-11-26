@@ -9,7 +9,8 @@ export default function globalSetup(): void {
   const passwordLine = containerEnv.split(/\r?\n/).find((line) => line.startsWith('POSTGRES_PASSWORD='));
   if (passwordLine === undefined) throw new Error('PostgreSQL password is not configured');
   const password = passwordLine.slice('POSTGRES_PASSWORD='.length);
-  const databaseUrl = process.env.DATABASE_URL ?? `postgresql://erp:${encodeURIComponent(password)}@127.0.0.1:55432/layer_farm`;
+  const postgresPort = process.env.E2E_POSTGRES_PORT ?? '55432';
+  const databaseUrl = process.env.DATABASE_URL ?? `postgresql://erp:${encodeURIComponent(password)}@127.0.0.1:${postgresPort}/layer_farm`;
   const result = spawnSync(process.execPath, [resolve('scripts/e2e-seed.mjs')], {
     cwd: process.cwd(),
     stdio: 'inherit',

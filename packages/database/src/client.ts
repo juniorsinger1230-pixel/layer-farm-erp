@@ -9,6 +9,10 @@ export interface ActorContext {
   companyCode: string;
   companyId?: number;
   employeeId?: number;
+  houseIds?: readonly number[];
+  warehouseIds?: readonly number[];
+  selfOnly?: boolean;
+  taskOnly?: boolean;
 }
 
 export function createPostgresPool(connectionString: string, max = 20): Pool {

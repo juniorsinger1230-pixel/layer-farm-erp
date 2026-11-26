@@ -10,6 +10,8 @@ type CredentialRow = {
   status: 'active' | 'disabled';
   failed_attempts: number;
   locked_until: Date | string | null;
+  mfa_failed_attempts: number;
+  mfa_locked_until: Date | string | null;
   mfa_secret: string | null;
 };
 
@@ -47,6 +49,8 @@ function credential(row: CredentialRow): CredentialRecord {
     status: row.status,
     failedAttempts: row.failed_attempts,
     ...(row.locked_until === null ? {} : { lockedUntil: asDate(row.locked_until) }),
+    mfaFailedAttempts: row.mfa_failed_attempts,
+    ...(row.mfa_locked_until === null ? {} : { mfaLockedUntil: asDate(row.mfa_locked_until) }),
     ...(row.mfa_secret === null ? {} : { mfaSecret: row.mfa_secret }),
   };
 }
@@ -80,12 +84,16 @@ export class PostgresAuthStore implements AuthStore {
   async saveCredential(record: CredentialRecord): Promise<void> {
     await this.db.query(
       `INSERT INTO app_auth.credential
-       (employee_id,account,company_code,password_hash,principal,status,failed_attempts,locked_until,mfa_secret)
-       VALUES ($1,$2,$3,$4,$5::jsonb,$6,$7,$8,$9)
+       (employee_id,account,company_code,password_hash,principal,status,failed_attempts,locked_until,mfa_failed_attempts,mfa_locked_until,mfa_secret)
+       VALUES ($1,$2,$3,$4,$5::jsonb,$6,$7,$8,$9,$10,$11)
        ON CONFLICT (employee_id) DO UPDATE SET account=EXCLUDED.account,company_code=EXCLUDED.company_code,
        password_hash=EXCLUDED.password_hash,principal=EXCLUDED.principal,status=EXCLUDED.status,
-       failed_attempts=EXCLUDED.failed_attempts,locked_until=EXCLUDED.locked_until,mfa_secret=EXCLUDED.mfa_secret,updated_at=now()`,
-      [record.principal.employeeId, record.account, record.principal.companyCode, record.passwordHash, JSON.stringify(record.principal), record.status, record.failedAttempts, record.lockedUntil ?? null, record.mfaSecret ?? null],
+       failed_attempts=EXCLUDED.failed_attempts,locked_until=EXCLUDED.locked_until,
+       mfa_failed_attempts=EXCLUDED.mfa_failed_attempts,mfa_locked_until=EXCLUDED.mfa_locked_until,
+       mfa_secret=EXCLUDED.mfa_secret,updated_at=now()`,
+      [record.principal.employeeId, record.account, record.principal.companyCode, record.passwordHash,
+        JSON.stringify(record.principal), record.status, record.failedAttempts, record.lockedUntil ?? null,
+        record.mfaFailedAttempts, record.mfaLockedUntil ?? null, record.mfaSecret ?? null],
     );
   }
 
@@ -125,5 +133,18 @@ export class PostgresAuthStore implements AuthStore {
 
   async revokeAllSessions(employeeId: number): Promise<void> {
     await this.db.query('UPDATE app_auth.session SET revoked_at=now() WHERE employee_id=$1 AND revoked_at IS NULL', [employeeId]);
+  }
+
+  async consumeMfaCode(employeeId: number, timeWindow: number, codeHash: string, expiresAt: Date): Promise<boolean> {
+    const result = await this.db.query(
+      `WITH cleanup AS (
+         DELETE FROM app_auth.mfa_used_code WHERE expires_at <= now()
+       )
+       INSERT INTO app_auth.mfa_used_code (employee_id,time_window,code_hash,expires_at)
+       VALUES ($1,$2,$3,$4)
+       ON CONFLICT DO NOTHING`,
+      [employeeId, timeWindow, codeHash, expiresAt],
+    );
+    return result.rowCount === 1;
   }
 }

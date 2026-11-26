@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e',
-  globalSetup: './e2e/global-setup.ts',
+  globalSetup: process.env.E2E_GLOBAL_SETUP === 'noop' ? './e2e/global-noop.ts' : './e2e/global-setup.ts',
   timeout: 300_000,
   expect: { timeout: 15_000 },
   fullyParallel: false,
