@@ -24,3 +24,5 @@ p2-*-result.json
 k8s-manifest-validate-result.json
 p2-validation/
 .runtime/
+acceptance-evidence/
+acceptance-ledger.json

@@ -22,6 +22,7 @@
     "trial:verify": "node scripts/verify-trial-accounts.mjs",
     "pages:verify": "node scripts/verify-public-pages.mjs",
     "cases:generate": "node scripts/generate-acceptance-cases.mjs",
+    "acceptance:run": "node scripts/acceptance-runner.mjs",
     "e2e:cleanup": "node scripts/e2e-cleanup.mjs",
     "e2e": "playwright test --config=playwright.config.ts",
     "ui:regression": "node scripts/ui-regression.mjs",

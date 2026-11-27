@@ -247,6 +247,27 @@ markdown.push(
   '',
 );
 
+const jsonOutputPath = new URL('../acceptance-cases.json', import.meta.url);
+writeFileSync(jsonOutputPath, JSON.stringify({
+  baseline: {
+    sha,
+    branch: baseline.git.branch,
+    operations: baseline.authoritativeContract.operations,
+    manualCreatePages: baseline.pageScope.manualCreatePages,
+    systemReadOnlyPages: baseline.pageScope.systemReadOnlyPages,
+    visibleFields: baseline.formScope.visibleFields,
+    referenceFields: baseline.formScope.referenceFields,
+  },
+  totalCases: cases.length,
+  stageCounts,
+  cases,
+}, null, 2), 'utf8');
 const outputPath = new URL('../S0-S6_234条用例唯一清单.md', import.meta.url);
 writeFileSync(outputPath, markdown.join('\n'), 'utf8');
-console.log(JSON.stringify({ status: 'pass', totalCases: cases.length, stageCounts, outputPath: fileURLToPath(outputPath) }, null, 2));
+console.log(JSON.stringify({
+  status: 'pass',
+  totalCases: cases.length,
+  stageCounts,
+  jsonOutputPath: fileURLToPath(jsonOutputPath),
+  outputPath: fileURLToPath(outputPath),
+}, null, 2));
