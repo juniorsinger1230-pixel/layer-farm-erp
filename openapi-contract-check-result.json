@@ -1,7 +1,27 @@
 {
-  "checkedAt": "2026-11-27T03:10:42.848Z",
+  "checkedAt": "2026-11-27T11:18:54.007Z",
+  "sourceRevision": {
+    "sha": "0be074655eb444ccb36ba03aabbaf06cc6abfbed",
+    "tree": "7ad638ee58421a36fb894624df1bceeea5dd6895",
+    "branch": "chore/baseline-sync",
+    "trackedWorktreeClean": true,
+    "trackedChanges": [],
+    "cleanlinessExclusions": [
+      "openapi-contract-check-result.json",
+      "OpenAPI双向核对报告.md",
+      "current-sha-evidence"
+    ]
+  },
   "status": "pass",
   "scope": "route, HTTP method, field-level schema, query parameters and status-code contract",
+  "inputSha256": {
+    "openapi": "76b379649905996616060915b87e056e794bcb0dc32f516dd42b69e8acab3c0d",
+    "mapping": "4c30ba3046a9802cca6b240c0d2f49f418f93761add0823c4d054bf949429202",
+    "app": "960e9fde2474e9895861d82f41874be17a669c0932adfdf205912133656b021c",
+    "resources": "81ee3e2487687229b82c4b0e8c0819b83041d4a21f6956e5496dfb56a1d3b3b5",
+    "routePolicy": "ca7f4886d47ef759dabcb2c7bc08f6765e841d66814f7f08c5931842867e9156",
+    "contractProcess": "954785bb603251a206b40312b81559e8cb7cc0d29354e3b459edfc3152ce82f4"
+  },
   "inputs": {
     "openapiPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\contracts\\openapi.json",
     "mappingPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\contracts\\api-operation-map.json",

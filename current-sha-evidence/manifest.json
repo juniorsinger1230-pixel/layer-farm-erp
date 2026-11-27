@@ -1,0 +1,86 @@
+{
+  "generatedAt": "2026-11-27T11:27:00.436Z",
+  "sourceRevision": {
+    "sha": "0be074655eb444ccb36ba03aabbaf06cc6abfbed",
+    "tree": "7ad638ee58421a36fb894624df1bceeea5dd6895",
+    "branch": "chore/baseline-sync",
+    "trackedWorktreeClean": true,
+    "trackedChanges": [],
+    "cleanlinessExclusions": [
+      "openapi-contract-check-result.json",
+      "OpenAPI双向核对报告.md",
+      "current-sha-evidence"
+    ]
+  },
+  "status": "pass",
+  "commands": [
+    "npm run contract:check",
+    "npm run contract:report",
+    "npm run test:coverage",
+    "npm run evidence:current-sha -- --test-log=gate-local-step7.txt"
+  ],
+  "tests": {
+    "tests": 137,
+    "pass": 137,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "coverage": {
+    "scope": "Only apps/api/src and packages files loaded by tests; apps/web and unloaded files are excluded. This is not full-system or functional coverage.",
+    "summarySha256": "fcb98489d71b6a48a362f754c8709fde1ec1a276852720bc88842d3ae6c3c342",
+    "total": {
+      "lines": {
+        "total": 17606,
+        "covered": 16851,
+        "skipped": 0,
+        "pct": 95.71
+      },
+      "statements": {
+        "total": 17606,
+        "covered": 16851,
+        "skipped": 0,
+        "pct": 95.71
+      },
+      "functions": {
+        "total": 318,
+        "covered": 297,
+        "skipped": 0,
+        "pct": 93.39
+      },
+      "branches": {
+        "total": 2014,
+        "covered": 1381,
+        "skipped": 0,
+        "pct": 68.57
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 100
+      }
+    }
+  },
+  "contract": {
+    "resultSha256": "0136ce883b8fcd9dedc410200af7170a96a88555406d0e875c26ef218e674ae7",
+    "status": "pass",
+    "checkedAt": "2026-11-27T11:18:54.007Z",
+    "authoritativeOperations": 479,
+    "implementationOperations": 479,
+    "matchedOperations": 479,
+    "coverage": 1,
+    "missing": 0,
+    "undocumented": 0,
+    "readOnlyWriteExposures": 0,
+    "schemaErrors": 0,
+    "parameterErrors": 0,
+    "statusErrors": 0
+  },
+  "excludedHistoricalMetrics": [
+    "58 REAL + 29 GAP",
+    "481 operations",
+    "historical coverage snapshots"
+  ]
+}
