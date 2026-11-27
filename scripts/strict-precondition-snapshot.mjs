@@ -56,8 +56,17 @@ export function captureDatabaseState(dockerPath, projectName) {
 }
 
 export async function captureReadyState(apiBaseUrl) {
-  const response = await fetch(`${apiBaseUrl}/health/ready`);
-  return { status: response.status, body: await response.json() };
+  let lastError;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const response = await fetch(`${apiBaseUrl}/health/ready`);
+      return { status: response.status, body: await response.json(), attempt };
+    } catch (error) {
+      lastError = error;
+      if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+  }
+  throw lastError;
 }
 
 export async function captureCasePrecondition({
