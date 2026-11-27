@@ -4,6 +4,7 @@ import { BellOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, Sea
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { DOMAIN_GROUPS, PAGE_MAP } from '../data/registry';
 import { useSession } from '../auth/SessionContext';
+import { canReadPage } from '../auth/permissions';
 import { logoutLocal } from '../api';
 
 const { Header, Sider, Content, Footer } = Layout;
@@ -34,6 +35,7 @@ export default function DesktopShell(): React.ReactNode {
       key: group.domain,
       label: group.domainName,
       children: group.pages
+        .filter((page) => profile !== null && canReadPage(profile, page.pageId))
         .filter((page) => page.title.includes(keyword.trim()))
         .map((page) => ({ key: page.route, label: page.title })),
     }));
@@ -42,7 +44,7 @@ export default function DesktopShell(): React.ReactNode {
       { key: '/app/journeys', label: '业务流程' },
       ...groups.filter((group) => group.children.length > 0),
     ];
-  }, [keyword]);
+  }, [keyword, profile]);
 
   const selectedKey = location.pathname.startsWith('/app/workbench')
     ? '/app/workbench'

@@ -745,7 +745,7 @@ export class ContractProcessService {
     const whereValues: unknown[] = [];
     let scope = '';
     if (spec.companyKind !== 'none') {
-      const companyPlaceholder = idIndex + 1 + whereValues.length;
+      const companyPlaceholder = idIndex + 2 + whereValues.length;
       whereValues.push(this.companyValue(spec));
       scope = ` AND ${this.companyColumn(spec)}=$${companyPlaceholder}`;
     }
@@ -755,7 +755,7 @@ export class ContractProcessService {
     const result = await client.query(
       `UPDATE ${qualifiedTable(spec)} SET ${assignments}, updated_by=$${idIndex}, updated_at=now()
        WHERE ${this.itemColumn(spec)}=$${idIndex + 1}${scope}${scopeSql} RETURNING *`,
-      [...changeValues, this.context.actorId, before[this.itemColumn(spec)], ...whereValues],
+      [...changeValues, this.context.actorId, before[spec.itemKey], ...whereValues],
     );
     if (result.rowCount !== 1) throw new AppError(409, 'CONFLICT', '记录已被其他用户修改');
     return result.rows[0] as Record<string, unknown>;
@@ -808,7 +808,7 @@ export class ContractProcessService {
   private async auditView(client: Queryable, spec: ProcessSpec, operation: string): Promise<void> {
     await client.query(
       'INSERT INTO app.audit_log (employee_no,login_ref,operation,permission_ref,sensitive_op,company_code,created_by) VALUES ($1,$2,$3,$4,$5,$6,$7)',
-      [this.context.employeeId, spec.path, `${spec.requirementId}.${operation}`, 'report:read', 'report_view', this.context.companyCode, this.context.actorId],
+      [this.context.employeeId, spec.path, `${spec.requirementId.replace(/^SRS-FR-/, '')}.${operation}`, 'report:read', 'report_view', this.context.companyCode, this.context.actorId],
     );
   }
 

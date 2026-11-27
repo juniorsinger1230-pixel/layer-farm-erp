@@ -92,6 +92,10 @@ export default function MobileSchemaForm({
         payload[field.name] = field.type === 'integer' ? Number.parseInt(displayInputValue(value), 10) : Number.parseFloat(displayInputValue(value));
       } else if (field.control === 'json') {
         payload[field.name] = JSON.parse(displayInputValue(value));
+      } else if (field.control === 'date') {
+        payload[field.name] = displayInputValue(value).slice(0, 10);
+      } else if (field.control === 'date-time') {
+        payload[field.name] = new Date(displayInputValue(value)).toISOString();
       } else {
         payload[field.name] = value;
       }

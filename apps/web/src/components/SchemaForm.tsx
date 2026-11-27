@@ -51,6 +51,13 @@ function fieldRules(field: FormFieldSchema) {
 export default function SchemaForm({ schema, initialValues, submitting, onCancel, onSubmit }: SchemaFormProps) {
   const [form] = Form.useForm();
   const { optionsByPath, loading, error } = useReferenceOptions(schema.fields);
+  const normalizedInitialValues = { ...initialValues };
+  for (const field of schema.fields) {
+    const value = initialValues[field.name];
+    if ((field.control === 'date' || field.control === 'date-time') && value !== undefined && value !== null && value !== '' && !dayjs.isDayjs(value)) {
+      normalizedInitialValues[field.name] = dayjs(displayInputValue(value));
+    }
+  }
 
   const transformValues = (values: Record<string, unknown>): Record<string, unknown> => {
     const result: Record<string, unknown> = {};
@@ -74,7 +81,7 @@ export default function SchemaForm({ schema, initialValues, submitting, onCancel
     <Form
       form={form}
       layout="vertical"
-      initialValues={initialValues}
+      initialValues={normalizedInitialValues}
       disabled={submitting}
       onFinish={(values: Record<string, unknown>) => void onSubmit(transformValues(values))}
     >

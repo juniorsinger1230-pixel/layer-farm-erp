@@ -7,6 +7,7 @@ import { canCreatePage, canUpdatePage, getMappedContract, isGapPage } from '../a
 import { buildInitialValues, getPageFormSchema } from './form-schema';
 import MobileSchemaForm from './MobileSchemaForm';
 import StatusTag from './StatusTag';
+import PrintDesignerCard from './PrintDesignerCard';
 import { formatDisplayValue, getFieldLabel } from '../presentation/presentation';
 import type { PageDefinition } from '../types';
 
@@ -93,7 +94,7 @@ export default function MobileBusinessPage({ page }: { page: PageDefinition }): 
   };
 
   if (unavailable) {
-    return <Alert type="info" showIcon message="功能暂未开放" description="该业务功能正在准备中，当前不展示模拟数据或临时内容。" />;
+    return <Alert type="info" showIcon message="功能暂未开放" description="该业务功能正在准备中，当前不展示业务数据或临时内容。" />;
   }
 
   return (
@@ -104,6 +105,7 @@ export default function MobileBusinessPage({ page }: { page: PageDefinition }): 
       </Space>
 
       {error ? <Alert type="error" showIcon message={error} action={<Button size="small" onClick={() => void loadRecords()}>重试</Button>} /> : null}
+      {page.pageId === 'print-001' ? <PrintDesignerCard /> : null}
       {loading ? <Tag>正在加载...</Tag> : null}
 
       <Space direction="vertical" style={{ width: '100%' }}>

@@ -8,6 +8,7 @@ import { canCreatePage, canUpdatePage, getMappedContract, isGapPage } from '../a
 import { buildInitialValues, getPageFormSchema } from './form-schema';
 import SchemaForm from './SchemaForm';
 import StatusTag from './StatusTag';
+import PrintDesignerCard from './PrintDesignerCard';
 import { formatDisplayValue, getColumnWidth, getFieldLabel } from '../presentation/presentation';
 import type { PageDefinition } from '../types';
 
@@ -151,13 +152,14 @@ export default function BusinessPage({ page }: BusinessPageProps): React.ReactEl
   if (unavailable) {
     return (
       <Card className="business-page" data-page-id={page.pageId}>
-        <Alert type="info" showIcon message="功能暂未开放" description="该业务功能正在准备中，当前不展示模拟数据或临时内容。" />
+        <Alert type="info" showIcon message="功能暂未开放" description="该业务功能正在准备中，当前不展示业务数据或临时内容。" />
       </Card>
     );
   }
 
   return (
     <div className="business-page" data-page-id={page.pageId}>
+      {page.pageId === 'print-001' ? <PrintDesignerCard /> : null}
       <Card
         title={page.title}
         extra={canCreate ? <Button type="primary" icon={<PlusOutlined />} onClick={() => setCreateOpen(true)}>新建</Button> : null}
