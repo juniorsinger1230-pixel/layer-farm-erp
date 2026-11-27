@@ -37,6 +37,11 @@ const staff = [
   { account: 'engineering.wu', employeeNo: 'EMP-008', name: '吴工', role: 'engineering', department: 'ENG', position: '工程维修员', password: commonPassword },
 ];
 
+const houses = [
+  { code: 'H-001', name: '1号育雏舍', penCount: 4, floorCount: 2, mode: 'brooding', status: 'active' },
+  { code: 'H-002', name: '2号产蛋舍', penCount: 8, floorCount: 4, mode: 'cage', status: 'active' },
+];
+
 const printTemplates = [
   { code: 'LABEL-EGG', name: '鲜鸡蛋标签', type: 'label', paper: '80x60', dimensions: '80x60mm', document: 'egg-collection', printer: 'Gprinter M421' },
   { code: 'DELIVERY-NOTE', name: '配送单', type: 'delivery', paper: 'legal', dimensions: '216x356mm', document: 'delivery', printer: 'EPSON L3110' },
@@ -73,6 +78,15 @@ try {
       [department.code, department.name, parentId, department.level, companyCode],
     );
     unitMap.set(department.code, unit.id);
+  }
+
+  for (const house of houses) {
+    await pool.query(
+      `INSERT INTO app.house_pen
+       (house_code, house_name, pen_count, floor_count, farm_mode, company_code, house_status, created_by, remark)
+       VALUES ($1, $2, $3, $4, $5, (SELECT id FROM app.company WHERE company_code='THL'), $6, 'SYSTEM', '演示栋舍')`,
+      [house.code, house.name, house.penCount, house.floorCount, house.mode, house.status],
+    );
   }
 
   const positionMap = new Map();
