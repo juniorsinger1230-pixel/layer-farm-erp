@@ -1,9 +1,9 @@
 {
-  "checkedAt": "2026-11-27T11:18:54.007Z",
+  "checkedAt": "2026-11-27T15:21:11.124Z",
   "sourceRevision": {
-    "sha": "0be074655eb444ccb36ba03aabbaf06cc6abfbed",
-    "tree": "7ad638ee58421a36fb894624df1bceeea5dd6895",
-    "branch": "chore/baseline-sync",
+    "sha": "a749e40ec1a19ee446c123ef84f9eddb8aea6e68",
+    "tree": "5a0accc7f4b335176442aacd6d61739c6d853cf5",
+    "branch": "chore/strict-acceptance-ledger",
     "trackedWorktreeClean": true,
     "trackedChanges": [],
     "cleanlinessExclusions": [
