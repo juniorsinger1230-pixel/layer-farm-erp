@@ -26,3 +26,4 @@ p2-validation/
 .runtime/
 acceptance-evidence/
 acceptance-ledger.json
+strict-acceptance-evidence/

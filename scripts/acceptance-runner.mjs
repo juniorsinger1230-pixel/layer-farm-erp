@@ -5,11 +5,24 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { totp } from '../dist/packages/security/src/auth.js';
 import { projectFields } from '../dist/packages/security/src/rbac.js';
+import { StrictNetworkRecorder, recordedFetch } from './strict-network-recorder.mjs';
+import { captureCasePrecondition } from './strict-precondition-snapshot.mjs';
 
 const projectRoot = fileURLToPath(new URL('..', import.meta.url));
-const runId = new Date().toISOString().replace(/[:.]/g, '-');
+const earlyArguments = process.argv.slice(2);
+function getEarlyOption(name) {
+  const inline = earlyArguments.find((argument) => argument.startsWith(`--${name}=`));
+  if (inline) return inline.split('=').slice(1).join('=');
+  const index = earlyArguments.indexOf(`--${name}`);
+  return index >= 0 ? earlyArguments[index + 1] : null;
+}
+const runId = getEarlyOption('run-id') ?? new Date().toISOString().replace(/[:.]/g, '-');
+const strictRoot = getEarlyOption('strict-root');
 const evidenceRoot = path.join(projectRoot, 'acceptance-evidence', `run-${runId}`);
 mkdirSync(evidenceRoot, { recursive: true });
+const strictNetworkRecorder = strictRoot
+  ? new StrictNetworkRecorder({ runId, projectRoot, strictRoot })
+  : null;
 
 const dockerExecutable = 'C:\\Users\\龚\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe';
 const gitExecutable = 'C:\\Program Files\\Git\\cmd\\git.exe';
@@ -40,7 +53,7 @@ async function git(args) {
 }
 
 async function request(url, options = {}) {
-  const response = await fetch(url, options);
+  const response = await recordedFetch(strictNetworkRecorder, url, options);
   const text = await response.text();
   let json = null;
   try { json = text ? JSON.parse(text) : null; } catch { json = null; }
@@ -176,6 +189,7 @@ async function withBrowser(callback) {
   const browser = await chromium.launch();
   try {
     const page = await browser.newPage();
+    strictNetworkRecorder?.attachPage(page, 'withBrowser');
     return await callback(page);
   } finally {
     await browser.close();
@@ -200,6 +214,7 @@ async function getS2Page() {
   const { chromium } = await import('playwright');
   s2Browser = await chromium.launch();
   s2Page = await s2Browser.newPage();
+  strictNetworkRecorder?.attachPage(s2Page, 'S2');
   await browserLogin(s2Page, 'admin.zhang', 'Admin-Passw0rd!2026');
   return s2Page;
 }
@@ -319,6 +334,7 @@ async function getS3Page() {
   const { chromium } = await import('playwright');
   s3Browser = await chromium.launch();
   s3Page = await s3Browser.newPage();
+  strictNetworkRecorder?.attachPage(s3Page, 'S3');
   await browserLogin(s3Page, 'admin.zhang', 'Admin-Passw0rd!2026');
   return s3Page;
 }
@@ -1406,7 +1422,7 @@ async function adminApi(targetPath, options = {}) {
     headers['idempotency-key'] = options.idempotencyKey ?? `acceptance-${Date.now()}-${acceptanceRequestCounter += 1}`;
     body = JSON.stringify(options.body);
   }
-  const response = await fetch(`${baseUrl}${targetPath}`, { method, headers, body });
+  const response = await recordedFetch(strictNetworkRecorder, `${baseUrl}${targetPath}`, { method, headers, body });
   const responseText = await response.text();
   let json = null;
   try { json = responseText ? JSON.parse(responseText) : null; } catch { json = null; }
@@ -2454,9 +2470,23 @@ for (const item of selectedCases) {
   const caseNumber = Number(item.id.split('-')[1]);
   const key = `${item.stage}_${String(caseNumber).padStart(2, '0')}`;
   const startedAt = new Date().toISOString();
+  strictNetworkRecorder?.setCurrentCase(item.id);
+  let preconditionPath = null;
   try {
     const check = checks[key];
     if (!check) throw new Error(`Missing check implementation: ${key}`);
+    if (strictRoot) {
+      preconditionPath = await captureCasePrecondition({
+        caseDefinition: item,
+        root: projectRoot,
+        targetDirectory: path.join(strictRoot, 'preconditions'),
+        gitPath: gitExecutable,
+        dockerPath: dockerExecutable,
+        composeFile,
+        projectName,
+        apiBaseUrl: baseUrl,
+      });
+    }
     const result = await check();
     ledger.results.push({
       caseId: item.id,
@@ -2467,6 +2497,7 @@ for (const item of selectedCases) {
       finishedAt: new Date().toISOString(),
       actualResult: result.pass ? '通过' : '失败',
       evidencePath: result.evidence,
+      preconditionPath: preconditionPath ? path.relative(projectRoot, preconditionPath).replaceAll('\\', '/') : null,
       defectId: result.pass ? '无' : '待登记',
       pass: result.pass,
     });
@@ -2481,6 +2512,7 @@ for (const item of selectedCases) {
       finishedAt: new Date().toISOString(),
       actualResult: '阻断',
       evidencePath: evidence,
+      preconditionPath: preconditionPath ? path.relative(projectRoot, preconditionPath).replaceAll('\\', '/') : null,
       defectId: '待登记',
       pass: false,
       error: error.message,
