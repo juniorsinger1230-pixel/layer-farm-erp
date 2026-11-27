@@ -1,0 +1,44 @@
+{
+  "baseline": "S0-S6 acceptance and independent review",
+  "frozenAt": "2026-11-27",
+  "git": {
+    "sha": "7d6625c7571d0c813517ad87c67e13aea458e3c4",
+    "branch": "chore/baseline-sync",
+    "worktree": "clean"
+  },
+  "authoritativeContract": {
+    "source": "contracts/openapi.json + contracts/api-operation-map.json",
+    "operations": 479,
+    "implementationOperations": 479,
+    "status": "pass",
+    "evidence": "openapi-contract-check-result.json"
+  },
+  "pageScope": {
+    "totalRegistryPages": 87,
+    "manualCreatePages": 74,
+    "systemReadOnlyPages": 2,
+    "systemReadOnlyPageIds": [
+      "trace-001",
+      "plat-001"
+    ],
+    "otherReadOnlyPages": 11,
+    "note": "74 manual create pages come from apps/web/src/generated/form-schemas.json; trace-001 and plat-001 are system read-only pages and are excluded from manual creation counts."
+  },
+  "formScope": {
+    "visibleFields": 541,
+    "referenceFields": 110,
+    "source": "apps/web/src/generated/form-schemas.json"
+  },
+  "deprecatedMetrics": [
+    "58 REAL + 29 GAP",
+    "481 operations",
+    "historical coverage snapshots",
+    "12 Playwright E2E as full acceptance"
+  ],
+  "rules": [
+    "All S0-S6 cases, execution records, screenshots, coverage and contract results must reference this SHA.",
+    "Any code change requires a new commit and a new baseline freeze before acceptance continues.",
+    "Historical reports may be kept only as deprecated history, never as current results.",
+    "The 2 system read-only pages must not be counted as manual create pages."
+  ]
+}
