@@ -1655,7 +1655,7 @@ for (let number = 204; number <= 218; number += 1) {
     const unmappedPages = JSON.parse(readFileSync(path.join(projectRoot, 'apps/web/src/data/pageRegistry.json'), 'utf8'))
       .filter((item) => !Object.prototype.hasOwnProperty.call(pageApiMap.mapped, item.pageId));
     const businessPageSource = readFileSync(path.join(projectRoot, 'apps/web/src/components/BusinessPage.tsx'), 'utf8');
-    const controlledBranch = businessPageSource.includes('功能暂未开放') && businessPageSource.includes('不展示模拟数据');
+    const controlledBranch = businessPageSource.includes('功能暂未开放') && businessPageSource.includes('不展示业务数据');
     const pass = gapCount === 0 && unmappedPages.length === 0 && controlledBranch;
     return { pass, evidence: saveEvidence('S4-218-unavailable-risk-closed.json', { gapCount, unmappedPages: unmappedPages.map((item) => item.pageId), controlledBranch }) };
   };
