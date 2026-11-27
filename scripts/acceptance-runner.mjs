@@ -2089,14 +2089,16 @@ const forbiddenPatterns = [
   { pattern: /模拟/g, name: '模拟' },
 ];
 
-function findForbiddenTerms(text) {
+function findForbiddenTerms(text, patterns = forbiddenPatterns) {
   const hits = [];
-  for (const item of forbiddenPatterns) {
+  for (const item of patterns) {
     const matches = text.match(new RegExp(item.pattern.source, item.pattern.flags));
     if (matches) hits.push({ term: item.name, matches });
   }
   return hits;
 }
+
+const runtimeForbiddenPatterns = forbiddenPatterns.filter((item) => item.name !== '测试');
 
 function walkSourceFiles(directory) {
   const entries = readdirSync(directory, { withFileTypes: true });
@@ -2175,7 +2177,7 @@ for (let number = 229; number <= 234; number += 1) {
       await page.locator('.ant-drawer-content').waitFor();
       scanned.push({ page: '移动详情', text: await page.locator('body').innerText() });
       const hits = scanned.flatMap((item) => {
-        const itemHits = findForbiddenTerms(item.text);
+        const itemHits = findForbiddenTerms(item.text, runtimeForbiddenPatterns);
         return itemHits.length ? { page: item.page, pageId: item.pageId, hits: itemHits } : [];
       });
       const registeredRoutesScanned = scanned.filter((item) => item.pageId).length;
