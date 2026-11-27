@@ -6,6 +6,7 @@ import {
   operationKey,
 } from './contract-model.mjs';
 import { buildExpected } from './contract-expected.mjs';
+import { getSourceRevision, sha256File } from './source-revision.mjs';
 
 const options = parseArgs(process.argv.slice(2));
 const context = loadContext(options);
@@ -61,8 +62,17 @@ const fieldPass = schemaErrors.length === 0 && parameterErrors.length === 0;
 const statusPass = statusErrors.length === 0;
 const result = {
   checkedAt: new Date().toISOString(),
-  status: routePass && fieldPass && statusPass ? 'pass' : 'fail',
+  sourceRevision: getSourceRevision(context.root),
+  status: routePass && fieldPass && statusPass && readOnlyWriteExposures.length === 0 ? 'pass' : 'fail',
   scope: 'route, HTTP method, field-level schema, query parameters and status-code contract',
+  inputSha256: {
+    openapi: sha256File(openapiPath),
+    mapping: sha256File(mappingPath),
+    app: sha256File(context.paths.appPath),
+    resources: sha256File(context.paths.resourcesPath),
+    routePolicy: sha256File(context.paths.policyPath),
+    contractProcess: sha256File(context.paths.processPath),
+  },
   inputs: {
     openapiPath,
     mappingPath,
