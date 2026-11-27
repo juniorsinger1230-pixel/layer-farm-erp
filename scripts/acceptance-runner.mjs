@@ -307,6 +307,7 @@ const s3RunToken = Date.now().toString(36);
 const s3OptionCache = new Map();
 const s3ReferenceSelection = new Map();
 let s3Pass = 0;
+let s3ExtraStockAttempt = 100;
 let s3ShippedSalesOrderId;
 let s3ConsumedReservationId;
 let s3EggCollectionHouseId;
@@ -740,7 +741,7 @@ async function prepareInventoryReceipt(goodsReceiptId) {
 }
 
 async function ensureSalesOrderStock() {
-  const receipt = await createS3One('proc-004', 8);
+  const receipt = await createS3One('proc-004', s3ExtraStockAttempt++);
   await prepareInventoryReceipt(Number(receipt.id));
   s3OptionCache.delete('/api/v1/proc/receipt-inspections');
 }
