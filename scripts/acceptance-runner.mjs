@@ -98,7 +98,7 @@ const checks = {
     return { pass, evidence: saveEvidence('S0-04-valkey.json', row ?? null) };
   },
   async S0_05() {
-    const output = await psql("SELECT count(*) FROM app_auth.schema_migrations;");
+    const output = await psql("SELECT count(*) FROM schema_migration;");
     const pass = Number(output) > 0;
     return { pass, evidence: saveEvidence('S0-05-migrations.json', { migrationCount: Number(output) }) };
   },
