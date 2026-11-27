@@ -1,7 +1,10 @@
 FROM node:22-bookworm-slim AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+ARG NPM_CONFIG_REGISTRY=https://registry.npmjs.org/
+ARG NPM_CONFIG_FETCH_TIMEOUT=120000
+ARG NPM_CONFIG_FETCH_RETRIES=5
+RUN npm ci --registry="$NPM_CONFIG_REGISTRY" --fetch-timeout="$NPM_CONFIG_FETCH_TIMEOUT" --fetch-retries="$NPM_CONFIG_FETCH_RETRIES"
 COPY tsconfig.json eslint.config.mjs ./
 COPY apps ./apps
 COPY packages ./packages
