@@ -714,6 +714,7 @@ async function s3SalesOrderAction(orderId, action, lines) {
 }
 
 async function getS3AllocationLine() {
+  s3OptionCache.delete('/api/v1/inv/inventory-ledger');
   const stocks = await fetchS3Records('/api/v1/inv/inventory-ledger');
   const stock = stocks
     .filter((item) => Number(item.quantity) >= 1)
