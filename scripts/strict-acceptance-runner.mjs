@@ -85,7 +85,7 @@ const environment = {
   platform: process.platform,
   arch: process.arch,
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  browser: { name: 'chromium', version: chromium.version() },
+  browser: { name: 'chromium', executablePath: chromium.executablePath() },
   services: captureComposeServices(dockerPath, composeFile, projectName),
 };
 
