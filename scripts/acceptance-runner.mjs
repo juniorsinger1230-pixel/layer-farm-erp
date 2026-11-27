@@ -724,6 +724,7 @@ async function getS3AllocationLine() {
 }
 
 async function prepareInventoryReceipt(goodsReceiptId) {
+  if (s3CreatedLocationId === undefined) await ensureS3CommonPrerequisites();
   if (s3CreatedLocationId === undefined) throw new Error('Missing warehouse location');
   await evaluateS3Fetch(`/api/v1/proc/receipt-inspections/${goodsReceiptId}/actions`, {
     method: 'POST',
