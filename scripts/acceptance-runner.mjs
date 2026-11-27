@@ -235,7 +235,7 @@ async function executeS2EmptyForm(testCase) {
   };
   page.on('request', requestListener);
   try {
-    await page.goto(`${webUrl}/app/${testCase.pageId}`, { waitUntil: 'networkidle' });
+    await page.goto(`${webUrl}/app/${testCase.pageId}`, { waitUntil: 'domcontentloaded' });
     await page.locator('.business-page').waitFor();
     const createButton = page.getByRole('button', { name: '新建' });
     await createButton.waitFor();
