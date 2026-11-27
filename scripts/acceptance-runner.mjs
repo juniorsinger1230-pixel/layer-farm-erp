@@ -29,7 +29,7 @@ const gitExecutable = process.env.GIT_PATH ?? 'C:\\Program Files\\Git\\cmd\\git.
 const baseUrl = process.env.API_BASE_URL ?? 'http://127.0.0.1:3100';
 const webUrl = process.env.WEB_BASE_URL ?? 'http://127.0.0.1:8080';
 const composeFile = path.join(projectRoot, 'deploy', 'compose', 'docker-compose.yml');
-const projectName = process.env.STRICT_COMPOSE_PROJECT ?? 'layer-farm-erp-p2';
+const projectName = process.env.STRICT_COMPOSE_PROJECT ?? process.env.COMPOSE_PROJECT_NAME ?? 'layer-farm-erp-strict';
 
 const casesFile = JSON.parse(readFileSync(path.join(projectRoot, 'acceptance-cases.json'), 'utf8'));
 const allCases = casesFile.cases;
