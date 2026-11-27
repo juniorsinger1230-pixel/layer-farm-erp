@@ -712,6 +712,15 @@ async function s3SalesOrderAction(orderId, action, lines) {
   });
 }
 
+async function getS3AllocationLine() {
+  const stocks = await fetchS3Records('/api/v1/inv/inventory-ledger');
+  const stock = stocks
+    .filter((item) => Number(item.quantity) >= 1)
+    .sort((a, b) => Number(b.id) - Number(a.id))[0];
+  if (!stock) throw new Error('Missing available inventory for sales allocation');
+  return { materialId: Number(stock.material_id), quantity: 1, unitPrice: 2.5, uom: 'kg' };
+}
+
 async function prepareInventoryReceipt(goodsReceiptId) {
   if (s3CreatedLocationId === undefined) throw new Error('Missing warehouse location');
   await evaluateS3Fetch(`/api/v1/proc/receipt-inspections/${goodsReceiptId}/actions`, {
@@ -727,6 +736,7 @@ async function prepareInventoryReceipt(goodsReceiptId) {
       unitCost: 1.25,
     }),
   });
+  s3OptionCache.delete('/api/v1/inv/inventory-ledger');
 }
 
 async function ensureSalesOrderStock() {
@@ -737,9 +747,10 @@ async function ensureSalesOrderStock() {
 
 async function prepareSalesReturn(orderId) {
   await ensureSalesOrderStock();
+  const allocationLine = await getS3AllocationLine();
   await s3SalesOrderAction(orderId, 'submit');
   await s3SalesOrderAction(orderId, 'approve');
-  await s3SalesOrderAction(orderId, 'allocate', [{ materialId: 6, quantity: 1, unitPrice: 2.5, uom: 'kg' }]);
+  await s3SalesOrderAction(orderId, 'allocate', [allocationLine]);
   const shipment = await s3SalesOrderAction(orderId, 'ship');
   s3ShippedSalesOrderId = orderId;
   saveEvidence('S3-ship-response.json', { orderId, shipment });
@@ -774,9 +785,16 @@ async function ensureDriverTaskPrerequisites() {
   });
   const orderId = Number(created.data?.id ?? created.id);
   if (!Number.isInteger(orderId)) throw new Error('Missing dedicated driver-task sales order id');
+  let allocationLine;
+  try {
+    allocationLine = await getS3AllocationLine();
+  } catch {
+    await ensureSalesOrderStock();
+    allocationLine = await getS3AllocationLine();
+  }
   await s3SalesOrderAction(orderId, 'submit');
   await s3SalesOrderAction(orderId, 'approve');
-  await s3SalesOrderAction(orderId, 'allocate', [{ materialId: 6, quantity: 1, unitPrice: 2.5, uom: 'kg' }]);
+  await s3SalesOrderAction(orderId, 'allocate', [allocationLine]);
   await s3SalesOrderAction(orderId, 'ship');
   s3OptionCache.delete('/api/v1/sales/sales-orders');
   s3DriverTaskSalesOrderId = orderId;
