@@ -24,6 +24,7 @@
     "cases:generate": "node scripts/generate-acceptance-cases.mjs",
     "acceptance:run": "node scripts/acceptance-runner.mjs",
     "acceptance:strict": "node scripts/strict-acceptance-runner.mjs",
+    "acceptance:strict:loop": "node scripts/strict-acceptance-loop.mjs",
     "acceptance:s1:seed": "node scripts/s1-acceptance-seed.mjs",
     "acceptance:strict:verify": "node scripts/verify-strict-acceptance.mjs",
     "acceptance:strict:archive": "node scripts/build-strict-evidence-archive.mjs",
