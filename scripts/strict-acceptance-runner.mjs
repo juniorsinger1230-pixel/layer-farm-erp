@@ -138,7 +138,7 @@ for (const result of ledger.results) {
   const fileHashes = new Map();
   for (const file of referencedFiles) fileHashes.set(relativePath(file), sha256File(file));
   fileHashes.set(relativePath(requestResponseLog), sha256File(requestResponseLog));
-  const preconditionFile = path.join(projectRoot, result.preconditionPath);
+  const preconditionFile = result.preconditionPath ? path.join(projectRoot, result.preconditionPath) : null;
   const envelope = {
     schemaVersion: 'strict-acceptance-envelope/v1',
     caseId: definition.id,
@@ -149,10 +149,16 @@ for (const result of ledger.results) {
     runId,
     source,
     environment,
-    precondition: {
-      path: relativePath(preconditionFile),
-      sha256: sha256File(preconditionFile),
-    },
+    precondition: preconditionFile
+      ? {
+          path: relativePath(preconditionFile),
+          sha256: sha256File(preconditionFile),
+        }
+      : {
+          path: null,
+          sha256: null,
+          error: 'precondition snapshot was not produced',
+        },
     execution: {
       startedAt: result.startedAt,
       finishedAt: result.finishedAt,

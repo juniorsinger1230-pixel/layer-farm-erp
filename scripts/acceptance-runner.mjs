@@ -24,12 +24,12 @@ const strictNetworkRecorder = strictRoot
   ? new StrictNetworkRecorder({ runId, projectRoot, strictRoot })
   : null;
 
-const dockerExecutable = 'C:\\Users\\龚\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe';
-const gitExecutable = 'C:\\Program Files\\Git\\cmd\\git.exe';
-const baseUrl = 'http://127.0.0.1:3100';
-const webUrl = 'http://127.0.0.1:8080';
+const dockerExecutable = process.env.DOCKER_PATH ?? 'C:\\Users\\龚\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe';
+const gitExecutable = process.env.GIT_PATH ?? 'C:\\Program Files\\Git\\cmd\\git.exe';
+const baseUrl = process.env.API_BASE_URL ?? 'http://127.0.0.1:3100';
+const webUrl = process.env.WEB_BASE_URL ?? 'http://127.0.0.1:8080';
 const composeFile = path.join(projectRoot, 'deploy', 'compose', 'docker-compose.yml');
-const projectName = 'layer-farm-erp-p2';
+const projectName = process.env.STRICT_COMPOSE_PROJECT ?? 'layer-farm-erp-p2';
 
 const casesFile = JSON.parse(readFileSync(path.join(projectRoot, 'acceptance-cases.json'), 'utf8'));
 const allCases = casesFile.cases;
