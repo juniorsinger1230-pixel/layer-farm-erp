@@ -1,0 +1,119 @@
+{
+  "resetAt": "2026-11-27T03:32:42.8862489Z",
+  "projectName": "layer-farm-erp-p2",
+  "composeFile": "deploy/compose/docker-compose.yml",
+  "removedVolumes": [
+    "layer-farm-erp-p2_attachment-data",
+    "layer-farm-erp-p2_postgres-data",
+    "layer-farm-erp-p2_valkey-data"
+  ],
+  "rebuilt": true,
+  "containers": [
+    {
+      "name": "layer-farm-erp-p2-api-1",
+      "service": "api",
+      "status": "Up 3 minutes (healthy)",
+      "health": "healthy",
+      "ports": [
+        {
+          "URL": "0.0.0.0",
+          "TargetPort": 3100,
+          "PublishedPort": 3100,
+          "Protocol": "tcp"
+        },
+        {
+          "URL": "::",
+          "TargetPort": 3100,
+          "PublishedPort": 3100,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "name": "layer-farm-erp-p2-postgres-1",
+      "service": "postgres",
+      "status": "Up 3 minutes (healthy)",
+      "health": "healthy",
+      "ports": [
+        {
+          "URL": "0.0.0.0",
+          "TargetPort": 5432,
+          "PublishedPort": 55432,
+          "Protocol": "tcp"
+        },
+        {
+          "URL": "::",
+          "TargetPort": 5432,
+          "PublishedPort": 55432,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "name": "layer-farm-erp-p2-valkey-1",
+      "service": "valkey",
+      "status": "Up 3 minutes (healthy)",
+      "health": "healthy",
+      "ports": [
+        {
+          "URL": "0.0.0.0",
+          "TargetPort": 6379,
+          "PublishedPort": 56379,
+          "Protocol": "tcp"
+        },
+        {
+          "URL": "::",
+          "TargetPort": 6379,
+          "PublishedPort": 56379,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "name": "layer-farm-erp-p2-web-1",
+      "service": "web",
+      "status": "Up 3 minutes",
+      "health": "",
+      "ports": [
+        {
+          "URL": "0.0.0.0",
+          "TargetPort": 8080,
+          "PublishedPort": 8080,
+          "Protocol": "tcp"
+        },
+        {
+          "URL": "::",
+          "TargetPort": 8080,
+          "PublishedPort": 8080,
+          "Protocol": "tcp"
+        }
+      ]
+    }
+  ],
+  "health": {
+    "live": "ok",
+    "ready": "ok",
+    "dependencies": {
+      "database": "up",
+      "valkey": "up"
+    },
+    "webStatusCode": 200
+  },
+  "seed": {
+    "event": "demo_data_ready",
+    "companyCode": "THL",
+    "adminAccount": "admin.zhang",
+    "userCount": 8
+  },
+  "databaseCounts": {
+    "company": 1,
+    "organization_unit": 7,
+    "employee": 8,
+    "print_template": 3,
+    "print_template_design": 1,
+    "customer": 1,
+    "price_list": 1
+  },
+  "oldAdminRejected": true,
+  "pass": true
+}
