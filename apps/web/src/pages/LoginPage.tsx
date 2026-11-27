@@ -1,5 +1,5 @@
 import { Alert, Button, Card, Form, Input, Select } from 'antd';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { LockOutlined, SafetyCertificateOutlined, UserOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api';
@@ -11,6 +11,7 @@ interface LoginFormValues {
   companyCode: string;
   account: string;
   password: string;
+  mfaCode?: string;
 }
 
 export default function LoginPage(): React.ReactElement {
@@ -80,6 +81,9 @@ export default function LoginPage(): React.ReactElement {
             </Form.Item>
             <Form.Item name="password" label="密码" rules={[{ required: true, message: '请输入密码' }]}>
               <Input.Password prefix={<LockOutlined />} autoComplete="current-password" placeholder="请输入密码" />
+            </Form.Item>
+            <Form.Item name="mfaCode" label="多因素认证码" rules={[{ pattern: /^\d{6}$/, message: '请输入 6 位数字认证码' }]}>
+              <Input prefix={<SafetyCertificateOutlined />} autoComplete="one-time-code" placeholder="请输入多因素认证码" />
             </Form.Item>
             <Button type="primary" size="large" block htmlType="submit" loading={submitting}>登录</Button>
           </Form>

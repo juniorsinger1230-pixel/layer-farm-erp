@@ -13,6 +13,8 @@ const databaseUrl = process.env.DATABASE_URL ?? `postgresql://erp:${env.POSTGRES
 const pool = new pg.Pool({ connectionString: databaseUrl });
 const companyCode = 'THL';
 const commonPassword = 'Demo-Passw0rd!2026';
+const fixedMfaSecret = 'JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP';
+const mfaRoles = new Set(['admin', 'finance_manager']);
 
 const departments = [
   { code: 'HQ', name: '总经办', level: 1 },
@@ -97,14 +99,15 @@ try {
       companyCode,
       companyId: 0,
       roles: [{ role: member.role, companyCode }],
-      mfaEnrolled: false,
+      mfaEnrolled: mfaRoles.has(member.role),
     };
+    const mfaSecret = mfaRoles.has(member.role) ? fixedMfaSecret : null;
     const passwordHash = await hashPassword(member.password);
     await pool.query(
       `INSERT INTO app_auth.credential
        (employee_id, account, company_code, password_hash, principal, status, failed_attempts, locked_until, mfa_secret)
-       VALUES ($1, $2, $3, $4, $5::jsonb, 'active', 0, NULL, NULL)`,
-      [employee.id, member.account, companyCode, passwordHash, JSON.stringify(principal)],
+       VALUES ($1, $2, $3, $4, $5::jsonb, 'active', 0, NULL, $6)`,
+      [employee.id, member.account, companyCode, passwordHash, JSON.stringify(principal), mfaSecret],
     );
   }
 
