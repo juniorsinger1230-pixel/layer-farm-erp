@@ -183,14 +183,20 @@ const checks = {
   },
 };
 
-const stageArg = process.argv[2]?.replace('--stage=', '') ?? process.argv[3];
+const argv = process.argv.slice(2);
+let stageArg = null;
+for (const [index, arg] of argv.entries()) {
+  if (arg.startsWith('--stage=')) stageArg = arg.split('=')[1];
+  else if (arg === '--stage') stageArg = argv[index + 1];
+}
 const stages = stageArg ? [stageArg] : ['S0'];
 const selectedCases = allCases.filter((item) => stages.includes(item.stage));
 const ledgerPath = path.join(projectRoot, 'acceptance-ledger.json');
 let ledger = { startedAt: new Date().toISOString(), stages, results: [] };
 
 for (const item of selectedCases) {
-  const key = `${item.stage}_${item.id.split('-')[1]}`;
+  const caseNumber = Number(item.id.split('-')[1]);
+  const key = `${item.stage}_${String(caseNumber).padStart(2, '0')}`;
   const startedAt = new Date().toISOString();
   try {
     const check = checks[key];
