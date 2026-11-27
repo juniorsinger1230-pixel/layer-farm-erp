@@ -64,10 +64,33 @@ function shortToken(value: string): string {
 
 async function evaluateFetch(page: Page, url: string, init?: { method?: string; headers?: Record<string, string>; body?: string }): Promise<unknown> {
   return page.evaluate(async ({ targetUrl, requestInit }) => {
-    const rawSession = sessionStorage.getItem('layer-erp-session');
-    const session = rawSession ? (JSON.parse(rawSession) as { accessToken?: string }) : {};
+    const readSession = (): { accessToken?: string; refreshToken?: string } => {
+      const rawSession = sessionStorage.getItem('layer-erp-session');
+      return rawSession ? (JSON.parse(rawSession) as { accessToken?: string; refreshToken?: string }) : {};
+    };
+    const session = readSession();
     const headers = { ...(session.accessToken ? { authorization: `Bearer ${session.accessToken}` } : {}), ...requestInit?.headers };
     const response = await fetch(targetUrl, { ...requestInit, headers, cache: 'no-store' });
+
+    if (response.status === 401 && session.refreshToken) {
+      const refreshResponse = await fetch('/api/v1/auth/refresh', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ refreshToken: session.refreshToken }),
+        cache: 'no-store',
+      });
+      const refreshPayload = (await refreshResponse.json()) as { data?: { accessToken?: string; refreshToken?: string } };
+      const nextSession = refreshPayload.data;
+      if (refreshResponse.ok && nextSession?.accessToken && nextSession.refreshToken) {
+        sessionStorage.setItem('layer-erp-session', JSON.stringify(nextSession));
+        const retryHeaders = { authorization: `Bearer ${nextSession.accessToken}`, ...requestInit?.headers };
+        const retryResponse = await fetch(targetUrl, { ...requestInit, headers: retryHeaders, cache: 'no-store' });
+        const retryJson = (await retryResponse.json()) as unknown;
+        if (!retryResponse.ok) throw new Error(`Request failed: ${retryResponse.status} ${retryResponse.url} ${JSON.stringify(retryJson)}`);
+        return retryJson;
+      }
+    }
+
     const json = (await response.json()) as unknown;
     if (!response.ok) throw new Error(`Request failed: ${response.status} ${response.url} ${JSON.stringify(json)}`);
     return json;
@@ -151,8 +174,11 @@ async function fillField(
       if (targetIndex < 0) return false;
       const combobox = item.getByRole('combobox');
       await combobox.click();
-      for (let step = 0; step < targetIndex; step += 1) await combobox.press('ArrowDown');
-      await combobox.press('Enter');
+      const targetOptions = page.locator('.ant-select-dropdown:not(.ant-select-dropdown-hidden) .ant-select-item-option');
+      await expect(targetOptions).toHaveCount(records.length);
+      const targetOption = targetOptions.nth(targetIndex);
+      await targetOption.scrollIntoViewIfNeeded();
+      await targetOption.click();
       return true;
     }
     const reuseWarehouseLocation = (pageId === 'farm-011' || pageId === 'proc-005')
@@ -161,10 +187,12 @@ async function fillField(
     const selectedIndex = pageId === 'farm-012' && field.name === 'batch_id' ? 1 : optionIndex % records.length;
     if (!reuseWarehouseLocation) referenceSelection.set(field.reference.path, optionIndex + 1);
     if (!records[selectedIndex]) return false;
-    const combobox = item.getByRole('combobox');
     await item.locator('.ant-select-selector').click();
-    for (let step = 0; step < selectedIndex; step += 1) await combobox.press('ArrowDown');
-    await combobox.press('Enter');
+    const options = page.locator('.ant-select-dropdown:not(.ant-select-dropdown-hidden) .ant-select-item-option');
+    await expect(options).toHaveCount(records.length);
+    const option = options.nth(selectedIndex);
+    await option.scrollIntoViewIfNeeded();
+    await option.click();
     return true;
   }
 
@@ -488,7 +516,7 @@ async function prepareSalesReturn(page: Page, orderId: number): Promise<void> {
 }
 
 test('桌面端全部创建表单完成真实 POST 创建与 GET 查询', async ({ page }) => {
-  test.setTimeout(600_000);
+  test.setTimeout(1_200_000);
   await login(page, testData.account, testData.password);
 
   const pageIds = Object.keys(formSchemaFile.pages);

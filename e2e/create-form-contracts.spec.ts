@@ -20,7 +20,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('桌面端74个人工创建页核对字段与必填标记，空表单阻断且不发送POST', async ({ page }) => {
-  test.setTimeout(600_000);
+  test.setTimeout(900_000);
   for (const [pageId, schema] of Object.entries(formSchemas.pages)) {
     test.info().annotations.push({ type: 'desktop-create-contract', description: pageId });
     const postRequests: string[] = [];

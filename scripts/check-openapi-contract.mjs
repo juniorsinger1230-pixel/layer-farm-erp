@@ -9,8 +9,8 @@ import { buildExpected } from './contract-expected.mjs';
 
 const options = parseArgs(process.argv.slice(2));
 const context = loadContext(options);
-const openapiPath = resolve(context.root, options.openapi ?? '../../../SRS_需求规格化与基线/SRS08_OpenAPI3.1初版.json');
-const mappingPath = resolve(context.root, options.mapping ?? '../../../SRS_需求规格化与基线/SRS08_API需求操作映射.json');
+const openapiPath = resolve(context.root, options.openapi ?? 'contracts/openapi.json');
+const mappingPath = resolve(context.root, options.mapping ?? 'contracts/api-operation-map.json');
 const outputPath = resolve(context.root, options.out ?? 'openapi-contract-check-result.json');
 const openapi = JSON.parse(readFileSync(openapiPath, 'utf8'));
 const mappingDocument = JSON.parse(readFileSync(mappingPath, 'utf8'));

@@ -105,7 +105,7 @@ async function waitForHealthy(label, timeoutMs = 180000) {
 try {
   run('compose config', ['config']);
   run('compose build', ['build']);
-  run('compose down', ['down', '--remove-orphans']);
+  run('compose down', ['down', '--volumes', '--remove-orphans']);
   run('compose up', ['up', '--build', '--detach']);
   const firstPs = await waitForHealthy('initial');
   await fetchCheck('initial live endpoint', 'http://127.0.0.1:3100/health/live');

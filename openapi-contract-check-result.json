@@ -1,20 +1,20 @@
 {
-  "checkedAt": "2026-11-26T15:21:52.606Z",
+  "checkedAt": "2026-11-26T23:14:08.300Z",
   "status": "pass",
   "scope": "route, HTTP method, field-level schema, query parameters and status-code contract",
   "inputs": {
-    "openapiPath": "/workspaces/layer-farm-erp/contracts/openapi.json",
-    "mappingPath": "/SRS_需求规格化与基线/SRS08_API需求操作映射.json",
-    "appPath": "/workspaces/layer-farm-erp/apps/api/src/app.ts",
-    "resourcesPath": "/workspaces/layer-farm-erp/packages/domain/src/generated/resources.ts",
-    "policyPath": "/workspaces/layer-farm-erp/packages/domain/src/generated/resource-route-policy.ts",
-    "contractProcessPath": "/workspaces/layer-farm-erp/packages/domain/src/contract-process.ts"
+    "openapiPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\contracts\\openapi.json",
+    "mappingPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\contracts\\api-operation-map.json",
+    "appPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\apps\\api\\src\\app.ts",
+    "resourcesPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\packages\\domain\\src\\generated\\resources.ts",
+    "policyPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\packages\\domain\\src\\generated\\resource-route-policy.ts",
+    "contractProcessPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\packages\\domain\\src\\contract-process.ts"
   },
   "authoritative": {
     "openapi": "3.1.0",
     "paths": 321,
     "operations": 479,
-    "mappings": 99
+    "mappings": 100
   },
   "implementation": {
     "resources": 71,

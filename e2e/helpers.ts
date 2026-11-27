@@ -128,14 +128,17 @@ async function fillField(
   }
   if (field.control === 'select' || field.control === 'reference') {
     let optionLabel = formatFieldValue(value);
+    let optionIndex = 0;
+    let records: Record<string, unknown>[] = [];
     const reference = field.reference;
     if (field.control === 'reference' && reference) {
-      const records = await listItems<Record<string, unknown>>(page, reference.path);
-      const record = records.find((candidate) => {
+      records = await listItems<Record<string, unknown>>(page, reference.path);
+      optionIndex = records.findIndex((candidate) => {
         const selected = candidate[reference.valueField];
         return (typeof selected === 'string' || typeof selected === 'number') && String(selected) === optionLabel;
       });
-      if (!record) throw new Error(`Reference value not found: ${field.name}=${optionLabel}`);
+      if (optionIndex < 0) throw new Error(`Reference value not found: ${field.name}=${optionLabel}`);
+      const record = records[optionIndex]!;
       const labelField = reference.labelFields.find((name) => {
         const candidate = record[name];
         return (typeof candidate === 'string' || typeof candidate === 'number') && String(candidate) !== '';
@@ -145,13 +148,19 @@ async function fillField(
     const combobox = item.getByRole('combobox');
     await combobox.click();
     if (field.control === 'select') {
-      const optionIndex = field.enum?.indexOf(optionLabel) ?? -1;
-      if (optionIndex < 0) throw new Error(`Enum option not found: ${field.name}=${optionLabel}`);
-      for (let index = 0; index < optionIndex; index += 1) await combobox.press('ArrowDown');
+      const selectOptionIndex = field.enum?.indexOf(optionLabel) ?? -1;
+      if (selectOptionIndex < 0) throw new Error(`Enum option not found: ${field.name}=${optionLabel}`);
+      for (let step = 0; step < selectOptionIndex; step += 1) {
+        await combobox.press('ArrowDown');
+      }
       await combobox.press('Enter');
+      await expect(item.locator('.ant-select-selection-item')).toHaveAttribute('title', optionLabel);
     } else {
-      await combobox.fill(optionLabel);
-      await combobox.press('Enter');
+      const options = page.locator('.ant-select-dropdown:not(.ant-select-dropdown-hidden) .ant-select-item-option');
+      await expect(options).toHaveCount(records.length);
+      const option = options.nth(optionIndex);
+      await option.scrollIntoViewIfNeeded();
+      await option.click();
     }
     return;
   }

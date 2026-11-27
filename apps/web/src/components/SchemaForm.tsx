@@ -122,6 +122,7 @@ function renderControl(
     return (
       <Select
         allowClear={!field.required}
+        virtual={false}
         placeholder={`请选择${field.label}`}
         options={(field.enum ?? []).map((value) => ({ label: value, value }))}
       />
@@ -132,6 +133,7 @@ function renderControl(
       <Select
         showSearch
         allowClear={!field.required}
+        virtual={false}
         loading={referenceLoading}
         placeholder={`请选择${field.label}`}
         optionFilterProp="label"

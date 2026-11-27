@@ -1,0 +1,2009 @@
+{
+  "baseline_id": "REQ-BL-20261121-01",
+  "version": "0.2.0-FIELD-ALIGNED",
+  "status": "FIELD_ALIGNED_PENDING_BUSINESS_REVIEW",
+  "operations_total": 479,
+  "mappings": [
+    {
+      "requirement_id": "SRS-FR-ORG-001",
+      "use_case_id": "UC-ORG-001",
+      "domain": "ORG",
+      "collection_path": "/api/v1/org/organizations",
+      "item_path": "/api/v1/org/organizations/{id}",
+      "action_path": "/api/v1/org/organizations/{id}/actions",
+      "slug": "organizations",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_org_001",
+        "submit_uc_org_001",
+        "get_uc_org_001",
+        "update_uc_org_001",
+        "transition_uc_org_001"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-ORG-002",
+      "use_case_id": "UC-ORG-002",
+      "domain": "ORG",
+      "collection_path": "/api/v1/org/employee-accounts",
+      "item_path": "/api/v1/org/employee-accounts/{id}",
+      "action_path": "/api/v1/org/employee-accounts/{id}/actions",
+      "slug": "employee-accounts",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_org_002",
+        "submit_uc_org_002",
+        "get_uc_org_002",
+        "update_uc_org_002",
+        "transition_uc_org_002"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-ORG-003",
+      "use_case_id": "UC-ORG-003",
+      "domain": "ORG",
+      "collection_path": "/api/v1/org/system-roles",
+      "item_path": "/api/v1/org/system-roles/{id}",
+      "action_path": "/api/v1/org/system-roles/{id}/actions",
+      "slug": "system-roles",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_org_003",
+        "submit_uc_org_003",
+        "get_uc_org_003",
+        "update_uc_org_003",
+        "transition_uc_org_003"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-ORG-004",
+      "use_case_id": "UC-ORG-004",
+      "domain": "ORG",
+      "collection_path": "/api/v1/org/position-role-mappings",
+      "item_path": "/api/v1/org/position-role-mappings/{id}",
+      "action_path": "/api/v1/org/position-role-mappings/{id}/actions",
+      "slug": "position-role-mappings",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_org_004",
+        "submit_uc_org_004",
+        "get_uc_org_004",
+        "update_uc_org_004",
+        "transition_uc_org_004"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-ORG-005",
+      "use_case_id": "UC-ORG-005",
+      "domain": "ORG",
+      "collection_path": "/api/v1/org/data-scopes",
+      "item_path": "/api/v1/org/data-scopes/{id}",
+      "action_path": "/api/v1/org/data-scopes/{id}/actions",
+      "slug": "data-scopes",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_org_005",
+        "submit_uc_org_005",
+        "get_uc_org_005",
+        "update_uc_org_005",
+        "transition_uc_org_005"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-ORG-006",
+      "use_case_id": "UC-ORG-006",
+      "domain": "ORG",
+      "collection_path": "/api/v1/org/role-delegations",
+      "item_path": "/api/v1/org/role-delegations/{id}",
+      "action_path": "/api/v1/org/role-delegations/{id}/actions",
+      "slug": "role-delegations",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_org_006",
+        "submit_uc_org_006",
+        "get_uc_org_006",
+        "update_uc_org_006",
+        "transition_uc_org_006"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FARM-001",
+      "use_case_id": "UC-FARM-001",
+      "domain": "FARM",
+      "collection_path": "/api/v1/farm/flock-projects",
+      "item_path": "/api/v1/farm/flock-projects/{id}",
+      "action_path": "/api/v1/farm/flock-projects/{id}/actions",
+      "slug": "flock-projects",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_farm_001",
+        "submit_uc_farm_001",
+        "get_uc_farm_001",
+        "update_uc_farm_001",
+        "transition_uc_farm_001"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FARM-002",
+      "use_case_id": "UC-FARM-002",
+      "domain": "FARM",
+      "collection_path": "/api/v1/farm/flock-batches",
+      "item_path": "/api/v1/farm/flock-batches/{id}",
+      "action_path": "/api/v1/farm/flock-batches/{id}/actions",
+      "slug": "flock-batches",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_farm_002",
+        "submit_uc_farm_002",
+        "get_uc_farm_002",
+        "update_uc_farm_002",
+        "transition_uc_farm_002",
+        "post_api_v1_farm_flock_batches_id_cost_postings",
+        "get_api_v1_farm_flock_batches_id_cost",
+        "get_api_v1_farm_flock_batches_id_positions"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": [
+        "post_api_v1_farm_flock_batches_id_cost_postings",
+        "get_api_v1_farm_flock_batches_id_cost",
+        "get_api_v1_farm_flock_batches_id_positions"
+      ]
+    },
+    {
+      "requirement_id": "SRS-FR-FARM-003",
+      "use_case_id": "UC-FARM-003",
+      "domain": "FARM",
+      "collection_path": "/api/v1/farm/houses-and-pens",
+      "item_path": "/api/v1/farm/houses-and-pens/{id}",
+      "action_path": "/api/v1/farm/houses-and-pens/{id}/actions",
+      "slug": "houses-and-pens",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_farm_003",
+        "submit_uc_farm_003",
+        "get_uc_farm_003",
+        "update_uc_farm_003",
+        "transition_uc_farm_003"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FARM-004",
+      "use_case_id": "UC-FARM-004",
+      "domain": "FARM",
+      "collection_path": "/api/v1/farm/chick-arrival-inspections",
+      "item_path": "/api/v1/farm/chick-arrival-inspections/{id}",
+      "action_path": "/api/v1/farm/chick-arrival-inspections/{id}/actions",
+      "slug": "chick-arrival-inspections",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_farm_004",
+        "submit_uc_farm_004",
+        "get_uc_farm_004",
+        "update_uc_farm_004",
+        "transition_uc_farm_004"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FARM-005",
+      "use_case_id": "UC-FARM-005",
+      "domain": "FARM",
+      "collection_path": "/api/v1/farm/feeding-management",
+      "item_path": "/api/v1/farm/feeding-management/{id}",
+      "action_path": "/api/v1/farm/feeding-management/{id}/actions",
+      "slug": "feeding-management",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_farm_005",
+        "submit_uc_farm_005",
+        "get_uc_farm_005",
+        "update_uc_farm_005",
+        "transition_uc_farm_005",
+        "post_api_v1_farm_feeding_management_id_issue"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": [
+        "post_api_v1_farm_feeding_management_id_issue"
+      ]
+    },
+    {
+      "requirement_id": "SRS-FR-FARM-006",
+      "use_case_id": "UC-FARM-006",
+      "domain": "FARM",
+      "collection_path": "/api/v1/farm/environment-shift-records",
+      "item_path": "/api/v1/farm/environment-shift-records/{id}",
+      "action_path": "/api/v1/farm/environment-shift-records/{id}/actions",
+      "slug": "environment-shift-records",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_farm_006",
+        "submit_uc_farm_006",
+        "get_uc_farm_006",
+        "update_uc_farm_006",
+        "transition_uc_farm_006"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FARM-007",
+      "use_case_id": "UC-FARM-007",
+      "domain": "FARM",
+      "collection_path": "/api/v1/farm/beak-trimming",
+      "item_path": "/api/v1/farm/beak-trimming/{id}",
+      "action_path": "/api/v1/farm/beak-trimming/{id}/actions",
+      "slug": "beak-trimming",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_farm_007",
+        "submit_uc_farm_007",
+        "get_uc_farm_007",
+        "update_uc_farm_007",
+        "transition_uc_farm_007"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FARM-008",
+      "use_case_id": "UC-FARM-008",
+      "domain": "FARM",
+      "collection_path": "/api/v1/farm/weighing-uniformity",
+      "item_path": "/api/v1/farm/weighing-uniformity/{id}",
+      "action_path": "/api/v1/farm/weighing-uniformity/{id}/actions",
+      "slug": "weighing-uniformity",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_farm_008",
+        "submit_uc_farm_008",
+        "get_uc_farm_008",
+        "update_uc_farm_008",
+        "transition_uc_farm_008"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FARM-009",
+      "use_case_id": "UC-FARM-009",
+      "domain": "FARM",
+      "collection_path": "/api/v1/farm/flock-transfers",
+      "item_path": "/api/v1/farm/flock-transfers/{id}",
+      "action_path": "/api/v1/farm/flock-transfers/{id}/actions",
+      "slug": "flock-transfers",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_farm_009",
+        "submit_uc_farm_009",
+        "get_uc_farm_009",
+        "update_uc_farm_009",
+        "transition_uc_farm_009"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FARM-010",
+      "use_case_id": "UC-FARM-010",
+      "domain": "FARM",
+      "collection_path": "/api/v1/farm/mortality-disposal",
+      "item_path": "/api/v1/farm/mortality-disposal/{id}",
+      "action_path": "/api/v1/farm/mortality-disposal/{id}/actions",
+      "slug": "mortality-disposal",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_farm_010",
+        "submit_uc_farm_010",
+        "get_uc_farm_010",
+        "update_uc_farm_010",
+        "transition_uc_farm_010"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FARM-011",
+      "use_case_id": "UC-FARM-011",
+      "domain": "FARM",
+      "collection_path": "/api/v1/farm/egg-collection-grading",
+      "item_path": "/api/v1/farm/egg-collection-grading/{id}",
+      "action_path": "/api/v1/farm/egg-collection-grading/{id}/actions",
+      "slug": "egg-collection-grading",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_farm_011",
+        "submit_uc_farm_011",
+        "get_uc_farm_011",
+        "update_uc_farm_011",
+        "transition_uc_farm_011"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FARM-012",
+      "use_case_id": "UC-FARM-012",
+      "domain": "FARM",
+      "collection_path": "/api/v1/farm/culling-and-batch-closing",
+      "item_path": "/api/v1/farm/culling-and-batch-closing/{id}",
+      "action_path": "/api/v1/farm/culling-and-batch-closing/{id}/actions",
+      "slug": "culling-and-batch-closing",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_farm_012",
+        "submit_uc_farm_012",
+        "get_uc_farm_012",
+        "update_uc_farm_012",
+        "transition_uc_farm_012"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-VET-001",
+      "use_case_id": "UC-VET-001",
+      "domain": "VET",
+      "collection_path": "/api/v1/vet/vaccination-program-versions",
+      "item_path": "/api/v1/vet/vaccination-program-versions/{id}",
+      "action_path": "/api/v1/vet/vaccination-program-versions/{id}/actions",
+      "slug": "vaccination-program-versions",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_vet_001",
+        "submit_uc_vet_001",
+        "get_uc_vet_001",
+        "update_uc_vet_001",
+        "transition_uc_vet_001"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-VET-002",
+      "use_case_id": "UC-VET-002",
+      "domain": "VET",
+      "collection_path": "/api/v1/vet/vaccination-tasks",
+      "item_path": "/api/v1/vet/vaccination-tasks/{id}",
+      "action_path": "/api/v1/vet/vaccination-tasks/{id}/actions",
+      "slug": "vaccination-tasks",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_vet_002",
+        "submit_uc_vet_002",
+        "get_uc_vet_002",
+        "update_uc_vet_002",
+        "transition_uc_vet_002"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-VET-003",
+      "use_case_id": "UC-VET-003",
+      "domain": "VET",
+      "collection_path": "/api/v1/vet/vaccination-records",
+      "item_path": "/api/v1/vet/vaccination-records/{id}",
+      "action_path": "/api/v1/vet/vaccination-records/{id}/actions",
+      "slug": "vaccination-records",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_vet_003",
+        "submit_uc_vet_003",
+        "get_uc_vet_003",
+        "update_uc_vet_003",
+        "transition_uc_vet_003"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-VET-004",
+      "use_case_id": "UC-VET-004",
+      "domain": "VET",
+      "collection_path": "/api/v1/vet/vaccine-issues",
+      "item_path": "/api/v1/vet/vaccine-issues/{id}",
+      "action_path": "/api/v1/vet/vaccine-issues/{id}/actions",
+      "slug": "vaccine-issues",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_vet_004",
+        "submit_uc_vet_004",
+        "get_uc_vet_004",
+        "update_uc_vet_004",
+        "transition_uc_vet_004"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-VET-005",
+      "use_case_id": "UC-VET-005",
+      "domain": "VET",
+      "collection_path": "/api/v1/vet/medication-prescriptions",
+      "item_path": "/api/v1/vet/medication-prescriptions/{id}",
+      "action_path": "/api/v1/vet/medication-prescriptions/{id}/actions",
+      "slug": "medication-prescriptions",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_vet_005",
+        "submit_uc_vet_005",
+        "get_uc_vet_005",
+        "update_uc_vet_005",
+        "transition_uc_vet_005"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-VET-006",
+      "use_case_id": "UC-VET-006",
+      "domain": "VET",
+      "collection_path": "/api/v1/vet/withdrawal-sale-controls",
+      "item_path": "/api/v1/vet/withdrawal-sale-controls/{id}",
+      "action_path": "/api/v1/vet/withdrawal-sale-controls/{id}/actions",
+      "slug": "withdrawal-sale-controls",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_vet_006",
+        "submit_uc_vet_006",
+        "get_uc_vet_006",
+        "update_uc_vet_006",
+        "transition_uc_vet_006"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-VET-007",
+      "use_case_id": "UC-VET-007",
+      "domain": "VET",
+      "collection_path": "/api/v1/vet/quarantine-certificates",
+      "item_path": "/api/v1/vet/quarantine-certificates/{id}",
+      "action_path": "/api/v1/vet/quarantine-certificates/{id}/actions",
+      "slug": "quarantine-certificates",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_vet_007",
+        "submit_uc_vet_007",
+        "get_uc_vet_007",
+        "update_uc_vet_007",
+        "transition_uc_vet_007"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-VET-008",
+      "use_case_id": "UC-VET-008",
+      "domain": "VET",
+      "collection_path": "/api/v1/vet/missed-vaccination-adverse-reactions",
+      "item_path": "/api/v1/vet/missed-vaccination-adverse-reactions/{id}",
+      "action_path": "/api/v1/vet/missed-vaccination-adverse-reactions/{id}/actions",
+      "slug": "missed-vaccination-adverse-reactions",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_vet_008",
+        "submit_uc_vet_008",
+        "get_uc_vet_008",
+        "update_uc_vet_008",
+        "transition_uc_vet_008"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PROC-001",
+      "use_case_id": "UC-PROC-001",
+      "domain": "PROC",
+      "collection_path": "/api/v1/proc/purchase-requisitions",
+      "item_path": "/api/v1/proc/purchase-requisitions/{id}",
+      "action_path": "/api/v1/proc/purchase-requisitions/{id}/actions",
+      "slug": "purchase-requisitions",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_proc_001",
+        "submit_uc_proc_001",
+        "get_uc_proc_001",
+        "update_uc_proc_001",
+        "transition_uc_proc_001"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PROC-002",
+      "use_case_id": "UC-PROC-002",
+      "domain": "PROC",
+      "collection_path": "/api/v1/proc/purchase-orders",
+      "item_path": "/api/v1/proc/purchase-orders/{id}",
+      "action_path": "/api/v1/proc/purchase-orders/{id}/actions",
+      "slug": "purchase-orders",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_proc_002",
+        "submit_uc_proc_002",
+        "get_uc_proc_002",
+        "update_uc_proc_002",
+        "transition_uc_proc_002"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PROC-003",
+      "use_case_id": "UC-PROC-003",
+      "domain": "PROC",
+      "collection_path": "/api/v1/proc/suppliers",
+      "item_path": "/api/v1/proc/suppliers/{id}",
+      "action_path": "/api/v1/proc/suppliers/{id}/actions",
+      "slug": "suppliers",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_proc_003",
+        "submit_uc_proc_003",
+        "get_uc_proc_003",
+        "update_uc_proc_003",
+        "transition_uc_proc_003"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PROC-004",
+      "use_case_id": "UC-PROC-004",
+      "domain": "PROC",
+      "collection_path": "/api/v1/proc/receipt-inspections",
+      "item_path": "/api/v1/proc/receipt-inspections/{id}",
+      "action_path": "/api/v1/proc/receipt-inspections/{id}/actions",
+      "slug": "receipt-inspections",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_proc_004",
+        "submit_uc_proc_004",
+        "get_uc_proc_004",
+        "update_uc_proc_004",
+        "transition_uc_proc_004"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PROC-005",
+      "use_case_id": "UC-PROC-005",
+      "domain": "PROC",
+      "collection_path": "/api/v1/proc/purchase-returns",
+      "item_path": "/api/v1/proc/purchase-returns/{id}",
+      "action_path": "/api/v1/proc/purchase-returns/{id}/actions",
+      "slug": "purchase-returns",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_proc_005",
+        "submit_uc_proc_005",
+        "get_uc_proc_005",
+        "update_uc_proc_005",
+        "transition_uc_proc_005"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PROC-006",
+      "use_case_id": "UC-PROC-006",
+      "domain": "PROC",
+      "collection_path": "/api/v1/proc/emergency-purchases",
+      "item_path": "/api/v1/proc/emergency-purchases/{id}",
+      "action_path": "/api/v1/proc/emergency-purchases/{id}/actions",
+      "slug": "emergency-purchases",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_proc_006",
+        "submit_uc_proc_006",
+        "get_uc_proc_006",
+        "update_uc_proc_006",
+        "transition_uc_proc_006"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-INV-001",
+      "use_case_id": "UC-INV-001",
+      "domain": "INV",
+      "collection_path": "/api/v1/inv/materials",
+      "item_path": "/api/v1/inv/materials/{id}",
+      "action_path": "/api/v1/inv/materials/{id}/actions",
+      "slug": "materials",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_inv_001",
+        "submit_uc_inv_001",
+        "get_uc_inv_001",
+        "update_uc_inv_001",
+        "transition_uc_inv_001"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-INV-002",
+      "use_case_id": "UC-INV-002",
+      "domain": "INV",
+      "collection_path": "/api/v1/inv/inventory-ledger",
+      "item_path": "/api/v1/inv/inventory-ledger/{id}",
+      "action_path": null,
+      "slug": "inventory-ledger",
+      "mode": "READ_ONLY",
+      "operation_ids": [
+        "list_uc_inv_002",
+        "get_uc_inv_002"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-INV-003",
+      "use_case_id": "UC-INV-003",
+      "domain": "INV",
+      "collection_path": "/api/v1/inv/stock-receipts",
+      "item_path": "/api/v1/inv/stock-receipts/{id}",
+      "action_path": "/api/v1/inv/stock-receipts/{id}/actions",
+      "slug": "stock-receipts",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_inv_003",
+        "submit_uc_inv_003",
+        "get_uc_inv_003",
+        "update_uc_inv_003",
+        "transition_uc_inv_003"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-INV-004",
+      "use_case_id": "UC-INV-004",
+      "domain": "INV",
+      "collection_path": "/api/v1/inv/stock-issues",
+      "item_path": "/api/v1/inv/stock-issues/{id}",
+      "action_path": "/api/v1/inv/stock-issues/{id}/actions",
+      "slug": "stock-issues",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_inv_004",
+        "submit_uc_inv_004",
+        "get_uc_inv_004",
+        "update_uc_inv_004",
+        "transition_uc_inv_004"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-INV-005",
+      "use_case_id": "UC-INV-005",
+      "domain": "INV",
+      "collection_path": "/api/v1/inv/stock-locations",
+      "item_path": "/api/v1/inv/stock-locations/{id}",
+      "action_path": "/api/v1/inv/stock-locations/{id}/actions",
+      "slug": "stock-locations",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_inv_005",
+        "submit_uc_inv_005",
+        "get_uc_inv_005",
+        "update_uc_inv_005",
+        "transition_uc_inv_005"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-INV-006",
+      "use_case_id": "UC-INV-006",
+      "domain": "INV",
+      "collection_path": "/api/v1/inv/stock-counts",
+      "item_path": "/api/v1/inv/stock-counts/{id}",
+      "action_path": "/api/v1/inv/stock-counts/{id}/actions",
+      "slug": "stock-counts",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_inv_006",
+        "submit_uc_inv_006",
+        "get_uc_inv_006",
+        "update_uc_inv_006",
+        "transition_uc_inv_006",
+        "post_api_v1_inv_stock_counts_id_lines"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": [
+        "post_api_v1_inv_stock_counts_id_lines"
+      ]
+    },
+    {
+      "requirement_id": "SRS-FR-INV-007",
+      "use_case_id": "UC-INV-007",
+      "domain": "INV",
+      "collection_path": "/api/v1/inv/batch-expiry-fefo",
+      "item_path": "/api/v1/inv/batch-expiry-fefo/{id}",
+      "action_path": "/api/v1/inv/batch-expiry-fefo/{id}/actions",
+      "slug": "batch-expiry-fefo",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_inv_007",
+        "submit_uc_inv_007",
+        "get_uc_inv_007",
+        "update_uc_inv_007",
+        "transition_uc_inv_007"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-INV-008",
+      "use_case_id": "UC-INV-008",
+      "domain": "INV",
+      "collection_path": "/api/v1/inv/safety-stock-alerts",
+      "item_path": "/api/v1/inv/safety-stock-alerts/{id}",
+      "action_path": null,
+      "slug": "safety-stock-alerts",
+      "mode": "READ_ONLY",
+      "operation_ids": [
+        "list_uc_inv_008",
+        "get_uc_inv_008"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-SALES-001",
+      "use_case_id": "UC-SALES-001",
+      "domain": "SALES",
+      "collection_path": "/api/v1/sales/customers",
+      "item_path": "/api/v1/sales/customers/{id}",
+      "action_path": "/api/v1/sales/customers/{id}/actions",
+      "slug": "customers",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_sales_001",
+        "submit_uc_sales_001",
+        "get_uc_sales_001",
+        "update_uc_sales_001",
+        "transition_uc_sales_001",
+        "get_api_v1_sales_customers_id_statement"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": [
+        "get_api_v1_sales_customers_id_statement"
+      ]
+    },
+    {
+      "requirement_id": "SRS-FR-SALES-002",
+      "use_case_id": "UC-SALES-002",
+      "domain": "SALES",
+      "collection_path": "/api/v1/sales/price-lists",
+      "item_path": "/api/v1/sales/price-lists/{id}",
+      "action_path": "/api/v1/sales/price-lists/{id}/actions",
+      "slug": "price-lists",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_sales_002",
+        "submit_uc_sales_002",
+        "get_uc_sales_002",
+        "update_uc_sales_002",
+        "transition_uc_sales_002"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-SALES-003",
+      "use_case_id": "UC-SALES-003",
+      "domain": "SALES",
+      "collection_path": "/api/v1/sales/sales-orders",
+      "item_path": "/api/v1/sales/sales-orders/{id}",
+      "action_path": "/api/v1/sales/sales-orders/{id}/actions",
+      "slug": "sales-orders",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_sales_003",
+        "submit_uc_sales_003",
+        "get_uc_sales_003",
+        "update_uc_sales_003",
+        "transition_uc_sales_003",
+        "post_api_v1_sales_sales_orders_id_discount"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": [
+        "post_api_v1_sales_sales_orders_id_discount"
+      ]
+    },
+    {
+      "requirement_id": "SRS-FR-SALES-004",
+      "use_case_id": "UC-SALES-004",
+      "domain": "SALES",
+      "collection_path": "/api/v1/sales/credit-checks",
+      "item_path": "/api/v1/sales/credit-checks/{id}",
+      "action_path": "/api/v1/sales/credit-checks/{id}/actions",
+      "slug": "credit-checks",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_sales_004",
+        "submit_uc_sales_004",
+        "get_uc_sales_004",
+        "update_uc_sales_004",
+        "transition_uc_sales_004"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-SALES-005",
+      "use_case_id": "UC-SALES-005",
+      "domain": "SALES",
+      "collection_path": "/api/v1/sales/sales-fulfilment",
+      "item_path": "/api/v1/sales/sales-fulfilment/{id}",
+      "action_path": "/api/v1/sales/sales-fulfilment/{id}/actions",
+      "slug": "sales-fulfilment",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_sales_005",
+        "submit_uc_sales_005",
+        "get_uc_sales_005",
+        "update_uc_sales_005",
+        "transition_uc_sales_005"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-SALES-006",
+      "use_case_id": "UC-SALES-006",
+      "domain": "SALES",
+      "collection_path": "/api/v1/sales/sales-returns-order-changes",
+      "item_path": "/api/v1/sales/sales-returns-order-changes/{id}",
+      "action_path": "/api/v1/sales/sales-returns-order-changes/{id}/actions",
+      "slug": "sales-returns-order-changes",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_sales_006",
+        "submit_uc_sales_006",
+        "get_uc_sales_006",
+        "update_uc_sales_006",
+        "transition_uc_sales_006"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-SALES-007",
+      "use_case_id": "UC-SALES-007",
+      "domain": "SALES",
+      "collection_path": "/api/v1/sales/pullets-and-culled-birds-sales",
+      "item_path": "/api/v1/sales/pullets-and-culled-birds-sales/{id}",
+      "action_path": "/api/v1/sales/pullets-and-culled-birds-sales/{id}/actions",
+      "slug": "pullets-and-culled-birds-sales",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_sales_007",
+        "submit_uc_sales_007",
+        "get_uc_sales_007",
+        "update_uc_sales_007",
+        "transition_uc_sales_007"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-LOG-001",
+      "use_case_id": "UC-LOG-001",
+      "domain": "LOG",
+      "collection_path": "/api/v1/log/vehicles",
+      "item_path": "/api/v1/log/vehicles/{id}",
+      "action_path": "/api/v1/log/vehicles/{id}/actions",
+      "slug": "vehicles",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_log_001",
+        "submit_uc_log_001",
+        "get_uc_log_001",
+        "update_uc_log_001",
+        "transition_uc_log_001"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-LOG-002",
+      "use_case_id": "UC-LOG-002",
+      "domain": "LOG",
+      "collection_path": "/api/v1/log/routes-delivery-plans",
+      "item_path": "/api/v1/log/routes-delivery-plans/{id}",
+      "action_path": "/api/v1/log/routes-delivery-plans/{id}/actions",
+      "slug": "routes-delivery-plans",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_log_002",
+        "submit_uc_log_002",
+        "get_uc_log_002",
+        "update_uc_log_002",
+        "transition_uc_log_002"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-LOG-003",
+      "use_case_id": "UC-LOG-003",
+      "domain": "LOG",
+      "collection_path": "/api/v1/log/night-loading",
+      "item_path": "/api/v1/log/night-loading/{id}",
+      "action_path": "/api/v1/log/night-loading/{id}/actions",
+      "slug": "night-loading",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_log_003",
+        "submit_uc_log_003",
+        "get_uc_log_003",
+        "update_uc_log_003",
+        "transition_uc_log_003"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-LOG-004",
+      "use_case_id": "UC-LOG-004",
+      "domain": "LOG",
+      "collection_path": "/api/v1/log/delivery-signoffs",
+      "item_path": "/api/v1/log/delivery-signoffs/{id}",
+      "action_path": "/api/v1/log/delivery-signoffs/{id}/actions",
+      "slug": "delivery-signoffs",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_log_004",
+        "submit_uc_log_004",
+        "get_uc_log_004",
+        "update_uc_log_004",
+        "transition_uc_log_004"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-LOG-005",
+      "use_case_id": "UC-LOG-005",
+      "domain": "LOG",
+      "collection_path": "/api/v1/log/delivery-exceptions",
+      "item_path": "/api/v1/log/delivery-exceptions/{id}",
+      "action_path": "/api/v1/log/delivery-exceptions/{id}/actions",
+      "slug": "delivery-exceptions",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_log_005",
+        "submit_uc_log_005",
+        "get_uc_log_005",
+        "update_uc_log_005",
+        "transition_uc_log_005"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-LOG-006",
+      "use_case_id": "UC-LOG-006",
+      "domain": "LOG",
+      "collection_path": "/api/v1/log/driver-tasks",
+      "item_path": "/api/v1/log/driver-tasks/{id}",
+      "action_path": "/api/v1/log/driver-tasks/{id}/actions",
+      "slug": "driver-tasks",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_log_006",
+        "submit_uc_log_006",
+        "get_uc_log_006",
+        "update_uc_log_006",
+        "transition_uc_log_006"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FIN-001",
+      "use_case_id": "UC-FIN-001",
+      "domain": "FIN",
+      "collection_path": "/api/v1/fin/payables",
+      "item_path": "/api/v1/fin/payables/{id}",
+      "action_path": "/api/v1/fin/payables/{id}/actions",
+      "slug": "payables",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_fin_001",
+        "submit_uc_fin_001",
+        "get_uc_fin_001",
+        "update_uc_fin_001",
+        "transition_uc_fin_001"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FIN-002",
+      "use_case_id": "UC-FIN-002",
+      "domain": "FIN",
+      "collection_path": "/api/v1/fin/receivables",
+      "item_path": "/api/v1/fin/receivables/{id}",
+      "action_path": "/api/v1/fin/receivables/{id}/actions",
+      "slug": "receivables",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_fin_002",
+        "submit_uc_fin_002",
+        "get_uc_fin_002",
+        "update_uc_fin_002",
+        "transition_uc_fin_002"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FIN-003",
+      "use_case_id": "UC-FIN-003",
+      "domain": "FIN",
+      "collection_path": "/api/v1/fin/payments-and-checks",
+      "item_path": "/api/v1/fin/payments-and-checks/{id}",
+      "action_path": "/api/v1/fin/payments-and-checks/{id}/actions",
+      "slug": "payments-and-checks",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_fin_003",
+        "submit_uc_fin_003",
+        "get_uc_fin_003",
+        "update_uc_fin_003",
+        "transition_uc_fin_003"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FIN-004",
+      "use_case_id": "UC-FIN-004",
+      "domain": "FIN",
+      "collection_path": "/api/v1/fin/receipts-and-cash",
+      "item_path": "/api/v1/fin/receipts-and-cash/{id}",
+      "action_path": "/api/v1/fin/receipts-and-cash/{id}/actions",
+      "slug": "receipts-and-cash",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_fin_004",
+        "submit_uc_fin_004",
+        "get_uc_fin_004",
+        "update_uc_fin_004",
+        "transition_uc_fin_004"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FIN-005",
+      "use_case_id": "UC-FIN-005",
+      "domain": "FIN",
+      "collection_path": "/api/v1/fin/expense-allocations",
+      "item_path": "/api/v1/fin/expense-allocations/{id}",
+      "action_path": "/api/v1/fin/expense-allocations/{id}/actions",
+      "slug": "expense-allocations",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_fin_005",
+        "submit_uc_fin_005",
+        "get_uc_fin_005",
+        "update_uc_fin_005",
+        "transition_uc_fin_005"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FIN-006",
+      "use_case_id": "UC-FIN-006",
+      "domain": "FIN",
+      "collection_path": "/api/v1/fin/batch-cost-cards",
+      "item_path": "/api/v1/fin/batch-cost-cards/{id}",
+      "action_path": null,
+      "slug": "batch-cost-cards",
+      "mode": "READ_ONLY",
+      "operation_ids": [
+        "list_uc_fin_006",
+        "get_uc_fin_006"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FIN-007",
+      "use_case_id": "UC-FIN-007",
+      "domain": "FIN",
+      "collection_path": "/api/v1/fin/profit-and-batch-settlement",
+      "item_path": "/api/v1/fin/profit-and-batch-settlement/{id}",
+      "action_path": "/api/v1/fin/profit-and-batch-settlement/{id}/actions",
+      "slug": "profit-and-batch-settlement",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_fin_007",
+        "submit_uc_fin_007",
+        "get_uc_fin_007",
+        "update_uc_fin_007",
+        "transition_uc_fin_007"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FIN-008",
+      "use_case_id": "UC-FIN-008",
+      "domain": "FIN",
+      "collection_path": "/api/v1/fin/financial-reconciliation-reports",
+      "item_path": "/api/v1/fin/financial-reconciliation-reports/{id}",
+      "action_path": null,
+      "slug": "financial-reconciliation-reports",
+      "mode": "READ_ONLY",
+      "operation_ids": [
+        "list_uc_fin_008",
+        "get_uc_fin_008"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-EQP-001",
+      "use_case_id": "UC-EQP-001",
+      "domain": "EQP",
+      "collection_path": "/api/v1/eqp/equipment",
+      "item_path": "/api/v1/eqp/equipment/{id}",
+      "action_path": "/api/v1/eqp/equipment/{id}/actions",
+      "slug": "equipment",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_eqp_001",
+        "submit_uc_eqp_001",
+        "get_uc_eqp_001",
+        "update_uc_eqp_001",
+        "transition_uc_eqp_001"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-EQP-002",
+      "use_case_id": "UC-EQP-002",
+      "domain": "EQP",
+      "collection_path": "/api/v1/eqp/equipment-inspections",
+      "item_path": "/api/v1/eqp/equipment-inspections/{id}",
+      "action_path": "/api/v1/eqp/equipment-inspections/{id}/actions",
+      "slug": "equipment-inspections",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_eqp_002",
+        "submit_uc_eqp_002",
+        "get_uc_eqp_002",
+        "update_uc_eqp_002",
+        "transition_uc_eqp_002"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-EQP-003",
+      "use_case_id": "UC-EQP-003",
+      "domain": "EQP",
+      "collection_path": "/api/v1/eqp/equipment-maintenance",
+      "item_path": "/api/v1/eqp/equipment-maintenance/{id}",
+      "action_path": "/api/v1/eqp/equipment-maintenance/{id}/actions",
+      "slug": "equipment-maintenance",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_eqp_003",
+        "submit_uc_eqp_003",
+        "get_uc_eqp_003",
+        "update_uc_eqp_003",
+        "transition_uc_eqp_003"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-EQP-004",
+      "use_case_id": "UC-EQP-004",
+      "domain": "EQP",
+      "collection_path": "/api/v1/eqp/equipment-repairs",
+      "item_path": "/api/v1/eqp/equipment-repairs/{id}",
+      "action_path": "/api/v1/eqp/equipment-repairs/{id}/actions",
+      "slug": "equipment-repairs",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_eqp_004",
+        "submit_uc_eqp_004",
+        "get_uc_eqp_004",
+        "update_uc_eqp_004",
+        "transition_uc_eqp_004"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-EQP-005",
+      "use_case_id": "UC-EQP-005",
+      "domain": "EQP",
+      "collection_path": "/api/v1/eqp/spare-parts-cross-company-support",
+      "item_path": "/api/v1/eqp/spare-parts-cross-company-support/{id}",
+      "action_path": "/api/v1/eqp/spare-parts-cross-company-support/{id}/actions",
+      "slug": "spare-parts-cross-company-support",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_eqp_005",
+        "submit_uc_eqp_005",
+        "get_uc_eqp_005",
+        "update_uc_eqp_005",
+        "transition_uc_eqp_005"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-RPT-001",
+      "use_case_id": "UC-RPT-001",
+      "domain": "RPT",
+      "collection_path": "/api/v1/rpt/management-dashboard",
+      "item_path": "/api/v1/rpt/management-dashboard/{id}",
+      "action_path": null,
+      "slug": "management-dashboard",
+      "mode": "READ_ONLY",
+      "operation_ids": [
+        "list_uc_rpt_001",
+        "get_uc_rpt_001"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-RPT-002",
+      "use_case_id": "UC-RPT-002",
+      "domain": "RPT",
+      "collection_path": "/api/v1/rpt/production-reports",
+      "item_path": "/api/v1/rpt/production-reports/{id}",
+      "action_path": null,
+      "slug": "production-reports",
+      "mode": "READ_ONLY",
+      "operation_ids": [
+        "list_uc_rpt_002",
+        "get_uc_rpt_002"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-RPT-003",
+      "use_case_id": "UC-RPT-003",
+      "domain": "RPT",
+      "collection_path": "/api/v1/rpt/inventory-purchase-reports",
+      "item_path": "/api/v1/rpt/inventory-purchase-reports/{id}",
+      "action_path": null,
+      "slug": "inventory-purchase-reports",
+      "mode": "READ_ONLY",
+      "operation_ids": [
+        "list_uc_rpt_003",
+        "get_uc_rpt_003"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-RPT-004",
+      "use_case_id": "UC-RPT-004",
+      "domain": "RPT",
+      "collection_path": "/api/v1/rpt/sales-finance-reports",
+      "item_path": "/api/v1/rpt/sales-finance-reports/{id}",
+      "action_path": null,
+      "slug": "sales-finance-reports",
+      "mode": "READ_ONLY",
+      "operation_ids": [
+        "list_uc_rpt_004",
+        "get_uc_rpt_004"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-RPT-005",
+      "use_case_id": "UC-RPT-005",
+      "domain": "RPT",
+      "collection_path": "/api/v1/rpt/report-exports",
+      "item_path": "/api/v1/rpt/report-exports/{id}",
+      "action_path": "/api/v1/rpt/report-exports/{id}/actions",
+      "slug": "report-exports",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_rpt_005",
+        "submit_uc_rpt_005",
+        "get_uc_rpt_005",
+        "update_uc_rpt_005",
+        "transition_uc_rpt_005"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PRINT-001",
+      "use_case_id": "UC-PRINT-001",
+      "domain": "PRINT",
+      "collection_path": "/api/v1/print/print-template-versions",
+      "item_path": "/api/v1/print/print-template-versions/{id}",
+      "action_path": "/api/v1/print/print-template-versions/{id}/actions",
+      "slug": "print-template-versions",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_print_001",
+        "submit_uc_print_001",
+        "get_uc_print_001",
+        "update_uc_print_001",
+        "transition_uc_print_001"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PRINT-002",
+      "use_case_id": "UC-PRINT-002",
+      "domain": "PRINT",
+      "collection_path": "/api/v1/print/delivery-note-printing",
+      "item_path": "/api/v1/print/delivery-note-printing/{id}",
+      "action_path": "/api/v1/print/delivery-note-printing/{id}/actions",
+      "slug": "delivery-note-printing",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_print_002",
+        "submit_uc_print_002",
+        "get_uc_print_002",
+        "update_uc_print_002",
+        "transition_uc_print_002"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PRINT-003",
+      "use_case_id": "UC-PRINT-003",
+      "domain": "PRINT",
+      "collection_path": "/api/v1/print/cash-check-printing",
+      "item_path": "/api/v1/print/cash-check-printing/{id}",
+      "action_path": "/api/v1/print/cash-check-printing/{id}/actions",
+      "slug": "cash-check-printing",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_print_003",
+        "submit_uc_print_003",
+        "get_uc_print_003",
+        "update_uc_print_003",
+        "transition_uc_print_003"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PRINT-004",
+      "use_case_id": "UC-PRINT-004",
+      "domain": "PRINT",
+      "collection_path": "/api/v1/print/labels-business-document-printing",
+      "item_path": "/api/v1/print/labels-business-document-printing/{id}",
+      "action_path": "/api/v1/print/labels-business-document-printing/{id}/actions",
+      "slug": "labels-business-document-printing",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_print_004",
+        "submit_uc_print_004",
+        "get_uc_print_004",
+        "update_uc_print_004",
+        "transition_uc_print_004"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PRINT-005",
+      "use_case_id": "UC-PRINT-005",
+      "domain": "PRINT",
+      "collection_path": "/api/v1/print/reprint-void-audit",
+      "item_path": "/api/v1/print/reprint-void-audit/{id}",
+      "action_path": "/api/v1/print/reprint-void-audit/{id}/actions",
+      "slug": "reprint-void-audit",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_print_005",
+        "submit_uc_print_005",
+        "get_uc_print_005",
+        "update_uc_print_005",
+        "transition_uc_print_005"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-TRACE-001",
+      "use_case_id": "UC-TRACE-001",
+      "domain": "TRACE",
+      "collection_path": "/api/v1/trace/batch-end-to-end-trace",
+      "item_path": "/api/v1/trace/batch-end-to-end-trace/{id}",
+      "action_path": null,
+      "slug": "batch-end-to-end-trace",
+      "mode": "READ_ONLY",
+      "operation_ids": [
+        "list_uc_trace_001",
+        "get_uc_trace_001"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-TRACE-002",
+      "use_case_id": "UC-TRACE-002",
+      "domain": "TRACE",
+      "collection_path": "/api/v1/trace/operation-audit-logs",
+      "item_path": "/api/v1/trace/operation-audit-logs/{id}",
+      "action_path": null,
+      "slug": "operation-audit-logs",
+      "mode": "READ_ONLY",
+      "operation_ids": [
+        "list_uc_trace_002",
+        "get_uc_trace_002"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-TRACE-003",
+      "use_case_id": "UC-TRACE-003",
+      "domain": "TRACE",
+      "collection_path": "/api/v1/trace/material-vaccination-trace",
+      "item_path": "/api/v1/trace/material-vaccination-trace/{id}",
+      "action_path": null,
+      "slug": "material-vaccination-trace",
+      "mode": "READ_ONLY",
+      "operation_ids": [
+        "list_uc_trace_003",
+        "get_uc_trace_003"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-TRACE-004",
+      "use_case_id": "UC-TRACE-004",
+      "domain": "TRACE",
+      "collection_path": "/api/v1/trace/document-archives",
+      "item_path": "/api/v1/trace/document-archives/{id}",
+      "action_path": "/api/v1/trace/document-archives/{id}/actions",
+      "slug": "document-archives",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_trace_004",
+        "get_uc_trace_004"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PLAT-001",
+      "use_case_id": "UC-PLAT-001",
+      "domain": "PLAT",
+      "collection_path": "/api/v1/plat/authentication-sessions",
+      "item_path": "/api/v1/plat/authentication-sessions/{id}",
+      "action_path": "/api/v1/plat/authentication-sessions/{id}/actions",
+      "slug": "authentication-sessions",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_plat_001",
+        "get_uc_plat_001",
+        "transition_uc_plat_001"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PLAT-002",
+      "use_case_id": "UC-PLAT-002",
+      "domain": "PLAT",
+      "collection_path": "/api/v1/plat/language-resources",
+      "item_path": "/api/v1/plat/language-resources/{id}",
+      "action_path": "/api/v1/plat/language-resources/{id}/actions",
+      "slug": "language-resources",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_plat_002",
+        "submit_uc_plat_002",
+        "get_uc_plat_002",
+        "update_uc_plat_002",
+        "transition_uc_plat_002"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PLAT-003",
+      "use_case_id": "UC-PLAT-003",
+      "domain": "PLAT",
+      "collection_path": "/api/v1/plat/notifications",
+      "item_path": "/api/v1/plat/notifications/{id}",
+      "action_path": "/api/v1/plat/notifications/{id}/actions",
+      "slug": "notifications",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_plat_003",
+        "submit_uc_plat_003",
+        "get_uc_plat_003",
+        "update_uc_plat_003",
+        "transition_uc_plat_003"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PLAT-004",
+      "use_case_id": "UC-PLAT-004",
+      "domain": "PLAT",
+      "collection_path": "/api/v1/plat/attachments-import-export",
+      "item_path": "/api/v1/plat/attachments-import-export/{id}",
+      "action_path": "/api/v1/plat/attachments-import-export/{id}/actions",
+      "slug": "attachments-import-export",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_plat_004",
+        "submit_uc_plat_004",
+        "get_uc_plat_004",
+        "update_uc_plat_004",
+        "transition_uc_plat_004",
+        "post_api_v1_plat_attachments_import_export_destroy_expired",
+        "post_api_v1_plat_attachments_import_export_upload"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": [
+        "post_api_v1_plat_attachments_import_export_destroy_expired",
+        "post_api_v1_plat_attachments_import_export_upload"
+      ]
+    },
+    {
+      "requirement_id": "SRS-FR-FIN-009",
+      "use_case_id": "UC-FIN-009",
+      "domain": "FIN",
+      "collection_path": "/api/v1/fin/disbursement-vouchers",
+      "item_path": "/api/v1/fin/disbursement-vouchers/{id}",
+      "action_path": "/api/v1/fin/disbursement-vouchers/{id}/actions",
+      "slug": "disbursement-vouchers",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_fin_009",
+        "submit_uc_fin_009",
+        "get_uc_fin_009",
+        "update_uc_fin_009",
+        "transition_uc_fin_009"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-FIN-010",
+      "use_case_id": "UC-FIN-010",
+      "domain": "FIN",
+      "collection_path": "/api/v1/fin/payment-executions",
+      "item_path": "/api/v1/fin/payment-executions/{id}",
+      "action_path": "/api/v1/fin/payment-executions/{id}/actions",
+      "slug": "payment-executions",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_fin_010",
+        "submit_uc_fin_010",
+        "get_uc_fin_010",
+        "update_uc_fin_010",
+        "transition_uc_fin_010"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "SRS-FR-PRINT-006",
+      "use_case_id": "UC-PRINT-006",
+      "domain": "PRINT",
+      "collection_path": "/api/v1/print/printer-paper-adaptation",
+      "item_path": "/api/v1/print/printer-paper-adaptation/{id}",
+      "action_path": "/api/v1/print/printer-paper-adaptation/{id}/actions",
+      "slug": "printer-paper-adaptation",
+      "mode": "PROPOSED_CRUD_AND_ACTION",
+      "operation_ids": [
+        "list_uc_print_006",
+        "submit_uc_print_006",
+        "get_uc_print_006",
+        "update_uc_print_006",
+        "transition_uc_print_006"
+      ],
+      "status": "PROPOSED_PENDING_REVIEW",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "DERIVED:TEMPORARY:organization_unit",
+      "use_case_id": "",
+      "domain": "ORG",
+      "collection_path": "/api/v1/org/organization-units",
+      "item_path": "/api/v1/org/organization-units/{id}",
+      "action_path": "/api/v1/org/organization-units/{id}/actions",
+      "slug": "organization-units",
+      "mode": "DERIVED_TEMPORARY_UNMAPPED",
+      "operation_ids": [
+        "get_api_v1_org_organization_units",
+        "post_api_v1_org_organization_units",
+        "get_api_v1_org_organization_units_id",
+        "patch_api_v1_org_organization_units_id",
+        "post_api_v1_org_organization_units_id_actions"
+      ],
+      "status": "DERIVED_TEMPORARY_PENDING_REMOVAL",
+      "source_table": "organization_unit",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "DERIVED:TEMPORARY:position",
+      "use_case_id": "",
+      "domain": "ORG",
+      "collection_path": "/api/v1/org/positions",
+      "item_path": "/api/v1/org/positions/{id}",
+      "action_path": "/api/v1/org/positions/{id}/actions",
+      "slug": "positions",
+      "mode": "DERIVED_TEMPORARY_UNMAPPED",
+      "operation_ids": [
+        "get_api_v1_org_positions",
+        "post_api_v1_org_positions",
+        "get_api_v1_org_positions_id",
+        "patch_api_v1_org_positions_id",
+        "post_api_v1_org_positions_id_actions"
+      ],
+      "status": "DERIVED_TEMPORARY_PENDING_REMOVAL",
+      "source_table": "position",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "DERIVED:TEMPORARY:dashboard_snapshot",
+      "use_case_id": "",
+      "domain": "RPT",
+      "collection_path": "/api/v1/rpt/dashboard-snapshot",
+      "item_path": "/api/v1/rpt/dashboard-snapshot/{id}",
+      "action_path": "/api/v1/rpt/dashboard-snapshot/{id}/actions",
+      "slug": "dashboard-snapshot",
+      "mode": "DERIVED_TEMPORARY_UNMAPPED",
+      "operation_ids": [
+        "get_api_v1_rpt_dashboard_snapshot",
+        "post_api_v1_rpt_dashboard_snapshot",
+        "get_api_v1_rpt_dashboard_snapshot_id",
+        "patch_api_v1_rpt_dashboard_snapshot_id",
+        "post_api_v1_rpt_dashboard_snapshot_id_actions"
+      ],
+      "status": "DERIVED_TEMPORARY_PENDING_REMOVAL",
+      "source_table": "dashboard_snapshot",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "DERIVED:TEMPORARY:print_job",
+      "use_case_id": "",
+      "domain": "PRINT",
+      "collection_path": "/api/v1/print/print-job",
+      "item_path": "/api/v1/print/print-job/{id}",
+      "action_path": "/api/v1/print/print-job/{id}/actions",
+      "slug": "print-job",
+      "mode": "DERIVED_TEMPORARY_UNMAPPED",
+      "operation_ids": [
+        "get_api_v1_print_print_job",
+        "post_api_v1_print_print_job",
+        "get_api_v1_print_print_job_id",
+        "patch_api_v1_print_print_job_id",
+        "post_api_v1_print_print_job_id_actions",
+        "post_api_v1_print_print_job_submit",
+        "post_api_v1_print_print_job_id_dispatch"
+      ],
+      "status": "DERIVED_TEMPORARY_PENDING_REMOVAL",
+      "source_table": "print_job",
+      "extra_operation_ids": [
+        "post_api_v1_print_print_job_submit",
+        "post_api_v1_print_print_job_id_dispatch"
+      ]
+    },
+    {
+      "requirement_id": "DERIVED:EXPLICIT:auth",
+      "use_case_id": "",
+      "domain": "AUTH",
+      "collection_path": "/api/v1/auth",
+      "paths": [
+        "/api/v1/auth/companies",
+        "/api/v1/auth/login",
+        "/api/v1/auth/logout",
+        "/api/v1/auth/me",
+        "/api/v1/auth/refresh"
+      ],
+      "slug": "auth",
+      "mode": "DERIVED_EXPLICIT_OPERATIONS",
+      "operation_ids": [
+        "post_api_v1_auth_login",
+        "post_api_v1_auth_refresh",
+        "get_api_v1_auth_me",
+        "post_api_v1_auth_logout",
+        "list_active_login_companies"
+      ],
+      "status": "DERIVED_FROM_IMPLEMENTED_ROUTE",
+      "extra_operation_ids": [
+        "post_api_v1_auth_login",
+        "post_api_v1_auth_refresh",
+        "get_api_v1_auth_me",
+        "post_api_v1_auth_logout"
+      ]
+    },
+    {
+      "requirement_id": "DERIVED:EXPLICIT:org",
+      "use_case_id": "",
+      "domain": "ORG",
+      "collection_path": "/api/v1/org/role-permissions",
+      "paths": [
+        "/api/v1/org/role-permissions"
+      ],
+      "slug": "org",
+      "mode": "DERIVED_EXPLICIT_OPERATIONS",
+      "operation_ids": [
+        "get_api_v1_org_role_permissions"
+      ],
+      "status": "DERIVED_FROM_IMPLEMENTED_ROUTE",
+      "extra_operation_ids": []
+    },
+    {
+      "requirement_id": "DERIVED:EXPLICIT:print",
+      "use_case_id": "",
+      "domain": "PRINT",
+      "collection_path": "/api/v1/print",
+      "paths": [
+        "/api/v1/print/design-preview",
+        "/api/v1/print/print-templates/{id}/design",
+        "/api/v1/print/print-templates/{id}/design/{designId}/publish"
+      ],
+      "slug": "print",
+      "mode": "DERIVED_EXPLICIT_OPERATIONS",
+      "operation_ids": [
+        "get_api_v1_print_print_templates_id_design",
+        "post_api_v1_print_print_templates_id_design",
+        "post_api_v1_print_print_templates_id_design_designid_publish",
+        "post_api_v1_print_design_preview"
+      ],
+      "status": "DERIVED_FROM_IMPLEMENTED_ROUTE",
+      "extra_operation_ids": [
+        "get_api_v1_print_print_templates_id_design",
+        "post_api_v1_print_print_templates_id_design",
+        "post_api_v1_print_print_templates_id_design_designid_publish",
+        "post_api_v1_print_design_preview"
+      ]
+    },
+    {
+      "requirement_id": "DERIVED:EXPLICIT:fin",
+      "use_case_id": "",
+      "domain": "FIN",
+      "collection_path": "/api/v1/fin",
+      "paths": [
+        "/api/v1/fin/aging-export",
+        "/api/v1/fin/ap-aging",
+        "/api/v1/fin/ar-aging",
+        "/api/v1/fin/financial-statements",
+        "/api/v1/fin/financial-statements-export",
+        "/api/v1/fin/journal-entries",
+        "/api/v1/fin/operating-dashboard",
+        "/api/v1/fin/periods",
+        "/api/v1/fin/periods/{id}/close",
+        "/api/v1/fin/periods/{id}/reopen",
+        "/api/v1/fin/receipt-settlements",
+        "/api/v1/fin/sales-orders/{id}/profit",
+        "/api/v1/fin/sales-orders/{id}/profit-export",
+        "/api/v1/fin/tax-rates",
+        "/api/v1/fin/tax-report",
+        "/api/v1/fin/tax-report-export",
+        "/api/v1/fin/tax-transactions",
+        "/api/v1/fin/trial-balance"
+      ],
+      "slug": "fin",
+      "mode": "DERIVED_EXPLICIT_OPERATIONS",
+      "operation_ids": [
+        "post_api_v1_fin_journal_entries",
+        "post_api_v1_fin_receipt_settlements",
+        "post_api_v1_fin_tax_rates",
+        "post_api_v1_fin_tax_transactions",
+        "get_api_v1_fin_operating_dashboard",
+        "get_api_v1_fin_tax_report",
+        "get_api_v1_fin_periods",
+        "post_api_v1_fin_periods",
+        "post_api_v1_fin_periods_id_close",
+        "post_api_v1_fin_periods_id_reopen",
+        "get_api_v1_fin_ar_aging",
+        "get_api_v1_fin_ap_aging",
+        "get_api_v1_fin_trial_balance",
+        "get_api_v1_fin_financial_statements",
+        "get_api_v1_fin_aging_export",
+        "get_api_v1_fin_tax_report_export",
+        "get_api_v1_fin_financial_statements_export",
+        "get_api_v1_fin_sales_orders_id_profit",
+        "get_api_v1_fin_sales_orders_id_profit_export"
+      ],
+      "status": "DERIVED_FROM_IMPLEMENTED_ROUTE",
+      "extra_operation_ids": [
+        "post_api_v1_fin_journal_entries",
+        "post_api_v1_fin_receipt_settlements",
+        "post_api_v1_fin_tax_rates",
+        "post_api_v1_fin_tax_transactions",
+        "get_api_v1_fin_operating_dashboard",
+        "get_api_v1_fin_tax_report",
+        "get_api_v1_fin_periods",
+        "post_api_v1_fin_periods",
+        "post_api_v1_fin_periods_id_close",
+        "post_api_v1_fin_periods_id_reopen",
+        "get_api_v1_fin_ar_aging",
+        "get_api_v1_fin_ap_aging",
+        "get_api_v1_fin_trial_balance",
+        "get_api_v1_fin_financial_statements",
+        "get_api_v1_fin_aging_export",
+        "get_api_v1_fin_tax_report_export",
+        "get_api_v1_fin_financial_statements_export",
+        "get_api_v1_fin_sales_orders_id_profit",
+        "get_api_v1_fin_sales_orders_id_profit_export"
+      ]
+    },
+    {
+      "requirement_id": "DERIVED:EXPLICIT:sales",
+      "use_case_id": "",
+      "domain": "SALES",
+      "collection_path": "/api/v1/sales",
+      "paths": [
+        "/api/v1/sales/delivery-tasks",
+        "/api/v1/sales/delivery-tasks/dispatch",
+        "/api/v1/sales/delivery-tasks/{id}/events",
+        "/api/v1/sales/discount-approvals",
+        "/api/v1/sales/discount-approvals/{id}/actions",
+        "/api/v1/sales/livestock-sales",
+        "/api/v1/sales/sales-returns"
+      ],
+      "slug": "sales",
+      "mode": "DERIVED_EXPLICIT_OPERATIONS",
+      "operation_ids": [
+        "post_api_v1_sales_sales_returns",
+        "get_api_v1_sales_delivery_tasks",
+        "post_api_v1_sales_delivery_tasks_dispatch",
+        "post_api_v1_sales_delivery_tasks_id_events",
+        "get_api_v1_sales_discount_approvals",
+        "post_api_v1_sales_discount_approvals_id_actions",
+        "post_api_v1_sales_livestock_sales"
+      ],
+      "status": "DERIVED_FROM_IMPLEMENTED_ROUTE",
+      "extra_operation_ids": [
+        "post_api_v1_sales_sales_returns",
+        "get_api_v1_sales_delivery_tasks",
+        "post_api_v1_sales_delivery_tasks_dispatch",
+        "post_api_v1_sales_delivery_tasks_id_events",
+        "get_api_v1_sales_discount_approvals",
+        "post_api_v1_sales_discount_approvals_id_actions",
+        "post_api_v1_sales_livestock_sales"
+      ]
+    },
+    {
+      "requirement_id": "DERIVED:EXPLICIT:proc",
+      "use_case_id": "",
+      "domain": "PROC",
+      "collection_path": "/api/v1/proc",
+      "paths": [
+        "/api/v1/proc/advance-shipping-notices/{id}/receive",
+        "/api/v1/proc/mrp-runs",
+        "/api/v1/proc/portal/advance-shipping-notices",
+        "/api/v1/proc/portal/purchase-orders",
+        "/api/v1/proc/portal/purchase-orders/{id}/confirm",
+        "/api/v1/proc/procurement-returns",
+        "/api/v1/proc/supplier-bindings",
+        "/api/v1/proc/supplier-lead-times"
+      ],
+      "slug": "proc",
+      "mode": "DERIVED_EXPLICIT_OPERATIONS",
+      "operation_ids": [
+        "post_api_v1_proc_supplier_lead_times",
+        "post_api_v1_proc_mrp_runs",
+        "post_api_v1_proc_procurement_returns",
+        "post_api_v1_proc_supplier_bindings",
+        "get_api_v1_proc_portal_purchase_orders",
+        "post_api_v1_proc_portal_purchase_orders_id_confirm",
+        "post_api_v1_proc_portal_advance_shipping_notices",
+        "post_api_v1_proc_advance_shipping_notices_id_receive"
+      ],
+      "status": "DERIVED_FROM_IMPLEMENTED_ROUTE",
+      "extra_operation_ids": [
+        "post_api_v1_proc_supplier_lead_times",
+        "post_api_v1_proc_mrp_runs",
+        "post_api_v1_proc_procurement_returns",
+        "post_api_v1_proc_supplier_bindings",
+        "get_api_v1_proc_portal_purchase_orders",
+        "post_api_v1_proc_portal_purchase_orders_id_confirm",
+        "post_api_v1_proc_portal_advance_shipping_notices",
+        "post_api_v1_proc_advance_shipping_notices_id_receive"
+      ]
+    },
+    {
+      "requirement_id": "DERIVED:EXPLICIT:inv",
+      "use_case_id": "",
+      "domain": "INV",
+      "collection_path": "/api/v1/inv",
+      "paths": [
+        "/api/v1/inv/batch-trace",
+        "/api/v1/inv/stock-positions",
+        "/api/v1/inv/uom-conversions"
+      ],
+      "slug": "inv",
+      "mode": "DERIVED_EXPLICIT_OPERATIONS",
+      "operation_ids": [
+        "post_api_v1_inv_uom_conversions",
+        "get_api_v1_inv_batch_trace",
+        "get_api_v1_inv_stock_positions"
+      ],
+      "status": "DERIVED_FROM_IMPLEMENTED_ROUTE",
+      "extra_operation_ids": [
+        "post_api_v1_inv_uom_conversions",
+        "get_api_v1_inv_batch_trace",
+        "get_api_v1_inv_stock_positions"
+      ]
+    },
+    {
+      "requirement_id": "DERIVED:EXPLICIT:events",
+      "use_case_id": "",
+      "domain": "EVENTS",
+      "collection_path": "/api/v1/events",
+      "paths": [
+        "/api/v1/events/dead-letters",
+        "/api/v1/events/dead-letters/{jobId}/replay"
+      ],
+      "slug": "events",
+      "mode": "DERIVED_EXPLICIT_OPERATIONS",
+      "operation_ids": [
+        "get_api_v1_events_dead_letters",
+        "post_api_v1_events_dead_letters_jobid_replay"
+      ],
+      "status": "DERIVED_FROM_IMPLEMENTED_ROUTE",
+      "extra_operation_ids": [
+        "get_api_v1_events_dead_letters",
+        "post_api_v1_events_dead_letters_jobid_replay"
+      ]
+    },
+    {
+      "requirement_id": "SRS-FR-PRINT-001-BASE",
+      "use_case_id": "UC-FRPRINT001BASE",
+      "domain": "FR",
+      "collection_path": "/api/v1/print/print-template",
+      "slug": "print-template",
+      "mode": "DERIVED_READ_ONLY",
+      "operation_ids": [
+        "list_print_template_master",
+        "get_print_template_master"
+      ],
+      "status": "DERIVED_FROM_IMPLEMENTED_ROUTE",
+      "source_table": "print_template"
+    }
+  ],
+  "mappings_total": 100
+}

@@ -4,8 +4,8 @@ import { loadContext } from './contract-model.mjs';
 
 const options = parseArgs(process.argv.slice(2));
 const context = loadContext(options);
-const openapiPath = resolve(context.root, options.openapi ?? '../../../SRS_需求规格化与基线/SRS08_OpenAPI3.1初版.json');
-const mappingPath = resolve(context.root, options.mapping ?? '../../../SRS_需求规格化与基线/SRS08_API需求操作映射.json');
+const openapiPath = resolve(context.root, options.openapi ?? 'contracts/openapi.json');
+const mappingPath = resolve(context.root, options.mapping ?? 'contracts/api-operation-map.json');
 const openapi = JSON.parse(readFileSync(openapiPath, 'utf8'));
 const mappingDocument = JSON.parse(readFileSync(mappingPath, 'utf8'));
 const httpMethods = new Set(['get', 'post', 'put', 'patch', 'delete', 'head', 'options', 'trace']);
@@ -25,7 +25,10 @@ for (const [path, pathItem] of Object.entries(openapi.paths)) {
 
 const updatedMappings = mappingDocument.mappings.map((mapping) => {
   const prefix = `${mapping.collection_path}/`;
-  const matched = operations.filter((item) => item.path === mapping.collection_path || item.path.startsWith(prefix));
+  const matched = operations.filter((item) => {
+    if (mapping.paths?.length) return mapping.paths.includes(item.path);
+    return item.path === mapping.collection_path || item.path.startsWith(prefix);
+  });
   return {
     ...mapping,
     operation_ids: [...new Set(matched.map((item) => item.operationId))],
@@ -73,9 +76,10 @@ for (const policy of context.routePolicies.filter((item) => item.mode === 'TEMPO
 const coveredByCollections = new Set();
 for (const mapping of updatedMappings) {
   for (const operation of operations) {
-    if (operation.path === mapping.collection_path || operation.path.startsWith(`${mapping.collection_path}/`)) {
-      coveredByCollections.add(operation.operationId);
-    }
+    const covered = mapping.paths?.length
+      ? mapping.paths.includes(operation.path)
+      : operation.path === mapping.collection_path || operation.path.startsWith(`${mapping.collection_path}/`);
+    if (covered) coveredByCollections.add(operation.operationId);
   }
 }
 const remaining = operations.filter((item) => !coveredByCollections.has(item.operationId));
@@ -89,6 +93,17 @@ for (const operation of remaining) {
 }
 for (const [key, items] of groups) {
   const paths = [...new Set(items.map((item) => item.path))].sort();
+  const operationIds = items.map((item) => item.operationId);
+  const existingIndex = updatedMappings.findIndex((mapping) => mapping.requirement_id === `DERIVED:EXPLICIT:${key}`);
+  if (existingIndex >= 0) {
+    const existing = updatedMappings[existingIndex];
+    updatedMappings[existingIndex] = {
+      ...existing,
+      paths: [...new Set([...(existing.paths ?? []), ...paths])].sort(),
+      operation_ids: [...new Set([...existing.operation_ids, ...operationIds])],
+    };
+    continue;
+  }
   const commonPrefix = commonPrefixOf(paths);
   updatedMappings.push({
     requirement_id: `DERIVED:EXPLICIT:${key}`,
@@ -98,7 +113,7 @@ for (const [key, items] of groups) {
     paths,
     slug: key,
     mode: 'DERIVED_EXPLICIT_OPERATIONS',
-    operation_ids: items.map((item) => item.operationId),
+    operation_ids: operationIds,
     status: 'DERIVED_FROM_IMPLEMENTED_ROUTE',
   });
 }

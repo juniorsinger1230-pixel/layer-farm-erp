@@ -5,9 +5,10 @@ import { test } from 'node:test';
 import { loadContext, operationKey } from '../scripts/contract-model.mjs';
 
 const context = loadContext();
-const base = resolve(context.root, '../../../SRS_需求规格化与基线');
-const openapi = JSON.parse(readFileSync(resolve(base, 'SRS08_OpenAPI3.1初版.json'), 'utf8'));
-const mapping = JSON.parse(readFileSync(resolve(base, 'SRS08_API需求操作映射.json'), 'utf8'));
+const openapiPath = resolve(context.root, 'contracts/openapi.json');
+const mappingPath = resolve(context.root, 'contracts/api-operation-map.json');
+const openapi = JSON.parse(readFileSync(openapiPath), 'utf8');
+const mapping = JSON.parse(readFileSync(mappingPath), 'utf8');
 const result = JSON.parse(readFileSync(resolve(context.root, 'openapi-contract-check-result.json'), 'utf8'));
 const methods = new Set(['get', 'post', 'put', 'patch', 'delete', 'head', 'options', 'trace']);
 
