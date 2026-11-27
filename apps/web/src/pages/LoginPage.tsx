@@ -1,10 +1,9 @@
-import { Alert, Button, Card, Form, Input, Select, Tag } from 'antd';
+import { Alert, Button, Card, Form, Input, Select } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api';
 import { useSession } from '../auth/SessionContext';
-import { COVERAGE } from '../data/registry';
 
 interface CompanyOption { company_code: string; company_name: string }
 
@@ -14,12 +13,12 @@ interface LoginFormValues {
   password: string;
 }
 
-export default function LoginPage() {
+export default function LoginPage(): React.ReactElement {
   const navigate = useNavigate();
   const { refreshProfile } = useSession();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [companies, setCompanies] = useState<CompanyOption[]>([{ company_code: 'THL', company_name: 'Tyranids Holdings Layer' }]);
+  const [companies, setCompanies] = useState<CompanyOption[]>([{ company_code: 'THL', company_name: 'THL分公司' }]);
 
   useEffect(() => {
     let active = true;
@@ -54,40 +53,36 @@ export default function LoginPage() {
   return (
     <main className="login-page">
       <section className="login-brand-panel">
-        <div className="login-brand"><div className="brand-mark brand-mark--large">禽</div><span>LAYER HEN ERP</span></div>
+        <div className="login-brand"><div className="brand-mark brand-mark--large">禽</div><span>蛋鸡养殖 ERP</span></div>
         <div>
-          <Tag color="blue">高保真真实业务前端</Tag>
-          <h1>让每一条需求，<br />都能被看见、操作与确认。</h1>
-          <p>面向蛋鸡养殖全业务链的真实业务工作台，覆盖养殖、采购、库存、销售、财务、设备、质量追溯和统一权限。</p>
+          <h1>一体化养殖业务管理平台</h1>
+          <p>覆盖养殖、采购、库存、销售、配送、财务、设备与质量追溯，帮助企业提升日常运营效率。</p>
         </div>
         <div className="login-coverage">
-          <div><strong>{COVERAGE.domains}</strong><span>业务域</span></div>
-          <div><strong>{COVERAGE.businessPages}</strong><span>业务页面</span></div>
-          <div><strong>20</strong><span>关键旅程</span></div>
+          <div><strong>13</strong><span>业务域</span></div>
+          <div><strong>87</strong><span>业务功能</span></div>
+          <div><strong>多端</strong><span>统一体验</span></div>
         </div>
-        <p className="login-note">基于 React 18 · Ant Design 5 · Hono · PostgreSQL<br />连接真实认证、真实 RBAC 与真实 API；当前试用环境关闭 MFA。</p>
       </section>
       <section className="login-form-panel">
         <Card className="login-card" bordered={false}>
           <div className="login-card-heading">
-            <span className="login-kicker">SECURE SIGN IN</span>
-            <h2>进入蛋鸡养殖 ERP</h2>
-            <p>请使用公司、员工账号和密码登录。</p>
+            <h2>欢迎登录</h2>
+            <p>请选择公司并输入员工账号和密码。</p>
           </div>
-          {error && <Alert type="error" showIcon message={error} className="prototype-notice" />}
+          {error ? <Alert type="error" showIcon message={error} /> : null}
           <Form<LoginFormValues> layout="vertical" initialValues={{ companyCode: 'THL' }} onFinish={(values) => { void submit(values); }}>
             <Form.Item name="companyCode" label="公司" rules={[{ required: true, message: '请选择公司' }]}>
               <Select options={companies.map((company) => ({ label: `${company.company_code} · ${company.company_name}`, value: company.company_code }))} />
             </Form.Item>
             <Form.Item name="account" label="员工账号" rules={[{ required: true, message: '请输入员工账号' }]}>
-              <Input prefix={<UserOutlined />} autoComplete="username" placeholder="例如 trial.admin" />
+              <Input prefix={<UserOutlined />} autoComplete="username" placeholder="请输入员工账号" />
             </Form.Item>
             <Form.Item name="password" label="密码" rules={[{ required: true, message: '请输入密码' }]}>
-              <Input.Password prefix={<LockOutlined />} autoComplete="current-password" />
+              <Input.Password prefix={<LockOutlined />} autoComplete="current-password" placeholder="请输入密码" />
             </Form.Item>
-            <Button type="primary" size="large" block htmlType="submit" loading={submitting}>登录工作台</Button>
+            <Button type="primary" size="large" block htmlType="submit" loading={submitting}>登录</Button>
           </Form>
-          <div className="login-demo">无 MFA 验证码 · 权限由后端统一校验<br />请勿在公开页面粘贴非试用账号密码。</div>
         </Card>
       </section>
     </main>

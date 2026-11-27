@@ -47,7 +47,7 @@ export default function PrintDesignerCard() {
 
   const requireTemplateId = (): number => {
     const id = Number(templateId);
-    if (!Number.isSafeInteger(id) || id < 1) throw new Error('请先输入有效的打印模板 ID');
+    if (!Number.isSafeInteger(id) || id < 1) throw new Error('请先输入有效的打印模板编号');
     return id;
   };
 
@@ -96,11 +96,11 @@ export default function PrintDesignerCard() {
   };
 
   return (
-    <Card className="print-designer-card" title="拖拽式打印设计器" extra={<Tag color="blue">真实 API</Tag>}>
+    <Card className="print-designer-card" title="打印设计器" extra={<Tag color="blue">打印模板</Tag>}>
       <Space direction="vertical" size="middle" style={{ width: '100%' }}>
         <Input
-          aria-label="打印模板 ID"
-          placeholder="打印模板 ID"
+          aria-label="打印模板编号"
+          placeholder="打印模板编号"
           value={templateId}
           onChange={(event) => setTemplateId(event.target.value)}
         />

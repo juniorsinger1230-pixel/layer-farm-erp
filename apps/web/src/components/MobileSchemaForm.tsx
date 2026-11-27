@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Button, DatePicker, Input, Picker, Selector, Switch, TextArea } from 'antd-mobile';
 import type { FormFieldSchema, PageFormSchema } from './form-schema';
 import { useReferenceOptions } from './reference-options';
+import { getEnumLabel, getFieldLabel } from '../presentation/presentation';
 
 interface MobileSchemaFormProps {
   schema: PageFormSchema;
@@ -22,6 +23,10 @@ function displayInputValue(value: unknown): string {
 
 function pickerValue(value: unknown): (string | number)[] {
   return typeof value === 'string' || typeof value === 'number' ? [value] : [];
+}
+
+function placeholderText(field: FormFieldSchema): string {
+  return `${field.control === 'select' || field.control === 'reference' ? '请选择' : '请输入'}${getFieldLabel(field.name)}`;
 }
 
 function asDate(value: unknown): Date {
@@ -57,7 +62,7 @@ export default function MobileSchemaForm({
     for (const field of schema.fields) {
       const value = values[field.name];
       if (field.required && (value === undefined || value === null || value === '')) {
-        nextErrors[field.name] = `请填写${field.label}`;
+        nextErrors[field.name] = `请填写${getFieldLabel(field.name)}`;
       }
       if (field.control === 'number' && value !== undefined && value !== null && value !== '') {
         const numericValue = Number(value);
@@ -101,7 +106,7 @@ export default function MobileSchemaForm({
       {schema.fields.map((field) => (
         <div key={field.name} data-field={field.name} style={{ marginBottom: 18 }}>
           <div style={{ marginBottom: 8, fontWeight: 600 }}>
-            {field.label}{field.required ? <span className="mobile-required-mark" style={{ color: '#ff3141' }}> *</span> : null}
+            {getFieldLabel(field.name)}{field.required ? <span className="mobile-required-mark" style={{ color: '#ff3141' }}> *</span> : null}
           </div>
           {field.description ? <div style={{ color: '#888', fontSize: 12, marginBottom: 8 }}>{field.description}</div> : null}
           {renderField(field, values, updateValue, optionsByPath, setOpenPicker, setOpenDate)}
@@ -110,7 +115,7 @@ export default function MobileSchemaForm({
       ))}
       <Picker
         visible={openPicker !== null && fieldByName.get(openPicker)?.control !== 'date' && fieldByName.get(openPicker)?.control !== 'date-time'}
-        title={openPicker ? fieldByName.get(openPicker)?.label : ''}
+        title={openPicker ? getFieldLabel(openPicker) : ''}
         columns={[pickerColumns(openPicker, fieldByName, optionsByPath, values)]}
         value={openPicker ? pickerValue(values[openPicker]) : []}
         onConfirm={(selected) => {
@@ -124,7 +129,7 @@ export default function MobileSchemaForm({
       />
       <DatePicker
         visible={openDate !== null}
-        title={openDate ? fieldByName.get(openDate)?.label : ''}
+        title={openDate ? getFieldLabel(openDate) : ''}
         precision={fieldByName.get(openDate ?? '')?.control === 'date-time' ? 'second' : 'day'}
         value={openDate ? asDate(values[openDate]) : new Date()}
         onConfirm={(date) => {
@@ -159,13 +164,13 @@ function renderField(
     return <TextArea rows={field.control === 'json' ? 6 : 4} value={displayInputValue(value)} onChange={(event) => updateValue(field.name, event)} />;
   }
   if (field.control === 'number') {
-    return <Input type="number" value={displayInputValue(value)} placeholder={field.placeholder} onChange={(event) => updateValue(field.name, event)} />;
+    return <Input type="number" value={displayInputValue(value)} placeholder={placeholderText(field)} onChange={(event) => updateValue(field.name, event)} />;
   }
   if (field.control === 'date' || field.control === 'date-time') {
     return <Button block fill="outline" onClick={() => setOpenDate(field.name)}>{value ? displayInputValue(value) : '请选择日期'}</Button>;
   }
   if (field.control === 'select') {
-    const options = (field.enum ?? []).map((item) => ({ label: item, value: item }));
+    const options = (field.enum ?? []).map((item) => ({ label: getEnumLabel(item), value: item }));
     if (options.length <= 6) {
       return (
         <Selector
@@ -180,7 +185,7 @@ function renderField(
   if (field.control === 'reference' && field.reference) {
     return <Button block fill="outline" onClick={() => setOpenPicker(field.name)}>{value ? displayInputValue(value) : '请选择'}</Button>;
   }
-  return <Input value={displayInputValue(value)} maxLength={field.maxLength ?? undefined} placeholder={field.placeholder} onChange={(event) => updateValue(field.name, event)} />;
+  return <Input value={displayInputValue(value)} maxLength={field.maxLength ?? undefined} placeholder={placeholderText(field)} onChange={(event) => updateValue(field.name, event)} />;
 }
 
 function pickerColumns(
@@ -193,7 +198,7 @@ function pickerColumns(
   const field = fieldByName.get(openPicker);
   if (field?.control === 'reference' && field.reference) return optionsByPath[field.reference.path] ?? [];
   if (field?.control === 'select') {
-    return (field.enum ?? []).map((value) => ({ label: value, value }));
+    return (field.enum ?? []).map((value) => ({ label: getEnumLabel(value), value }));
   }
   const current = values[openPicker];
   return current === undefined ? [] : [{ label: displayInputValue(current), value: current as string | number }];

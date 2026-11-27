@@ -2,12 +2,18 @@ import dayjs from 'dayjs';
 import { Button, DatePicker, Form, Input, InputNumber, Select, Space, Switch } from 'antd';
 import type { FormFieldSchema, PageFormSchema } from './form-schema';
 import { useReferenceOptions } from './reference-options';
+import { getEnumLabel, getFieldLabel } from '../presentation/presentation';
 
 function displayInputValue(value: unknown): string {
   if (value === null || value === undefined) return '';
   if (typeof value === 'string') return value;
   if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') return String(value);
   return JSON.stringify(value);
+}
+
+function placeholderText(field: FormFieldSchema): string {
+  const label = getFieldLabel(field.name);
+  return `${field.control === 'select' || field.control === 'reference' ? '请选择' : '请输入'}${label}`;
 }
 
 interface SchemaFormProps {
@@ -20,7 +26,7 @@ interface SchemaFormProps {
 
 function fieldRules(field: FormFieldSchema) {
   const rules: NonNullable<NonNullable<Parameters<typeof Form.Item>[0]>['rules']> = [];
-  if (field.required) rules.push({ required: true, message: `请填写${field.label}` });
+  if (field.required) rules.push({ required: true, message: `请填写${getFieldLabel(field.name)}` });
   if (field.minLength !== null) rules.push({ min: field.minLength, message: `最少 ${field.minLength} 个字符` });
   if (field.maxLength !== null) rules.push({ max: field.maxLength, message: `最多 ${field.maxLength} 个字符` });
   if (field.control === 'json') {
@@ -77,7 +83,7 @@ export default function SchemaForm({ schema, initialValues, submitting, onCancel
         <Form.Item
           key={field.name}
           name={field.name}
-          label={field.label}
+          label={getFieldLabel(field.name)}
           tooltip={field.description || undefined}
           valuePropName={field.control === 'switch' ? 'checked' : 'value'}
           rules={fieldRules(field)}
@@ -100,14 +106,14 @@ function renderControl(
 ) {
   if (field.control === 'switch') return <Switch />;
   if (field.control === 'textarea') {
-    return <Input.TextArea rows={4} maxLength={field.maxLength ?? undefined} showCount placeholder={field.placeholder} />;
+    return <Input.TextArea rows={4} maxLength={field.maxLength ?? undefined} showCount placeholder={placeholderText(field)} />;
   }
   if (field.control === 'json') return <Input.TextArea rows={6} placeholder='例如：{"key":"value"}' />;
   if (field.control === 'number') {
     const numberProps: Parameters<typeof InputNumber>[0] = {
       style: { width: '100%' },
       step: field.scale === null ? 1 : 1 / (10 ** field.scale),
-      placeholder: field.placeholder,
+      placeholder: placeholderText(field),
     };
     if (field.min !== null) numberProps.min = field.min;
     if (field.max !== null) numberProps.max = field.max;
@@ -123,8 +129,8 @@ function renderControl(
       <Select
         allowClear={!field.required}
         virtual={false}
-        placeholder={`请选择${field.label}`}
-        options={(field.enum ?? []).map((value) => ({ label: value, value }))}
+        placeholder={`请选择${getFieldLabel(field.name)}`}
+        options={(field.enum ?? []).map((value) => ({ label: getEnumLabel(value), value }))}
       />
     );
   }
@@ -135,7 +141,7 @@ function renderControl(
         allowClear={!field.required}
         virtual={false}
         loading={referenceLoading}
-        placeholder={`请选择${field.label}`}
+        placeholder={`请选择${getFieldLabel(field.name)}`}
         optionFilterProp="label"
         options={optionsByPath[field.reference.path] ?? []}
       />
@@ -150,5 +156,5 @@ function renderControl(
       />
     );
   }
-  return <Input maxLength={field.maxLength ?? undefined} placeholder={field.placeholder} />;
+  return <Input maxLength={field.maxLength ?? undefined} placeholder={placeholderText(field)} />;
 }

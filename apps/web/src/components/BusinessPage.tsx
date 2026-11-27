@@ -1,422 +1,208 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Button, Card, Drawer, Input, Space, Table, Tag } from 'antd';
-import { DownloadOutlined, PlusOutlined, PrinterOutlined, ReloadOutlined } from '@ant-design/icons';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Alert, Button, Card, Descriptions, Drawer, Dropdown, Space, Table, message } from 'antd';
+import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
+import type { ColumnsType } from 'antd/es/table';
 import { api } from '../api';
-import { canApprovePage, canCreatePage, canUpdatePage, getMappedContract } from '../auth/permissions';
 import { useSession } from '../auth/SessionContext';
-import type { PageDefinition } from '../types';
-import PrintDesignerCard from './PrintDesignerCard';
-import SchemaForm from './SchemaForm';
+import { canCreatePage, canUpdatePage, getMappedContract, isGapPage } from '../auth/permissions';
 import { buildInitialValues, getPageFormSchema } from './form-schema';
+import SchemaForm from './SchemaForm';
+import StatusTag from './StatusTag';
+import { formatDisplayValue, getColumnWidth, getFieldLabel } from '../presentation/presentation';
+import type { PageDefinition } from '../types';
 
-type BusinessRow = { id?: string | number; [key: string]: unknown };
-type ListResponse = { items: BusinessRow[]; total: number };
-type EditorRow = { id: string; key: string; value: string };
-type EditorState = {
-  open: boolean;
-  mode: 'create' | 'edit';
-  submitting: boolean;
-  target?: BusinessRow;
-};
-type ActionState = { open: boolean; submitting: boolean; rows: EditorRow[]; target?: BusinessRow };
+type BusinessRecord = Record<string, unknown>;
+type ListResponse = { items: BusinessRecord[]; total: number };
 
-const createLabels: Record<string, string> = {
-  'inv-001': '新建物料',
-  'inv-005': '新建库位',
-  'farm-003': '新建栋舍',
-  'proc-003': '新建供应商',
-  'proc-002': '新建采购订单',
-  'proc-004': '新建收货单',
-  'farm-002': '新建鸡苗批次',
-  'farm-011': '新建记录',
-  'sales-002': '新建价格',
-  'sales-001': '新建客户',
-  'sales-004': '新建信用额度',
-  'sales-003': '新建销售订单',
-  'print-001': '新建设计版本',
-};
-
-function blankRow(): EditorRow {
-  return { id: `row-${Date.now()}-${Math.random().toString(36).slice(2)}`, key: '', value: '' };
+interface BusinessPageProps {
+  page: PageDefinition;
 }
 
-function parseDynamicValue(raw: string): unknown {
-  const value = raw.trim();
-  if (value === '') return '';
-  if (value === 'true') return true;
-  if (value === 'false') return false;
-  if (value === 'null') return null;
-  if (/^-?\d+$/.test(value)) {
-    const numberValue = Number(value);
-    return Number.isSafeInteger(numberValue) ? numberValue : value;
+const preferredKeys = ['id', 'company_code', 'company', 'code', 'name', 'status', 'business_date', 'owner', 'updated_at'];
+
+function safeScalar(value: unknown): string {
+  return typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint' ? String(value) : '';
+}
+
+function recordKeys(records: BusinessRecord[]): string[] {
+  const keys = new Set<string>();
+  for (const record of records) {
+    Object.keys(record).forEach((key) => keys.add(key));
   }
-  if (/^-?\d+\.\d+$/.test(value)) return Number(value);
-  if ((value.startsWith('{') && value.endsWith('}')) || (value.startsWith('[') && value.endsWith(']'))) {
-    try {
-      return JSON.parse(value) as unknown;
-    } catch {
-      return raw;
-    }
-  }
-  return raw;
+  return [...keys].sort((a, b) => {
+    const ai = preferredKeys.indexOf(a);
+    const bi = preferredKeys.indexOf(b);
+    if (ai !== -1 || bi !== -1) return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+    return a.localeCompare(b);
+  });
 }
 
-function renderValue(value: unknown): string {
-  if (value === null || value === undefined) return '';
-  if (typeof value === 'string') return value;
-  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') return value.toString();
-  if (typeof value === 'symbol') return value.description ?? '';
-  return JSON.stringify(value);
-}
-
-function getRowItemId(record: BusinessRow, key: string): string {
-  const value = record[key];
-  if (typeof value === 'string' || typeof value === 'number') return value.toString();
-  return '';
-}
-
-function downloadBlob(blob: Blob, filename: string): void {
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-  anchor.href = url;
-  anchor.download = filename;
-  anchor.click();
-  URL.revokeObjectURL(url);
-}
-
-export default function BusinessPage({ page }: { page: PageDefinition }) {
+export default function BusinessPage({ page }: BusinessPageProps): React.ReactElement {
+  const { profile } = useSession();
   const contract = getMappedContract(page.pageId);
   const formSchema = getPageFormSchema(page.pageId);
-  const { profile } = useSession();
-  const itemKey = contract?.itemKey ?? 'id';
-  const [rows, setRows] = useState<BusinessRow[]>([]);
+  const unavailable = isGapPage(page.pageId) || !contract;
+  const [records, setRecords] = useState<BusinessRecord[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [keyword, setKeyword] = useState('');
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
   const [error, setError] = useState('');
-  const [notice, setNotice] = useState('');
-  const [editor, setEditor] = useState<EditorState>({ open: false, mode: 'create', submitting: false });
-  const [actionDrawer, setActionDrawer] = useState<ActionState>({ open: false, submitting: false, rows: [] });
-  const editorSubmitLock = useRef(false);
+  const [pageNo, setPageNo] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [currentRecord, setCurrentRecord] = useState<BusinessRecord | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  const canCreate = profile ? canCreatePage(profile, page.pageId) : false;
-  const canUpdate = profile ? canUpdatePage(profile, page.pageId) : false;
-  const canAction = profile
-    ? (canCreatePage(profile, page.pageId) || canUpdatePage(profile, page.pageId) || canApprovePage(profile, page.pageId))
-    : false;
-
-  const getRowKey = (record: BusinessRow): string => getRowItemId(record, itemKey);
-
-  const load = useCallback(async (): Promise<void> => {
-    if (!contract) return;
+  const loadRecords = useCallback(async () => {
+    if (!contract || unavailable) return;
     setLoading(true);
     setError('');
     try {
-      const query = new URLSearchParams({ page: String(pageNumber), pageSize: String(pageSize) });
-      const response = await api<ListResponse>(`${contract.path}?${query.toString()}`);
-      setRows(response.items ?? []);
+      const query = `page=${pageNo}&pageSize=${pageSize}`;
+      const response = await api<ListResponse>(`${contract.path}?${query}`);
+      setRecords(response.items ?? []);
       setTotal(response.total ?? 0);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '真实数据加载失败');
+      setError(err instanceof Error ? err.message : '数据加载失败');
     } finally {
       setLoading(false);
     }
-  }, [contract, pageNumber, pageSize]);
+  }, [contract, pageNo, pageSize, unavailable]);
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  useEffect(() => { void loadRecords(); }, [loadRecords]);
 
-  useEffect(() => {
-    if (!notice) return;
-    const timer = window.setTimeout(() => setNotice(''), 5000);
-    return () => window.clearTimeout(timer);
-  }, [notice]);
+  const keys = useMemo(() => recordKeys(records), [records]);
+  const canCreate = Boolean(profile && canCreatePage(profile, page.pageId) && formSchema);
+  const canEdit = Boolean(profile && canUpdatePage(profile, page.pageId) && formSchema);
 
-  const filteredRows = useMemo(() => {
-    const term = keyword.trim().toLowerCase();
-    if (!term) return rows;
-    return rows.filter((row) => Object.values(row).some((value) => renderValue(value).toLowerCase().includes(term)));
-  }, [rows, keyword]);
+  const columns: ColumnsType<BusinessRecord> = useMemo(() => keys.map((key) => ({
+    title: getFieldLabel(key),
+    dataIndex: key,
+    key,
+    width: getColumnWidth(key),
+    ellipsis: true,
+    render: (value: unknown) => key === 'status' || key.endsWith('_status')
+      ? <StatusTag status={safeScalar(value)} />
+      : formatDisplayValue(value, key),
+  })), [keys]);
 
-  const columns = useMemo(() => {
-    const keys = Array.from(new Set(filteredRows.flatMap((row) => Object.keys(row)))).slice(0, 12);
-    const dataColumns = keys.map((key) => ({
-      title: key,
-      dataIndex: key,
-      key,
-      ellipsis: true,
-      render: (value: unknown) => renderValue(value),
-    }));
-    return [
-      ...dataColumns,
-      ...(canUpdate || canAction ? [{
-        title: '操作',
-        key: '__actions',
-        fixed: 'right' as const,
-        width: canUpdate && canAction ? 170 : 90,
-        render: (_: unknown, record: BusinessRow) => (
-          <Space size="small">
-            {canUpdate ? (
-              <Button size="small" onClick={() => openEdit(record)}>
-                编辑
-              </Button>
-            ) : null}
-            {canAction ? (
-              <Button size="small" onClick={() => openAction(record)}>
-                动作
-              </Button>
-            ) : null}
-          </Space>
-        ),
-      }] : []),
-    ];
-  }, [filteredRows, canUpdate, canAction, itemKey]);
+  columns.push({
+    title: '操作',
+    key: 'actions',
+    fixed: 'right',
+    width: 150,
+    render: (_, record) => (
+      <Space size={4}>
+        <Button type="link" size="small" onClick={() => { setCurrentRecord(record); setDetailOpen(true); }}>查看详情</Button>
+        <Dropdown
+          menu={{
+            items: [
+              ...(canEdit ? [{ key: 'edit', label: '编辑' }] : []),
+              { key: 'refresh', label: '刷新记录' },
+            ],
+            onClick: ({ key }) => {
+              if (key === 'edit') { setCurrentRecord(record); setEditOpen(true); }
+              if (key === 'refresh') void loadRecords();
+            },
+          }}
+        >
+          <Button type="link" size="small">更多操作<EllipsisOutlined /></Button>
+        </Dropdown>
+      </Space>
+    ),
+  });
 
-  const updateActionRow = (id: string, field: 'key' | 'value', value: string): void => {
-    setActionDrawer((previous) => ({
-      ...previous,
-      rows: previous.rows.map((row) => (row.id === id ? { ...row, [field]: value } : row)),
-    }));
-  };
-
-  const buildPayload = (editorRows: EditorRow[]): Record<string, unknown> => {
-    const payload: Record<string, unknown> = {};
-    for (const row of editorRows) {
-      const key = row.key.trim();
-      if (!key) continue;
-      payload[key] = parseDynamicValue(row.value);
-    }
-    return payload;
-  };
-
-  const openCreate = (): void => {
-    setError('');
-    setEditor({ open: true, mode: 'create', submitting: false });
-  };
-
-  function openEdit(record: BusinessRow): void {
-    setError('');
-    setEditor({ open: true, mode: 'edit', submitting: false, target: record });
-  }
-
-  function openAction(record?: BusinessRow): void {
-    const target = record ?? filteredRows[0];
-    if (!target || target[itemKey] === undefined) {
-      setError('请先选择要执行动作的真实记录');
-      return;
-    }
-    setError('');
-    setActionDrawer({ open: true, submitting: false, target, rows: [blankRow()] });
-  }
-
-  const saveEditor = async (payload: Record<string, unknown>): Promise<void> => {
-    if (!contract || editorSubmitLock.current) return;
-    editorSubmitLock.current = true;
-    setEditor((previous) => ({ ...previous, submitting: true }));
-    setError('');
-    setNotice('');
+  const submitCreate = async (values: Record<string, unknown>): Promise<void> => {
+    if (!contract) return;
+    setSubmitting(true);
     try {
-      if (editor.mode === 'create') {
-        await api(contract.path, { method: 'POST', body: JSON.stringify(payload) });
-      } else {
-        const id = editor.target ? getRowItemId(editor.target, itemKey) : '';
-        if (!id) throw new Error('缺少记录标识');
-        await api(`${contract.path}/${id}`, { method: 'PATCH', body: JSON.stringify(payload) });
-      }
-      setNotice('已保存并通过领域校验');
-      setEditor((previous) => ({ ...previous, open: false, submitting: false }));
-      await load();
+      await api(contract.path, { method: 'POST', body: JSON.stringify(values) });
+      message.success('保存成功');
+      setCreateOpen(false);
+      await loadRecords();
     } catch (err) {
-      setError(err instanceof Error ? err.message : '保存失败');
-      setEditor((previous) => ({ ...previous, submitting: false }));
+      message.error(err instanceof Error ? err.message : '保存失败');
     } finally {
-      editorSubmitLock.current = false;
+      setSubmitting(false);
     }
   };
 
-  const saveAction = async (): Promise<void> => {
-    if (!contract) return;
-    setActionDrawer((previous) => ({ ...previous, submitting: true }));
-    setError('');
-    setNotice('');
+  const submitEdit = async (values: Record<string, unknown>): Promise<void> => {
+    if (!contract || !currentRecord) return;
+    const itemKey = contract.itemKey ?? 'id';
+    const itemValue = currentRecord[itemKey];
+    setSubmitting(true);
     try {
-      const id = actionDrawer.target ? getRowItemId(actionDrawer.target, itemKey) : '';
-      if (!id) throw new Error('缺少记录标识');
-      const payload = buildPayload(actionDrawer.rows);
-      await api(`${contract.path}/${id}/actions`, { method: 'POST', body: JSON.stringify(payload) });
-      setNotice('已保存并通过领域校验');
-      setActionDrawer({ open: false, submitting: false, rows: [] });
-      await load();
+      await api(`${contract.path}/${encodeURIComponent(String(itemValue))}`, {
+        method: 'PATCH',
+        body: JSON.stringify(values),
+      });
+      message.success('更新成功');
+      setEditOpen(false);
+      await loadRecords();
     } catch (err) {
-      setError(err instanceof Error ? err.message : '业务动作执行失败');
-      setActionDrawer((previous) => ({ ...previous, submitting: false }));
+      message.error(err instanceof Error ? err.message : '更新失败');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const exportCsv = (): void => {
-    if (!contract) return;
-    const keys = Array.from(new Set(filteredRows.flatMap((row) => Object.keys(row))));
-    const escapeCsv = (value: unknown): string => `"${renderValue(value).replace(/"/g, '""')}"`;
-    const lines = [
-      keys.map(escapeCsv).join(','),
-      ...filteredRows.map((row) => keys.map((key) => escapeCsv(row[key])).join(',')),
-    ];
-    downloadBlob(new Blob([`\uFEFF${lines.join('\r\n')}`], { type: 'text/csv;charset=utf-8' }), `${page.title}.csv`);
-  };
-
-  if (!contract) {
-    return <Alert type="warning" showIcon message="该页面尚未登记真实 API 映射" />;
+  if (unavailable) {
+    return (
+      <Card className="business-page" data-page-id={page.pageId}>
+        <Alert type="info" showIcon message="功能暂未开放" description="该业务功能正在准备中，当前不展示模拟数据或临时内容。" />
+      </Card>
+    );
   }
 
   return (
-    <div className="business-page" data-page-id={page.pageId} data-requirement-id={page.requirementId}>
-      <Space direction="vertical" size="large" style={{ width: '100%' }}>
-        <Card>
-          <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-            <Space wrap>
-              <Tag color="blue">{page.domainName}</Tag>
-              <Tag color={page.priority === 'P0' ? 'red' : 'default'}>{page.priority}</Tag>
-              <Tag>{page.requirementId}</Tag>
-              <Tag color="green">真实 API</Tag>
-            </Space>
-            <Space wrap>
-              {canCreate ? (
-                <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
-                  {createLabels[page.pageId] ?? '新建记录'}
-                </Button>
-              ) : null}
-              {canAction ? (
-                <Button icon={<PlusOutlined />} onClick={() => openAction()} disabled={filteredRows.length === 0}>
-                  执行动作
-                </Button>
-              ) : null}
-              <Button icon={<ReloadOutlined />} loading={loading} onClick={() => void load()}>
-                刷新
-              </Button>
-              <Button icon={<DownloadOutlined />} onClick={() => void exportCsv()}>
-                导出 CSV
-              </Button>
-              <Button icon={<PrinterOutlined />} onClick={() => window.print()}>
-                打印
-              </Button>
-            </Space>
-            <Input.Search
-              allowClear
-              placeholder="搜索当前记录"
-              value={keyword}
-              onChange={(event) => setKeyword(event.target.value)}
-              style={{ maxWidth: 420 }}
-            />
-            {notice ? <Alert type="success" showIcon message={notice} /> : null}
-            {error ? <Alert type="error" showIcon message={error} /> : null}
-          </Space>
-        </Card>
-
-        <Card title={page.title}>
-          <Table<BusinessRow>
-            rowKey={getRowKey}
-            columns={columns}
-            dataSource={filteredRows}
-            loading={loading}
-            scroll={{ x: 1200 }}
-            pagination={{
-              current: pageNumber,
-              pageSize,
-              total,
-              showSizeChanger: true,
-              onChange: (nextPage, nextPageSize) => {
-                setPageNumber(nextPage);
-                setPageSize(nextPageSize);
-              },
-            }}
-          />
-        </Card>
-
-        {page.pageId === 'print-001' ? <PrintDesignerCard /> : null}
-
-        <Card title="需求详情">
-          <Space wrap>
-            <Tag>{page.requirementId}</Tag>
-            <Tag>{page.pageId}</Tag>
-          </Space>
-          <p style={{ marginTop: 16 }}>{page.description}</p>
-        </Card>
-      </Space>
-
-      <Drawer
-        open={editor.open}
-        title={editor.mode === 'create' ? `新建${page.title}` : `编辑${page.title}`}
-        width={720}
-        closable={!editor.submitting}
-        maskClosable={false}
-        keyboard={!editor.submitting}
-        onClose={() => {
-          if (!editor.submitting) setEditor((previous) => ({ ...previous, open: false }));
-        }}
+    <div className="business-page" data-page-id={page.pageId}>
+      <Card
+        title={page.title}
+        extra={canCreate ? <Button type="primary" icon={<PlusOutlined />} onClick={() => setCreateOpen(true)}>新建</Button> : null}
       >
-        {formSchema ? (
-          <SchemaForm
-            key={`${editor.mode}-${page.pageId}`}
-            schema={formSchema}
-            initialValues={buildInitialValues(formSchema, editor.mode === 'edit' ? editor.target : undefined)}
-            submitting={editor.submitting}
-            onCancel={() => setEditor((previous) => ({ ...previous, open: false }))}
-            onSubmit={saveEditor}
-          />
-        ) : (
-          <Alert type="error" showIcon message="缺少该页面的创建表单 Schema" />
-        )}
+        {error ? <Alert className="page-error" type="error" showIcon message={error} action={<Button onClick={() => void loadRecords()}>重试</Button>} /> : null}
+        <Table<BusinessRecord>
+          rowKey={(record) => safeScalar(record[contract?.itemKey ?? 'id']) || crypto.randomUUID()}
+          columns={columns}
+          dataSource={records}
+          loading={loading}
+          scroll={{ x: 'max-content' }}
+          pagination={{
+            current: pageNo,
+            pageSize,
+            total,
+            showSizeChanger: true,
+            showTotal: (count) => `共 ${count} 条`,
+            onChange: (nextPage, nextSize) => {
+              setPageNo(nextPage);
+              setPageSize(nextSize);
+            },
+          }}
+        />
+      </Card>
+
+      <Drawer title={`新建${page.title}`} width={720} open={createOpen} onClose={() => setCreateOpen(false)} destroyOnClose>
+        {formSchema ? <SchemaForm schema={formSchema} initialValues={buildInitialValues(formSchema)} submitting={submitting} onCancel={() => setCreateOpen(false)} onSubmit={(values) => void submitCreate(values)} /> : null}
       </Drawer>
 
-      <Drawer
-        open={actionDrawer.open}
-        title="执行业务动作"
-        width={560}
-        closable={!actionDrawer.submitting}
-        maskClosable={false}
-        keyboard={!actionDrawer.submitting}
-        onClose={() => {
-          if (!actionDrawer.submitting) setActionDrawer((previous) => ({ ...previous, open: false }));
-        }}
-        extra={
-          <Space>
-            <Button
-              disabled={actionDrawer.submitting}
-              onClick={() => setActionDrawer((previous) => ({ ...previous, open: false }))}
-            >
-              取消
-            </Button>
-            <Button type="primary" loading={actionDrawer.submitting} onClick={() => void saveAction()}>
-              执行
-            </Button>
-          </Space>
-        }
-      >
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-          <Button
-            block
-            icon={<PlusOutlined />}
-            disabled={actionDrawer.submitting}
-            onClick={() => setActionDrawer((previous) => ({ ...previous, rows: [...previous.rows, blankRow()] }))}
-          >
-            添加字段
-          </Button>
-          {actionDrawer.rows.map((row) => (
-            <div className="editor-row" key={row.id} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 8 }}>
-              <Input aria-label="字段名" placeholder="字段名" value={row.key} onChange={(event) => updateActionRow(row.id, 'key', event.target.value)} />
-              <Input aria-label="字段值" placeholder="字段值" value={row.value} onChange={(event) => updateActionRow(row.id, 'value', event.target.value)} />
-              <Button
-                danger
-                onClick={() => setActionDrawer((previous) => ({ ...previous, rows: previous.rows.filter((item) => item.id !== row.id) }))}
-              >
-                删除
-              </Button>
-            </div>
-          ))}
-        </Space>
+      <Drawer title={`编辑${page.title}`} width={720} open={editOpen} onClose={() => setEditOpen(false)} destroyOnClose>
+        {formSchema && currentRecord ? <SchemaForm schema={formSchema} initialValues={buildInitialValues(formSchema, currentRecord)} submitting={submitting} onCancel={() => setEditOpen(false)} onSubmit={(values) => void submitEdit(values)} /> : null}
+      </Drawer>
+
+      <Drawer title={`${page.title}详情`} width={720} open={detailOpen} onClose={() => setDetailOpen(false)} destroyOnClose>
+        {currentRecord ? (
+          <Descriptions bordered column={1} size="small">
+            {keys.map((key) => (
+              <Descriptions.Item key={key} label={getFieldLabel(key)}>
+                {key === 'status' || key.endsWith('_status')
+                  ? <StatusTag status={safeScalar(currentRecord[key])} />
+                  : formatDisplayValue(currentRecord[key], key)}
+              </Descriptions.Item>
+            ))}
+          </Descriptions>
+        ) : null}
       </Drawer>
     </div>
   );

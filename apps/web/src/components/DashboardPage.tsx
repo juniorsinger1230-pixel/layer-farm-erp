@@ -64,7 +64,7 @@ export default function DashboardPage({ page }: { page: PageDefinition }) {
 
   const load = async () => {
     if (!contract?.path) {
-      setError('当前页面未登记真实 API 映射');
+      setError('当前页面数据暂不可用');
       return;
     }
     setLoading(true);
@@ -110,14 +110,14 @@ export default function DashboardPage({ page }: { page: PageDefinition }) {
   }, [items]);
 
   return (
-    <div className="business-page dashboard-page" data-page-id={page.pageId} data-requirement-id={page.requirementId}>
+    <div className="business-page dashboard-page" data-page-id={page.pageId}>
       <Card className="page-intro">
         <Space wrap>
-          <Tag color="blue">真实读模型</Tag>
+          <Tag color="blue">经营看板</Tag>
           <Tag>{profile?.companyCode ?? ''}</Tag>
         </Space>
         <h2>{page.title}</h2>
-        <p>本驾驶舱直接读取经营看板读模型 API，展示真实投影数据、事件版本和指标载荷，不使用 Mock 数据。</p>
+        <p>本驾驶舱展示经营指标、事件版本和最新业务数据，帮助管理人员快速掌握运营情况。</p>
         <Button icon={<ReloadOutlined />} onClick={() => { void load(); }} loading={loading}>刷新驾驶舱</Button>
       </Card>
 
@@ -175,7 +175,7 @@ export default function DashboardPage({ page }: { page: PageDefinition }) {
           }}
           columns={[
             { title: '读模型键', dataIndex: 'read_model_key' },
-            { title: '公司 ID', dataIndex: 'company_id', width: 100 },
+            { title: '公司编号', dataIndex: 'company_id', width: 100 },
             { title: '事件版本', dataIndex: 'source_event_version', width: 110 },
             { title: '来源更新时间', dataIndex: 'source_updated_at', width: 200, render: formatTime },
             { title: '投影时间', dataIndex: 'projected_at', width: 200, render: formatTime },

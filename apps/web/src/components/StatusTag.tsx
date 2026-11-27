@@ -1,17 +1,25 @@
-import { CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined, FileOutlined, SyncOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
-import type { RecordStatus } from '../types';
+import { getEnumLabel } from '../presentation/presentation';
 
-const statusMap = {
-  DRAFT: { label: '草稿', color: 'default', icon: <FileOutlined /> },
-  PENDING: { label: '待提交', color: 'warning', icon: <ClockCircleOutlined /> },
-  APPROVING: { label: '审批中', color: 'processing', icon: <SyncOutlined /> },
-  APPROVED: { label: '已生效', color: 'success', icon: <CheckCircleOutlined /> },
-  REJECTED: { label: '已退回', color: 'error', icon: <CloseCircleOutlined /> },
-  CLOSED: { label: '已关闭', color: 'default', icon: <CloseCircleOutlined /> },
-} as const;
+const colorMap: Record<string, string> = {
+  draft: 'default',
+  pending: 'warning',
+  approving: 'processing',
+  approved: 'success',
+  rejected: 'error',
+  closed: 'default',
+  active: 'success',
+  disabled: 'default',
+  cancelled: 'error',
+  expired: 'warning',
+  suspended: 'warning',
+  paid: 'success',
+  partial: 'warning',
+  cleared: 'success',
+  executed: 'success',
+};
 
-export default function StatusTag({ status }: { status: RecordStatus }) {
-  const config = statusMap[status] ?? statusMap.DRAFT;
-  return <Tag color={config.color} icon={config.icon}>{config.label}</Tag>;
+export default function StatusTag({ status }: { status: string }): React.ReactElement {
+  const key = String(status).toLowerCase();
+  return <Tag color={colorMap[key] ?? 'default'}>{getEnumLabel(key)}</Tag>;
 }
