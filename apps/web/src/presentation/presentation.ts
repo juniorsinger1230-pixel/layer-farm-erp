@@ -279,7 +279,7 @@ const enumLabels: Record<string, string> = {
   probation: '试用', promotion: '晋升', published: '已发布', pullets: '青年鸡', purchase: '采购',
   qualified: '合格', quarantine: '隔离', read: '已读', rejected: '已退回', released: '已放行',
   repairing: '维修中', requested: '已申请', requisition: '申请', resigned: '离职', return: '退货',
-  sales: '销售', shipped: '已发运', signed: '已签收', spare: '备件', special: '专项',
+  returned_partial: '部分退回', sales: '销售', shipped: '已发运', signed: '已签收', spare: '备件', special: '专项',
   spot: '现货', standard: '标准', suspended: '暂停', task: '任务', transfer: '调拨',
   unread: '未读', vaccine: '疫苗',
 };

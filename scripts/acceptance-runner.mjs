@@ -1569,6 +1569,7 @@ for (let number = 204; number <= 218; number += 1) {
       const colorMap = {
         draft: 'default', pending: 'warning', approving: 'processing', approved: 'success',
         rejected: 'error', closed: 'default', allocated: 'processing', shipped: 'success',
+        returned_partial: 'warning', failed: 'error',
       };
       const tagEvidence = await page.locator('tbody tr.ant-table-row').first().locator('.ant-tag').evaluate((node) => ({ text: node.textContent?.trim(), className: node.className }));
       const status = initialItems[0].status;
