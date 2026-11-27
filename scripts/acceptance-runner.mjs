@@ -759,32 +759,22 @@ async function prepareSalesReturn(orderId) {
   s3ConsumedReservationId = Number(consumedIds[0]);
 }
 
-async function ensureDriverTaskPrerequisites() {
-  const orders = await fetchS3Records('/api/v1/sales/sales-orders');
-  const tasks = await fetchS3Records('/api/v1/log/driver-tasks');
-  const occupiedOrderIds = new Set(tasks.map((item) => Number(item.order_id)));
-  const reservedOrderIds = new Set([s3ShippedSalesOrderId, s3LivestockSalesOrderId].filter(Number.isInteger).map(Number));
-  const candidate = orders.find((item) => item.status === 'shipped' && !occupiedOrderIds.has(Number(item.id)) && !reservedOrderIds.has(Number(item.id)));
-  if (candidate) {
-    s3DriverTaskSalesOrderId = Number(candidate.id);
-    return;
-  }
-
+async function createShippedSalesOrder(prefix) {
   const created = await evaluateS3Fetch('/api/v1/sales/sales-orders', {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      'idempotency-key': `s3-driver-${Date.now()}`,
+      'idempotency-key': `${prefix.toLowerCase()}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     },
     body: JSON.stringify({
-      order_no: `S3-DRIVER-${Date.now()}`,
+      order_no: `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       customer_id: 1,
       order_mode: 'standard',
       status: 'draft',
     }),
   });
   const orderId = Number(created.data?.id ?? created.id);
-  if (!Number.isInteger(orderId)) throw new Error('Missing dedicated driver-task sales order id');
+  if (!Number.isInteger(orderId)) throw new Error(`Missing ${prefix} sales order id`);
   let allocationLine;
   try {
     allocationLine = await getS3AllocationLine();
@@ -797,7 +787,31 @@ async function ensureDriverTaskPrerequisites() {
   await s3SalesOrderAction(orderId, 'allocate', [allocationLine]);
   await s3SalesOrderAction(orderId, 'ship');
   s3OptionCache.delete('/api/v1/sales/sales-orders');
-  s3DriverTaskSalesOrderId = orderId;
+  return orderId;
+}
+
+async function ensureDriverTaskPrerequisites() {
+  const orders = await fetchS3Records('/api/v1/sales/sales-orders');
+  const tasks = await fetchS3Records('/api/v1/log/driver-tasks');
+  const occupiedOrderIds = new Set(tasks.map((item) => Number(item.order_id)));
+  const reservedOrderIds = new Set([s3ShippedSalesOrderId, s3LivestockSalesOrderId].filter(Number.isInteger).map(Number));
+  const candidate = orders.find((item) => item.status === 'shipped' && !occupiedOrderIds.has(Number(item.id)) && !reservedOrderIds.has(Number(item.id)));
+  if (candidate) {
+    s3DriverTaskSalesOrderId = Number(candidate.id);
+    return;
+  }
+
+  s3DriverTaskSalesOrderId = await createShippedSalesOrder('S3-DRIVER');
+}
+
+async function ensureS4PaginationPrerequisites() {
+  let orders = await fetchS3Records('/api/v1/sales/sales-orders');
+  const createdOrderIds = [];
+  while (orders.length < 11) {
+    createdOrderIds.push(await createShippedSalesOrder('S4-PAGE'));
+    orders = await fetchS3Records('/api/v1/sales/sales-orders');
+  }
+  if (createdOrderIds.length > 0) saveEvidence('S4-pagination-prerequisite.json', { total: orders.length, createdOrderIds });
 }
 
 async function ensureS3CommonPrerequisites() {
@@ -1488,6 +1502,7 @@ for (let number = 204; number <= 218; number += 1) {
   checks[`S4_${number}`] = async () => {
     const page = await getS3Page();
     await openS4Page(page);
+    await ensureS4PaginationPrerequisites();
     const initialList = await adminApi(`${s4ResourcePath}?page=1&pageSize=100`);
     const initialItems = initialList.data.items;
     assertCondition(initialItems.length > 0, 'S4 前置业务记录为空');
