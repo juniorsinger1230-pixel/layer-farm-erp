@@ -47,7 +47,8 @@
     "contract:report": "node scripts/generate-openapi-contract-report.mjs",
     "evidence:current-sha": "node scripts/capture-current-sha-evidence.mjs",
     "report:s0-s6": "node scripts/generate-s0-s6-final-report.mjs",
-    "gate": "npm run lint && npm run typecheck && npm run contract:check && npm run test:coverage && npm run security && npm run audit && npm run license:check && npm run sbom && npm run quality:evaluate"
+    "gate:snapshot-isolation": "node scripts/check-snapshot-isolation.mjs",
+    "gate": "npm run gate:snapshot-isolation && npm run lint && npm run typecheck && npm run contract:check && npm run test:coverage && npm run security && npm run audit && npm run license:check && npm run sbom && npm run quality:evaluate"
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",

@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "frozenCaseDefinitionSha": "7d6625c7571d0c813517ad87c67e13aea458e3c4",
+  "functionalFixCommit": "9886853fea7c4192450c1a6d249b3ebd33465e05",
+  "currentCoverageContractSourceSha": "0be074655eb444ccb36ba03aabbaf06cc6abfbed",
+  "expected": {
+    "totalCases": 234,
+    "stageCounts": {
+      "S0": 20,
+      "S1": 35,
+      "S2": 74,
+      "S3": 74,
+      "S4": 15,
+      "S5": 10,
+      "S6": 6
+    },
+    "openapiPaths": 321,
+    "operations": 479,
+    "apiMappings": 100,
+    "registryPages": 87,
+    "manualCreatePages": 74,
+    "systemReadOnlyPages": 2,
+    "systemReadOnlyPageIds": ["trace-001", "plat-001"],
+    "otherReadOnlyPages": 11,
+    "visibleFields": 541,
+    "referenceFields": 110,
+    "tests": 137,
+    "coverage": {
+      "statements": 95.71,
+      "lines": 95.71,
+      "branches": 68.57,
+      "functions": 93.39
+    },
+    "history": {
+      "runs": 61,
+      "results": 1812,
+      "passedResults": 1466,
+      "failedResults": 346,
+      "failedCases": 146,
+      "historicalRegressionCases": 143,
+      "environmentDriftIds": ["TC-013", "TC-019"],
+      "strictFinalCase": "TC-234"
+    }
+  },
+  "forbiddenCurrentMetrics": [
+    {
+      "id": "legacy-real-gap",
+      "patterns": ["58 REAL + 29 GAP", "58 REAL＋29 GAP"],
+      "reason": "旧页面 REAL/GAP 快照，不得作为当前页面完成度"
+    },
+    {
+      "id": "legacy-external-operations",
+      "patterns": ["481 operations", "481 操作"],
+      "reason": "外部异源操作数，不得替代仓库内479操作"
+    },
+    {
+      "id": "legacy-contract-operations",
+      "patterns": ["402 操作"],
+      "reason": "旧契约操作数，不得作为当前契约结论"
+    },
+    {
+      "id": "legacy-contract-coverage",
+      "patterns": ["69.65%"],
+      "reason": "旧契约覆盖率，不得作为当前覆盖率"
+    }
+  ],
+  "archivedHistoricalPaths": [
+    "S0-S6_验收口径映射与旧指标作废说明.md",
+    "P0_第7步_当前SHA契约与覆盖率证据报告.md",
+    "S0-S6_总体验收报告.md",
+    "OpenAPI双向核对报告.md",
+    "README.md",
+    "docs/work-package-review/WP01-WP11_评审修复与回归记录.md",
+    "docs/work-package-review/WP01-WP11_实现说明与评审追溯.md",
+    "WP01-WP11_褑袦袘褔鈺椥窖喰炐秆堚攼蝎褔袣鈺⒀喰愋懷勨晻袨褖泻袦褕锌袘褕芯鈻懷呪暅啸.md",
+    "acceptance-baseline.json",
+    "current-sha-evidence/manifest.json",
+    "scripts/capture-current-sha-evidence.mjs",
+    "scripts/generate-s0-s6-final-report.mjs",
+    "scripts/generate-openapi-contract-report.mjs",
+    "snapshot-isolation-policy.json"
+  ],
+  "deprecationMarkers": [
+    "作废",
+    "不进入当前结果",
+    "历史",
+    "异源",
+    "旧",
+    "deprecated",
+    "excluded",
+    "historical"
+  ]
+}
