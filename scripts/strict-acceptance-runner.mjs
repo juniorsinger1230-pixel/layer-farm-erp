@@ -118,11 +118,28 @@ const exitCode = await runChildProcess(process.execPath, [
   `--strict-root=${strictRoot}`,
 ]);
 const ledger = JSON.parse(readFileSync(path.join(projectRoot, 'acceptance-ledger.json'), 'utf8'));
-if (exitCode !== 0 || ledger.runId !== runId) {
+const expectedCaseIds = caseDefinitions.map((item) => item.id);
+const resultCaseIds = new Set(ledger.results?.map((item) => item.caseId) ?? []);
+const missingCaseIds = expectedCaseIds.filter((caseId) => !resultCaseIds.has(caseId));
+const failedCaseIds = (ledger.results ?? []).filter((item) => !item.pass).map((item) => item.caseId);
+const strictRunFailed = exitCode !== 0
+  || ledger.runId !== runId
+  || ledger.results?.length !== expectedCaseIds.length
+  || missingCaseIds.length > 0
+  || failedCaseIds.length > 0;
+if (strictRunFailed) {
   runManifest.status = 'failed';
   runManifest.finishedAt = new Date().toISOString();
   writeJson(path.join(strictRoot, 'run-manifest.json'), runManifest);
-  writeJson(path.join(strictRoot, 'summary.json'), { status: 'fail', runId, resultCount: ledger.results?.length ?? 0 });
+  writeJson(path.join(strictRoot, 'summary.json'), {
+    status: 'fail',
+    runId,
+    expected: expectedCaseIds.length,
+    resultCount: ledger.results?.length ?? 0,
+    passed: (ledger.results ?? []).filter((item) => item.pass).length,
+    failed: failedCaseIds,
+    missing: missingCaseIds,
+  });
   process.exit(1);
 }
 

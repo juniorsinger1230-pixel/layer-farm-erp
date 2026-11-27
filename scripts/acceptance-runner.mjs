@@ -2545,3 +2545,4 @@ ledger.summary = summary;
 ledger.pass = ledger.results.every((result) => result.pass);
 writeFileSync(ledgerPath, JSON.stringify(ledger, null, 2), 'utf8');
 console.log(JSON.stringify({ status: ledger.pass ? 'pass' : 'fail', total: ledger.results.length, summary }, null, 2));
+if (!ledger.pass) process.exitCode = 1;

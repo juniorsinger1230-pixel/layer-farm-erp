@@ -169,6 +169,13 @@ try {
   );
   await pool.query('UPDATE app.customer SET credit_ref=$1 WHERE id=$2', [credit.id, customer.id]);
 
+  await pool.query(
+    `INSERT INTO app.sales_order
+     (order_no, customer_id, order_mode, detail, pricing, inventory_quantity, status, change_log, company_code, created_by, remark)
+     VALUES ('SO-DEMO-001', $1, 'standard', '演示销售订单', '标准价格', 1, 'approved', '演示基线创建', $2, 'SYSTEM', '用于出库单引用')`,
+    [customer.id, companyCode],
+  );
+
   console.log(JSON.stringify({
     event: 'demo_data_ready',
     url: 'http://127.0.0.1:8080',
