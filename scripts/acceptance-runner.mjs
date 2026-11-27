@@ -2115,8 +2115,12 @@ function walkSourceFiles(directory) {
 for (let number = 229; number <= 234; number += 1) {
   checks[`S6_${number}`] = async () => {
     if (number === 229) {
-      const contractOutput = await promisifyExec(process.execPath, ['scripts/check-openapi-contract.mjs']);
-      const contractResult = JSON.parse(readFileSync(path.join(projectRoot, 'openapi-contract-check-result.json'), 'utf8'));
+      const contractOutputPath = path.join(evidenceRoot, 'S6-229-openapi-contract-result.json');
+      const contractOutput = await promisifyExec(process.execPath, [
+        'scripts/check-openapi-contract.mjs',
+        `--out=${contractOutputPath}`,
+      ]);
+      const contractResult = JSON.parse(readFileSync(contractOutputPath, 'utf8'));
       const pass = contractResult.status === 'pass' && contractResult.authoritative?.operations === 479 && contractResult.matched?.operations === 479;
       return { pass, evidence: saveEvidence('S6-229-contract.json', { contractResult, stdout: contractOutput.stdout.slice(-1000) }) };
     }
