@@ -1629,11 +1629,16 @@ for (let number = 204; number <= 218; number += 1) {
     }
 
     if (number === 217) {
-      await page.route('**/api/v1/sales/sales-orders**', (route) => route.fulfill({
-        status: 500,
-        contentType: 'application/json',
-        body: JSON.stringify({ error: { code: 'INTERNAL_ERROR', message: '服务暂时不可用，请稍后重试' } }),
-      }));
+      let salesOrderFailureServed = false;
+      await page.route('**/api/v1/sales/sales-orders**', (route) => {
+        if (salesOrderFailureServed) return route.continue();
+        salesOrderFailureServed = true;
+        return route.fulfill({
+          status: 500,
+          contentType: 'application/json',
+          body: JSON.stringify({ error: { code: 'INTERNAL_ERROR', message: '服务暂时不可用，请稍后重试' } }),
+        });
+      });
       await page.reload();
       await page.locator('.page-error').waitFor();
       const errorText = await page.locator('.page-error').innerText();
