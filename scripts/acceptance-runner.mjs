@@ -445,7 +445,7 @@ async function fillS3Field(page, dialog, field, index, pageId, attempt) {
       : pageId === 'sales-007' && field.name === 'customer_id'
       ? s3LivestockCustomerId
       : pageId === 'log-003' && field.name === 'order_id'
-      ? s3LivestockSalesOrderId
+      ? s3DriverTaskSalesOrderId
       : pageId === 'log-006' && field.name === 'order_id'
       ? s3DriverTaskSalesOrderId
       : pageId === 'sales-006' && field.name === 'original_reservation_id'
@@ -929,7 +929,7 @@ async function executeS3Create(testCase) {
   if (pageId === 'farm-012') await ensureCullingPrerequisites();
   if (pageId === 'fin-007') await ensureProfitSettlementPrerequisites();
   if (pageId === 'fin-010') await ensurePaymentExecutionPrerequisites();
-  if (pageId === 'log-006') await ensureDriverTaskPrerequisites();
+  if (pageId === 'log-003' || pageId === 'log-006') await ensureDriverTaskPrerequisites();
   const fetched = await createS3One(pageId, s3Pass);
   if (pageId === 'fin-009') s3ApprovedDisbursementVoucherId = Number(fetched.id);
   if (pageId === 'inv-005') s3CreatedLocationId = Number(fetched.id);
