@@ -2457,6 +2457,8 @@ function restoreS5FlowFrom(caseId, targetCaseId) {
   saveEvidence(`${targetCaseId}-context-reference.json`, { sourceCaseId: caseId, sourceEvidencePath: source.evidencePath });
 }
 
+let s1SeedApplied = false;
+
 for (const item of selectedCases) {
   if (item.id === 'TC-225' && !s5Flow.material) restoreS5FlowFrom('TC-224', item.id);
   if (item.id === 'TC-226') {
@@ -2475,6 +2477,15 @@ for (const item of selectedCases) {
   try {
     const check = checks[key];
     if (!check) throw new Error(`Missing check implementation: ${key}`);
+    if (strictRoot && item.stage === 'S1' && !s1SeedApplied) {
+      const seedResult = await promisifyExec(process.execPath, [path.join(projectRoot, 'scripts', 's1-acceptance-seed.mjs')]);
+      saveEvidence('S1-seed.json', {
+        event: 's1_acceptance_data_ready',
+        stdout: seedResult.stdout.trim(),
+        stderr: seedResult.stderr.trim(),
+      });
+      s1SeedApplied = true;
+    }
     if (strictRoot) {
       preconditionPath = await captureCasePrecondition({
         caseDefinition: item,

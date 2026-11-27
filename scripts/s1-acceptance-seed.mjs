@@ -65,17 +65,6 @@ try {
     );
   }
 
-  await pool.query(
-    `UPDATE app_auth.credential credential
-        SET mfa_secret=$1,
-            principal = jsonb_set(credential.principal, '{mfaEnrolled}', 'true')
-      FROM app.employee employee
-      WHERE employee.id = credential.employee_id
-        AND employee.employee_no = 'EMP-001'
-        AND credential.account = 'admin.zhang'`,
-    [fixedMfaSecret],
-  );
-
   console.log(JSON.stringify({
     event: 's1_acceptance_data_ready',
     companyId,

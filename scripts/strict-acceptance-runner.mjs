@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { spawn } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { captureComposeServices, captureSource } from './strict-precondition-snapshot.mjs';
@@ -32,7 +32,7 @@ function writeJson(target, value) {
 function collectReferencedFiles(value, sourceFile, collected) {
   if (typeof value === 'string') {
     const candidate = path.resolve(projectRoot, value);
-    if (existsSync(candidate) && candidate !== sourceFile && !collected.has(candidate)) {
+    if (existsSync(candidate) && statSync(candidate).isFile() && candidate !== sourceFile && !collected.has(candidate)) {
       collected.add(candidate);
       if (candidate.endsWith('.json')) collectEvidenceReferences(candidate, collected);
     }
