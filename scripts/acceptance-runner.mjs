@@ -196,13 +196,27 @@ async function withBrowser(callback) {
   }
 }
 
+async function gotoWithRetry(page, url, locator, attempts = 3) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await locator.waitFor({ timeout: 30000 });
+      return;
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) await sleep(1000);
+    }
+  }
+  throw lastError;
+}
+
 async function browserLogin(page, account, password, mfaCode) {
-  await page.goto(`${webUrl}/login`);
+  await gotoWithRetry(page, `${webUrl}/login`, page.getByPlaceholder('请输入员工账号'));
   const result = await login(account, password, 'THL', mfaCode);
   if (result.status !== 200) throw new Error(`Browser login failed: ${result.status}`);
   await page.sessionStorage.setItem('layer-erp-session', JSON.stringify(result.json.data));
-  await page.goto(`${webUrl}/app/workbench`);
-  await page.waitForLoadState('networkidle');
+  await gotoWithRetry(page, `${webUrl}/app/workbench`, page.locator('[data-testid="role-workbench"]'));
   return result.json.data;
 }
 
