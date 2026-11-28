@@ -664,8 +664,20 @@ async function fillS3Field(page, dialog, field, index, pageId, attempt) {
     : pageId === 'farm-011' && field.name === 'collectionNo' ? `S3-${s3RunToken}-${attempt}`
     : `S3 ${field.name} ${pageToken}`;
   const value = field.maxLength === null ? base : base.slice(0, field.maxLength);
-  if (field.control === 'textarea') await item.locator('textarea').first().fill(value);
-  else await item.getByRole('textbox').first().fill(value);
+  const textControl = field.control === 'textarea'
+    ? item.locator('textarea').first()
+    : item.getByRole('textbox').first();
+  await textControl.waitFor({ state: 'visible' });
+  let actualValue = '';
+  for (let fillAttempt = 0; fillAttempt < 3; fillAttempt += 1) {
+    await textControl.fill(value);
+    await textControl.press('Tab');
+    actualValue = await textControl.inputValue();
+    if (actualValue === value) break;
+  }
+  if (actualValue !== value) {
+    throw new Error(`文本字段填充未生效：${pageId}.${field.name}`);
+  }
   return true;
 }
 
