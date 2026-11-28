@@ -1032,6 +1032,12 @@ const checks = {
     return { pass: true, evidence: saveEvidence('S0-01-compose-config.json', { pass: true, output: result.stdout }) };
   },
   async S0_02() {
+    if (isNativeRuntime) {
+      const required = ['API_BASE_URL', 'WEB_BASE_URL', 'DATABASE_URL', 'VALKEY_URL', 'JWT_SIGNING_KEY'];
+      const values = Object.fromEntries(required.map((key) => [key, process.env[key] ?? null]));
+      const missing = required.filter((key) => !values[key]);
+      return { pass: missing.length === 0, evidence: saveEvidence('S0-02-native-env.json', { missing, values }) };
+    }
     const envText = readFileSync(path.join(projectRoot, 'deploy', 'compose', '.env'), 'utf8');
     const required = ['WEB_PORT', 'API_PORT', 'POSTGRES_PORT', 'VALKEY_PORT', 'POSTGRES_PASSWORD'];
     const missing = required.filter((key) => !envText.includes(`${key}=`));
