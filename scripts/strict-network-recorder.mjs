@@ -62,6 +62,7 @@ export class StrictNetworkRecorder {
         for (const [requestId, requestInfo] of pendingRequests.entries()) {
           if (requestInfo.caseId !== previousCaseId) continue;
           if (requestInfo.responseReceived) continue;
+          if (requestInfo.tornDown) continue;
           this.appendEvent(this.browserLogPath, {
             type: 'requestteardown',
             caseId: previousCaseId,
@@ -71,7 +72,7 @@ export class StrictNetworkRecorder {
             resourceType: requestInfo.resourceType,
             reason: 'case-boundary-before-terminal-network-event',
           });
-          pendingRequests.delete(requestId);
+          requestInfo.tornDown = true;
         }
       }
     }
@@ -95,6 +96,7 @@ export class StrictNetworkRecorder {
         url: request.url(),
         resourceType: request.resourceType(),
         responseReceived: false,
+        tornDown: false,
       });
       this.appendEvent(this.browserLogPath, {
         type: 'request',
@@ -184,6 +186,7 @@ export class StrictNetworkRecorder {
           resourceType: requestInfo.resourceType,
           reason: 'browser-closed-before-terminal-network-event',
         });
+        requestInfo.tornDown = true;
       }
       pendingRequests.clear();
       this.pendingRequestMaps.delete(pendingRequests);
