@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { totp } from '../dist/packages/security/src/auth.js';
 import { projectFields } from '../dist/packages/security/src/rbac.js';
+import pg from 'pg';
 import { StrictNetworkRecorder, recordedFetch } from './strict-network-recorder.mjs';
 import { captureCasePrecondition } from './strict-precondition-snapshot.mjs';
 
@@ -26,8 +27,9 @@ const strictNetworkRecorder = strictRoot
 
 const dockerExecutable = process.env.DOCKER_PATH ?? 'C:\\Users\\龚\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe';
 const gitExecutable = process.env.GIT_PATH ?? 'C:\\Program Files\\Git\\cmd\\git.exe';
+const isNativeRuntime = process.env.STRICT_RUNTIME_MODE === 'native';
 const baseUrl = process.env.API_BASE_URL ?? 'http://127.0.0.1:3100';
-const webUrl = process.env.WEB_BASE_URL ?? 'http://127.0.0.1:8080';
+const webUrl = process.env.WEB_BASE_URL ?? (isNativeRuntime ? 'http://127.0.0.1:8088' : 'http://127.0.0.1:8080');
 const composeFile = path.join(projectRoot, 'deploy', 'compose', 'docker-compose.yml');
 const projectName = process.env.STRICT_COMPOSE_PROJECT ?? process.env.COMPOSE_PROJECT_NAME ?? 'layer-farm-erp-strict';
 
@@ -67,13 +69,39 @@ function saveEvidence(name, payload) {
 }
 
 async function composePs() {
+  if (isNativeRuntime) {
+    const ready = await request(`${baseUrl}/health/ready`);
+    return [
+      { Service: 'postgres', Health: ready.json?.dependencies?.database === 'up' ? 'healthy' : 'unhealthy' },
+      { Service: 'valkey', Health: ready.json?.dependencies?.valkey === 'up' ? 'healthy' : 'unhealthy' },
+      { Service: 'api', Health: ready.status === 200 ? 'healthy' : 'unhealthy' },
+      { Service: 'web', Health: (await request(webUrl)).status === 200 ? 'healthy' : 'unhealthy' },
+    ];
+  }
   const { stdout } = await docker([
     'compose', '-p', projectName, '-f', composeFile, 'ps', '--format', '{{json .}}',
   ]);
   return stdout.split(/\r?\n/).filter(Boolean).map((line) => JSON.parse(line));
 }
 
+function formatNativeValue(value) {
+  if (value === null || value === undefined) return '';
+  if (value instanceof Date) return value.toISOString();
+  if (typeof value === 'object') return JSON.stringify(value);
+  return String(value);
+}
+
 async function psql(sql) {
+  if (isNativeRuntime) {
+    const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL, max: 2 });
+    try {
+      const result = await pool.query(sql);
+      if (!result.rows || result.rows.length === 0) return '';
+      return result.rows.map((row) => Object.values(row).map(formatNativeValue).join('|')).join('\n');
+    } finally {
+      await pool.end();
+    }
+  }
   const { stdout } = await docker([
     'exec', `${projectName}-postgres-1`, 'psql', '-U', 'erp', '-d', 'layer_farm', '-t', '-A', '-c', sql,
   ]);
@@ -986,6 +1014,18 @@ async function executeS3Create(testCase) {
 
 const checks = {
   async S0_01() {
+    if (isNativeRuntime) {
+      const nativeConfig = {
+        runtimeMode: 'native',
+        apiBaseUrl: baseUrl,
+        webBaseUrl: webUrl,
+        databaseConfigured: Boolean(process.env.DATABASE_URL),
+        valkeyConfigured: Boolean(process.env.VALKEY_URL),
+        composeFilePresent: existsSync(composeFile),
+      };
+      const pass = Object.values(nativeConfig).every(Boolean) && nativeConfig.runtimeMode === 'native';
+      return { pass, evidence: saveEvidence('S0-01-native-config.json', nativeConfig) };
+    }
     const result = await docker(['compose', '-p', projectName, '-f', composeFile, 'config']);
     return { pass: true, evidence: saveEvidence('S0-01-compose-config.json', { pass: true, output: result.stdout }) };
   },
@@ -1778,8 +1818,8 @@ for (let number = 219; number <= 228; number += 1) {
       await page.screenshot({ path: screenshotTarget, fullPage: true });
       const gitHead = (await git(['rev-parse', 'HEAD'])).stdout.trim();
       const worktreeStatus = (await git(['status', '--short'])).stdout.trim();
-      const apiImage = (await docker(['inspect', `${projectName}-api-1`, '--format', '{{.Image}}'])).stdout.trim();
-      const webImage = (await docker(['inspect', `${projectName}-web-1`, '--format', '{{.Image}}'])).stdout.trim();
+      const apiImage = isNativeRuntime ? `native-node:${process.version}` : (await docker(['inspect', `${projectName}-api-1`, '--format', '{{.Image}}'])).stdout.trim();
+      const webImage = isNativeRuntime ? 'native-caddy:static-files' : (await docker(['inspect', `${projectName}-web-1`, '--format', '{{.Image}}'])).stdout.trim();
       const pass = response.ok()
         && /^\d{4}-\d{2}-\d{2}$/.test(requestBody.chick_date)
         && formValues.batch_no === String(before.batch_no)

@@ -3,7 +3,12 @@ import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { captureComposeServices, captureSource } from './strict-precondition-snapshot.mjs';
+import {
+  captureComposeServices,
+  captureNativeServices,
+  captureSource,
+  runtimeMode,
+} from './strict-precondition-snapshot.mjs';
 import { StrictNetworkRecorder } from './strict-network-recorder.mjs';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -15,7 +20,7 @@ const dockerPath = process.env.DOCKER_PATH ?? 'C:\\Users\\龚\\AppData\\Local\\P
 const composeFile = path.join(projectRoot, 'deploy', 'compose', 'docker-compose.yml');
 const projectName = process.env.STRICT_COMPOSE_PROJECT ?? process.env.COMPOSE_PROJECT_NAME ?? 'layer-farm-erp-strict';
 const apiBaseUrl = process.env.API_BASE_URL ?? 'http://127.0.0.1:3100';
-const webBaseUrl = process.env.WEB_BASE_URL ?? 'http://127.0.0.1:8080';
+const webBaseUrl = process.env.WEB_BASE_URL ?? (runtimeMode === 'native' ? 'http://127.0.0.1:8088' : 'http://127.0.0.1:8080');
 
 function sha256File(target) {
   return createHash('sha256').update(readFileSync(target)).digest('hex');
@@ -75,7 +80,8 @@ for (const directory of directories) mkdirSync(path.join(strictRoot, directory),
 
 const { chromium } = await import('playwright');
 const environment = {
-  mode: 'local-compose',
+  mode: runtimeMode === 'native' ? 'native-process' : 'local-compose',
+  runtimeMode,
   composeProject: projectName,
   composeFile: relativePath(composeFile),
   composeConfigSha256: sha256File(composeFile),
@@ -86,7 +92,9 @@ const environment = {
   arch: process.arch,
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   browser: { name: 'chromium', executablePath: chromium.executablePath() },
-  services: captureComposeServices(dockerPath, composeFile, projectName),
+  services: runtimeMode === 'native'
+    ? captureNativeServices()
+    : captureComposeServices(dockerPath, composeFile, projectName),
 };
 
 const runManifest = {
