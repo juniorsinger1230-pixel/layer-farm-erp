@@ -61,6 +61,7 @@ export class StrictNetworkRecorder {
       for (const pendingRequests of this.pendingRequestMaps) {
         for (const [requestId, requestInfo] of pendingRequests.entries()) {
           if (requestInfo.caseId !== previousCaseId) continue;
+          if (requestInfo.responseReceived) continue;
           this.appendEvent(this.browserLogPath, {
             type: 'requestteardown',
             caseId: previousCaseId,
@@ -93,6 +94,7 @@ export class StrictNetworkRecorder {
         method: request.method(),
         url: request.url(),
         resourceType: request.resourceType(),
+        responseReceived: false,
       });
       this.appendEvent(this.browserLogPath, {
         type: 'request',
@@ -113,7 +115,7 @@ export class StrictNetworkRecorder {
       const url = response.url();
       const requestId = request._guid ?? safeFilePart(url);
       const requestInfo = pendingRequests.get(requestId);
-      pendingRequests.delete(requestId);
+      if (requestInfo) requestInfo.responseReceived = true;
       const contentType = response.headers()['content-type'] ?? '';
       const shouldCaptureBody = url.includes('/api/') || /json|text|pdf/i.test(contentType);
       const responseEvent = {
