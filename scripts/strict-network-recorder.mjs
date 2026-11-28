@@ -44,6 +44,7 @@ export class StrictNetworkRecorder {
     this.projectRoot = projectRoot;
     this.strictRoot = strictRoot;
     this.currentCaseId = null;
+    this.pendingRequestMaps = new Set();
     this.logDirectory = path.join(strictRoot, 'request-responses');
     this.bodyDirectory = path.join(strictRoot, 'bodies');
     this.browserDirectory = path.join(strictRoot, 'browser');
@@ -55,6 +56,24 @@ export class StrictNetworkRecorder {
   }
 
   setCurrentCase(caseId) {
+    const previousCaseId = this.currentCaseId;
+    if (previousCaseId && previousCaseId !== caseId) {
+      for (const pendingRequests of this.pendingRequestMaps) {
+        for (const [requestId, requestInfo] of pendingRequests.entries()) {
+          if (requestInfo.caseId !== previousCaseId) continue;
+          this.appendEvent(this.browserLogPath, {
+            type: 'requestteardown',
+            caseId: previousCaseId,
+            requestId,
+            method: requestInfo.method,
+            url: requestInfo.url,
+            resourceType: requestInfo.resourceType,
+            reason: 'case-boundary-before-terminal-network-event',
+          });
+          pendingRequests.delete(requestId);
+        }
+      }
+    }
     this.currentCaseId = caseId;
   }
 
@@ -64,11 +83,13 @@ export class StrictNetworkRecorder {
 
   attachPage(page, contextName) {
     const pendingRequests = new Map();
+    this.pendingRequestMaps.add(pendingRequests);
 
     page.on('request', (request) => {
       const postData = request.postData();
       const requestId = request._guid ?? safeFilePart(request.url());
       pendingRequests.set(requestId, {
+        caseId: this.currentCaseId,
         method: request.method(),
         url: request.url(),
         resourceType: request.resourceType(),
@@ -91,11 +112,13 @@ export class StrictNetworkRecorder {
       const request = response.request();
       const url = response.url();
       const requestId = request._guid ?? safeFilePart(url);
+      const requestInfo = pendingRequests.get(requestId);
       pendingRequests.delete(requestId);
       const contentType = response.headers()['content-type'] ?? '';
       const shouldCaptureBody = url.includes('/api/') || /json|text|pdf/i.test(contentType);
       const responseEvent = {
         type: 'response',
+        caseId: requestInfo?.caseId ?? this.currentCaseId,
         context: contextName,
         requestId,
         method: request.method(),
@@ -120,9 +143,11 @@ export class StrictNetworkRecorder {
 
     page.on('requestfinished', (request) => {
       const requestId = request._guid ?? safeFilePart(request.url());
+      const requestInfo = pendingRequests.get(requestId);
       pendingRequests.delete(requestId);
       this.appendEvent(this.browserLogPath, {
         type: 'requestfinished',
+        caseId: requestInfo?.caseId ?? this.currentCaseId,
         context: contextName,
         requestId,
         method: request.method(),
@@ -132,9 +157,11 @@ export class StrictNetworkRecorder {
 
     page.on('requestfailed', (request) => {
       const requestId = request._guid ?? safeFilePart(request.url());
+      const requestInfo = pendingRequests.get(requestId);
       pendingRequests.delete(requestId);
       this.appendEvent(this.browserLogPath, {
         type: 'requestfailed',
+        caseId: requestInfo?.caseId ?? this.currentCaseId,
         context: contextName,
         requestId,
         method: request.method(),
@@ -147,6 +174,7 @@ export class StrictNetworkRecorder {
       for (const [requestId, requestInfo] of pendingRequests.entries()) {
         this.appendEvent(this.browserLogPath, {
           type: 'requestteardown',
+          caseId: requestInfo.caseId ?? this.currentCaseId,
           context: contextName,
           requestId,
           method: requestInfo.method,
@@ -156,6 +184,7 @@ export class StrictNetworkRecorder {
         });
       }
       pendingRequests.clear();
+      this.pendingRequestMaps.delete(pendingRequests);
     });
 
     page.on('console', (message) => {

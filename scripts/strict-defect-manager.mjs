@@ -192,6 +192,10 @@ export async function createFixForDefect(projectRoot, runDirectory, defect, fixC
   writeJson(fixPath, fix);
 
   defect.status = 'fix-committed';
+  defect.fixHistory = [
+    ...(defect.fixHistory ?? []),
+    ...(defect.fix ? [defect.fix] : []),
+  ];
   defect.fix = {
     fixId,
     fixCommitSha,
@@ -210,6 +214,7 @@ export function closeDefectWithRegression(projectRoot, runDirectory, finalRunDir
   defect.status = 'closed';
   defect.closure = {
     regressionRunId: finalManifest.runId,
+    finalCommitSha: finalManifest.source.commitSha,
     finalCaseEvidence: relativePath(projectRoot, envelopePath),
     finalPass: envelope.pass === true,
     closedAt: new Date().toISOString(),
