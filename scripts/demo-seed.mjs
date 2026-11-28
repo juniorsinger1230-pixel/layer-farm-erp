@@ -60,14 +60,15 @@ try {
       WHERE table_schema IN ('app', 'app_auth', 'app_ops') AND table_type = 'BASE TABLE'`,
   );
   await pool.query(`TRUNCATE TABLE ${tableResult.rows.map((row) => row.qualified_name).join(', ')} RESTART IDENTITY CASCADE`);
-  await pool.query("SELECT set_config('app.company_code', $1, false)", [companyCode]);
-  await pool.query("SELECT set_config('app.actor_id', 'SYSTEM', false)");
+  await pool.query("SELECT set_config('app.company_code', '*', false), set_config('app.company_id', '0', false), set_config('app.actor_id', 'SYSTEM', false);");
 
-  await pool.query(
+  const company = await one(
     `INSERT INTO app.company (company_code, company_name, base_currency, status, created_by, remark)
-     VALUES ($1, 'THL分公司', 'PHP', 'active', 'SYSTEM', '本地演示公司')`,
+     VALUES ($1, 'THL分公司', 'PHP', 'active', 'SYSTEM', '本地演示公司')
+     RETURNING id`,
     [companyCode],
   );
+  await pool.query("SELECT set_config('app.company_code', $1, false), set_config('app.company_id', $2, false)", [companyCode, String(company.id)]);
 
   const unitMap = new Map();
   for (const department of departments) {
