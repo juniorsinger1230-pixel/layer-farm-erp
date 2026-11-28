@@ -125,7 +125,10 @@ const exitCode = await runChildProcess(process.execPath, [
   `--run-id=${runId}`,
   `--strict-root=${strictRoot}`,
 ]);
-const ledger = JSON.parse(readFileSync(path.join(projectRoot, 'acceptance-ledger.json'), 'utf8'));
+const ledgerPath = path.join(projectRoot, 'acceptance-ledger.json');
+const ledger = existsSync(ledgerPath)
+  ? JSON.parse(readFileSync(ledgerPath, 'utf8'))
+  : { results: [] };
 const expectedCaseIds = caseDefinitions.map((item) => item.id);
 const resultCaseIds = new Set(ledger.results?.map((item) => item.caseId) ?? []);
 const missingCaseIds = expectedCaseIds.filter((caseId) => !resultCaseIds.has(caseId));

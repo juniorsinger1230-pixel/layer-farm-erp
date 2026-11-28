@@ -195,11 +195,13 @@ function authHeaders(accessToken) {
   return { authorization: `Bearer ${accessToken}` };
 }
 
-const composeEnvText = readFileSync(path.join(projectRoot, 'deploy', 'compose', '.env'), 'utf8');
-const composeEnv = Object.fromEntries(composeEnvText.split(/\r?\n/).filter((line) => line.includes('=')).map((line) => {
-  const index = line.indexOf('=');
-  return [line.slice(0, index), line.slice(index + 1)];
-}));
+const composeEnvPath = path.join(projectRoot, 'deploy', 'compose', '.env');
+const composeEnv = isNativeRuntime
+  ? { JWT_SIGNING_KEY: process.env.JWT_SIGNING_KEY }
+  : Object.fromEntries(readFileSync(composeEnvPath, 'utf8').split(/\r?\n/).filter((line) => line.includes('=')).map((line) => {
+    const index = line.indexOf('=');
+    return [line.slice(0, index), line.slice(index + 1)];
+  }));
 
 function base64urlJson(value) {
   return Buffer.from(JSON.stringify(value)).toString('base64url');
