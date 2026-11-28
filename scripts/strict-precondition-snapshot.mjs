@@ -93,6 +93,7 @@ export async function captureNativeDatabaseState(databaseUrl) {
   if (!databaseUrl) throw new Error('DATABASE_URL is required in native strict runtime');
   const pool = new pg.Pool({ connectionString: databaseUrl, max: 2 });
   try {
+    await pool.query("SELECT set_config('app.company_code', '*', false), set_config('app.company_id', '0', false), set_config('app.actor_id', 'PRECONDITION', false);");
     const tableCountsSql = `
       SELECT COALESCE(json_agg(
         json_build_object(

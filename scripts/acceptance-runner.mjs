@@ -94,11 +94,14 @@ function formatNativeValue(value) {
 async function psql(sql) {
   if (isNativeRuntime) {
     const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL, max: 2 });
+    const client = await pool.connect();
     try {
-      const result = await pool.query(sql);
+      await client.query("SELECT set_config('app.company_code', '*', true), set_config('app.company_id', '0', true), set_config('app.actor_id', 'ACCEPTANCE', true)");
+      const result = await client.query(sql);
       if (!result.rows || result.rows.length === 0) return '';
       return result.rows.map((row) => Object.values(row).map(formatNativeValue).join('|')).join('\n');
     } finally {
+      client.release();
       await pool.end();
     }
   }
