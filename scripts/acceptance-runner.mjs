@@ -2527,7 +2527,11 @@ try {
 }
 let ledger = { startedAt: new Date().toISOString(), runId, stages, caseId: selectedCase?.id, caseRange: rangeArg, caseList: listedCases?.map((item) => item.id), results: [], history };
 
-if (selectedCases.some((item) => item.id === 'TC-223') && !s5Flow.mobileBatchNo) {
+if (
+  selectedCases.some((item) => item.id === 'TC-223')
+  && !selectedCases.some((item) => item.id === 'TC-222')
+  && !s5Flow.mobileBatchNo
+) {
   const candidates = [];
   const visited = new Set();
   const collect = (node) => {
