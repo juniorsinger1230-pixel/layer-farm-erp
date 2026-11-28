@@ -63,12 +63,20 @@ export class StrictNetworkRecorder {
   }
 
   attachPage(page, contextName) {
+    const pendingRequests = new Map();
+
     page.on('request', (request) => {
       const postData = request.postData();
+      const requestId = request._guid ?? safeFilePart(request.url());
+      pendingRequests.set(requestId, {
+        method: request.method(),
+        url: request.url(),
+        resourceType: request.resourceType(),
+      });
       this.appendEvent(this.browserLogPath, {
         type: 'request',
         context: contextName,
-        requestId: request._guid ?? safeFilePart(request.url()),
+        requestId,
         method: request.method(),
         url: request.url(),
         resourceType: request.resourceType(),
@@ -82,12 +90,14 @@ export class StrictNetworkRecorder {
     page.on('response', (response) => {
       const request = response.request();
       const url = response.url();
+      const requestId = request._guid ?? safeFilePart(url);
+      pendingRequests.delete(requestId);
       const contentType = response.headers()['content-type'] ?? '';
       const shouldCaptureBody = url.includes('/api/') || /json|text|pdf/i.test(contentType);
       const responseEvent = {
         type: 'response',
         context: contextName,
-        requestId: request._guid ?? safeFilePart(url),
+        requestId,
         method: request.method(),
         url,
         status: response.status(),
@@ -109,24 +119,43 @@ export class StrictNetworkRecorder {
     });
 
     page.on('requestfinished', (request) => {
+      const requestId = request._guid ?? safeFilePart(request.url());
+      pendingRequests.delete(requestId);
       this.appendEvent(this.browserLogPath, {
         type: 'requestfinished',
         context: contextName,
-        requestId: request._guid ?? safeFilePart(request.url()),
+        requestId,
         method: request.method(),
         url: request.url(),
       });
     });
 
     page.on('requestfailed', (request) => {
+      const requestId = request._guid ?? safeFilePart(request.url());
+      pendingRequests.delete(requestId);
       this.appendEvent(this.browserLogPath, {
         type: 'requestfailed',
         context: contextName,
-        requestId: request._guid ?? safeFilePart(request.url()),
+        requestId,
         method: request.method(),
         url: request.url(),
         failure: request.failure(),
       });
+    });
+
+    page.on('close', () => {
+      for (const [requestId, requestInfo] of pendingRequests.entries()) {
+        this.appendEvent(this.browserLogPath, {
+          type: 'requestteardown',
+          context: contextName,
+          requestId,
+          method: requestInfo.method,
+          url: requestInfo.url,
+          resourceType: requestInfo.resourceType,
+          reason: 'browser-closed-before-terminal-network-event',
+        });
+      }
+      pendingRequests.clear();
     });
 
     page.on('console', (message) => {
