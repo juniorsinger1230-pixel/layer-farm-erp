@@ -46,7 +46,10 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     externalIntegrationsEnabled: env.EXTERNAL_INTEGRATIONS_ENABLED === 'true',
     databasePoolMax: parsePositiveInteger(env.DATABASE_POOL_MAX, 20, 50),
     databaseConnectionTimeoutMs: parsePositiveInteger(env.DATABASE_CONNECTION_TIMEOUT_MS, 10000, 30000),
-    printSandboxMode: env.PRINT_SANDBOX_MODE === 'true',
+    printSandboxMode: env.PRINT_SANDBOX_MODE === 'true'
+      || (env.STRICT_RUNTIME_MODE === 'native'
+        && env.NODE_ENV === 'production'
+        && env.PRINT_SANDBOX_MODE !== 'false'),
     mfaEnabled: env.MFA_ENABLED !== 'false',
     attachmentRetentionDays: parsePositiveInteger(env.ATTACHMENT_RETENTION_DAYS, 3650, 36500),
     rateLimitEnabled: env.RATE_LIMIT_ENABLED !== 'false',
