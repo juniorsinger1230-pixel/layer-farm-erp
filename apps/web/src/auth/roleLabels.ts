@@ -18,6 +18,7 @@ export const roleLabels: Record<RealRole, string> = {
   engineering: '工程维修员',
 };
 
-export function roleLabel(role: RealRole): string {
-  return roleLabels[role];
+export function roleLabel(role?: string): string {
+  if (!role) return '用户';
+  return roleLabels[role as RealRole] ?? role;
 }

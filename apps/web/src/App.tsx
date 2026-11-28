@@ -14,7 +14,7 @@ import MobileBusinessPage from './components/MobileBusinessPage';
 import DashboardPage from './components/DashboardPage';
 
 function FullScreenLoading() {
-  return <div className="route-loading"><Spin size="large" tip="正在恢复真实会话..." /></div>;
+  return <div className="route-loading"><Spin size="large" tip="正在恢复登录状态..." /></div>;
 }
 
 function RequireAuth({ children }: { children: React.ReactNode }) {

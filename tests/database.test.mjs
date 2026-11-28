@@ -78,7 +78,9 @@ test('双公司RLS与Repository字段白名单生效', async () => {
   assert.equal(list.total, 1);
   assert.equal(list.items[0].company_code, 'THL');
   assert.equal(await scoped.get('company', String(tge.id)), null);
-  await assert.rejects(scoped.create('company', { company_code: 'TGE', company_name: 'Cross', status: 'ACTIVE' }), /Cross-company/);
+  const newCompany = await scoped.create('company', { company_code: 'E2E_NEW', company_name: 'New tenant', status: 'ACTIVE' });
+  assert.equal(newCompany.company_code, 'E2E_NEW');
+  await assert.rejects(scoped.create('organization_unit', { unit_code: 'CROSS', unit_name: 'Cross', org_level: 1, status: 'ACTIVE', company_code: 'TGE' }), /Cross-company/);
 });
 
 test('检查约束和唯一约束拒绝非法数据', async () => {

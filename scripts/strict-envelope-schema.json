@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Strict Acceptance Envelope",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "caseId",
+    "stage",
+    "pageId",
+    "pageType",
+    "operation",
+    "runId",
+    "source",
+    "environment",
+    "precondition",
+    "execution",
+    "evidence",
+    "expected",
+    "actualResult",
+    "pass",
+    "defect",
+    "fix",
+    "regression",
+    "integrity"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "strict-acceptance-envelope/v1" },
+    "caseId": { "type": "string", "pattern": "^TC-[0-9]{3}$" },
+    "stage": { "type": "string", "enum": ["S0", "S1", "S2", "S3", "S4", "S5", "S6"] },
+    "pageId": { "type": "string" },
+    "pageType": { "type": "string" },
+    "operation": { "type": "string" },
+    "runId": { "type": "string" },
+    "source": {
+      "type": "object",
+      "required": ["commitSha", "treeSha", "branch", "worktreeClean", "worktreeStatus"],
+      "properties": {
+        "commitSha": { "type": "string", "minLength": 40 },
+        "treeSha": { "type": "string", "minLength": 40 },
+        "branch": { "type": "string" },
+        "worktreeClean": { "const": true },
+        "worktreeStatus": { "type": "array" }
+      }
+    },
+    "environment": { "type": "object" },
+    "precondition": { "type": "object", "required": ["path", "sha256"] },
+    "execution": { "type": "object" },
+    "evidence": { "type": "object", "required": ["requestResponseLog", "rawEvidence"] },
+    "expected": { "type": "object" },
+    "actualResult": { "type": "string", "enum": ["通过", "失败", "阻断"] },
+    "pass": { "type": "boolean" },
+    "defect": { "type": ["object", "null"] },
+    "fix": { "type": ["object", "null"] },
+    "regression": { "type": "object", "required": ["regressionId", "runId", "caseId", "pass", "evidencePath"] },
+    "integrity": { "type": "object", "required": ["envelopeSha256", "referencedFilesSha256"] }
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "generatedAt": "2026-11-27T11:42:47.975Z",
+  "pass": true,
+  "checks": {
+    "continuousIds": true,
+    "uniqueDefinitions": true,
+    "stageCounts": true,
+    "g5AuditPass": true,
+    "authoritativeEvidencePresent": true,
+    "allReferencedEvidencePresent": true,
+    "allResultsAssigned": true,
+    "nonEnvironmentLatestPass": true,
+    "regressionCaseCount": true,
+    "currentContract479": true,
+    "currentCoveragePass": true,
+    "productCodeUnchangedSinceFixCommit": true
+  },
+  "totals": {
+    "definitions": 234,
+    "authoritativePass": 234,
+    "markdownRows": 234,
+    "historyResults": 1812,
+    "jsonCaseHistoryResults": 1812,
+    "stageSummary": [
+      {
+        "stage": "S0",
+        "cases": 20,
+        "authoritativePass": 20,
+        "executions": 40,
+        "failedRecords": 2
+      },
+      {
+        "stage": "S1",
+        "cases": 35,
+        "authoritativePass": 35,
+        "executions": 271,
+        "failedRecords": 70
+      },
+      {
+        "stage": "S2",
+        "cases": 74,
+        "authoritativePass": 74,
+        "executions": 419,
+        "failedRecords": 82
+      },
+      {
+        "stage": "S3",
+        "cases": 74,
+        "authoritativePass": 74,
+        "executions": 974,
+        "failedRecords": 169
+      },
+      {
+        "stage": "S4",
+        "cases": 15,
+        "authoritativePass": 15,
+        "executions": 64,
+        "failedRecords": 8
+      },
+      {
+        "stage": "S5",
+        "cases": 10,
+        "authoritativePass": 10,
+        "executions": 27,
+        "failedRecords": 8
+      },
+      {
+        "stage": "S6",
+        "cases": 6,
+        "authoritativePass": 6,
+        "executions": 17,
+        "failedRecords": 7
+      }
+    ]
+  },
+  "inputSha256": {
+    "casesPath": "965844df5935aa8a1f58752dacfd4f4da54e68c85177abcb24171f305f8e113a",
+    "ledgerPath": "5bb140df53f75af218f31a8d18af94d060e6991590757466f14fe9bdc39abf31",
+    "auditPath": "7b85be0f0c0b524e18072e9351d87fa1826dd22f6675630fa70abe88113cf7d2",
+    "currentEvidencePath": "aee15b74c71114109204148230dedea8797c6cb3136fb93b222528a79b706cd9"
+  },
+  "outputSha256": {
+    "report": "1aae14e4205615e0521d50cf70f08d436b0541bd5493bed9d2a1407d0d75aa26",
+    "ledgerMarkdown": "c63e766eff9ed502bd29b021ebf3c9322988aaa7a958c0409f80e2ccf9c15d75",
+    "ledgerJson": "13f59fb39053ba1ccc3cc503195fde48a8e2f9094f23438544665d74b256a597"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "pass": true,
+  "baseUrl": "http://127.0.0.1:8080",
+  "checks": [
+    {
+      "name": "桌面岗位工作台",
+      "copyClean": true
+    },
+    {
+      "name": "桌面业务列表",
+      "copyClean": true
+    },
+    {
+      "name": "桌面详情抽屉",
+      "copyClean": true
+    },
+    {
+      "name": "桌面新建表单",
+      "copyClean": true
+    },
+    {
+      "name": "移动业务列表",
+      "copyClean": true
+    },
+    {
+      "name": "移动详情抽屉",
+      "copyClean": true
+    },
+    {
+      "name": "移动新建表单",
+      "copyClean": true
+    }
+  ],
+  "forbiddenHits": [],
+  "browserMessages": [
+    "[{\"text\":\"登 录\",\"html\":\"<button type=\\\"submit\\\" class=\\\"ant-btn css-5ecvk6 ant-btn-primary ant-btn-color-primary ant-btn-variant-solid ant-btn-lg ant-btn-block\\\"><span>登 录</span></button>\",\"visible\":true}]"
+  ],
+  "screenshots": [
+    "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\ui-regression-results\\login-initial.png",
+    "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\ui-regression-results\\desktop-workbench.png",
+    "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\ui-regression-results\\desktop-list.png",
+    "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\ui-regression-results\\desktop-detail.png",
+    "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\ui-regression-results\\desktop-create-form.png",
+    "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\ui-regression-results\\mobile-list.png",
+    "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\ui-regression-results\\mobile-detail.png",
+    "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\ui-regression-results\\mobile-create-form.png"
+  ]
+}

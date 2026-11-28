@@ -19,6 +19,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run gate:snapshot-isolation -- --output=snapshot-isolation-gate-result.json
       - run: npm run gate | tee gate-output.txt
       - uses: actions/upload-artifact@v4
         if: always()
@@ -31,6 +32,7 @@ jobs:
             sca-scan-result.json
             quality-gate-result.json
             quality-policy.json
+            snapshot-isolation-gate-result.json
             security-check-result.json
             license-check-result.json
             gate-output.txt

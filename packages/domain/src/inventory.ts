@@ -262,7 +262,7 @@ export class InventoryService {
         [salesOrderId, customer.rows[0]?.payment_term ?? 0, total.rows[0]?.amount ?? 0, this.context.companyCode, this.context.actorId],
       );
       await client.query('UPDATE app.credit_limit SET occupied_amount=occupied_amount+(SELECT COALESCE(sum(line_amount),0) FROM app_ops.sales_order_line WHERE company_id=$1 AND sales_order_id=$2),updated_by=$3,updated_at=now() WHERE customer_id=$4 AND company_code=$5', [this.context.companyId, salesOrderId, this.context.actorId, Number(order.rows[0]!.customer_id), this.context.companyCode]);
-      const result = { salesOrderId, status: 'shipped', movements: reservations.rowCount };
+      const result = { salesOrderId, status: 'shipped', movements: reservations.rowCount, consumedReservationIds: reservations.rows.map((row) => Number(row.id)) };
       await this.domain.recordMutation(client, 'sales_order', 'ship', { ...order.rows[0], status: 'shipped' }, order.rows[0]);
       return result;
     });

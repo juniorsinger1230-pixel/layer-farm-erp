@@ -1,10 +1,30 @@
 {
-  "checkedAt": "2026-11-25T15:44:13.356Z",
+  "checkedAt": "2026-11-27T15:21:11.124Z",
+  "sourceRevision": {
+    "sha": "a749e40ec1a19ee446c123ef84f9eddb8aea6e68",
+    "tree": "5a0accc7f4b335176442aacd6d61739c6d853cf5",
+    "branch": "chore/strict-acceptance-ledger",
+    "trackedWorktreeClean": true,
+    "trackedChanges": [],
+    "cleanlinessExclusions": [
+      "openapi-contract-check-result.json",
+      "OpenAPI双向核对报告.md",
+      "current-sha-evidence"
+    ]
+  },
   "status": "pass",
   "scope": "route, HTTP method, field-level schema, query parameters and status-code contract",
+  "inputSha256": {
+    "openapi": "76b379649905996616060915b87e056e794bcb0dc32f516dd42b69e8acab3c0d",
+    "mapping": "4c30ba3046a9802cca6b240c0d2f49f418f93761add0823c4d054bf949429202",
+    "app": "960e9fde2474e9895861d82f41874be17a669c0932adfdf205912133656b021c",
+    "resources": "81ee3e2487687229b82c4b0e8c0819b83041d4a21f6956e5496dfb56a1d3b3b5",
+    "routePolicy": "ca7f4886d47ef759dabcb2c7bc08f6765e841d66814f7f08c5931842867e9156",
+    "contractProcess": "954785bb603251a206b40312b81559e8cb7cc0d29354e3b459edfc3152ce82f4"
+  },
   "inputs": {
-    "openapiPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\SRS_需求规格化与基线\\SRS08_OpenAPI3.1初版.json",
-    "mappingPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\SRS_需求规格化与基线\\SRS08_API需求操作映射.json",
+    "openapiPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\contracts\\openapi.json",
+    "mappingPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\contracts\\api-operation-map.json",
     "appPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\apps\\api\\src\\app.ts",
     "resourcesPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\packages\\domain\\src\\generated\\resources.ts",
     "policyPath": "C:\\Users\\龚\\Doubao\\chats\\2026-09-04\\new-chat\\阶段四_编码实现与代码评审\\02_实现工程\\layer-farm-erp-wp11\\packages\\domain\\src\\generated\\resource-route-policy.ts",
@@ -12,21 +32,21 @@
   },
   "authoritative": {
     "openapi": "3.1.0",
-    "paths": 319,
-    "operations": 481,
-    "mappings": 99
+    "paths": 321,
+    "operations": 479,
+    "mappings": 100
   },
   "implementation": {
     "resources": 71,
     "routePolicies": 62,
-    "processSpecs": 29,
-    "totalApiOperations": 481,
-    "generatedOperations": 298,
-    "contractProcessOperations": 122,
-    "explicitApiOperations": 61
+    "processSpecs": 30,
+    "totalApiOperations": 479,
+    "generatedOperations": 295,
+    "contractProcessOperations": 121,
+    "explicitApiOperations": 63
   },
   "matched": {
-    "operations": 481,
+    "operations": 479,
     "coverage": 1
   },
   "route": {
@@ -9005,36 +9025,6 @@
       ]
     },
     {
-      "key": "POST /api/v1/trace/document-archives",
-      "expectedStatuses": [
-        201,
-        400,
-        401,
-        403,
-        409,
-        413,
-        415,
-        429,
-        500,
-        503
-      ],
-      "expectedFields": [
-        "id",
-        "entity_ref",
-        "before_value",
-        "after_value",
-        "employee_no",
-        "time_reason",
-        "company_code",
-        "created_by",
-        "created_at",
-        "updated_by",
-        "updated_at",
-        "remark"
-      ],
-      "expectedQuery": []
-    },
-    {
       "key": "GET /api/v1/trace/document-archives/{id}",
       "expectedStatuses": [
         200,
@@ -9048,53 +9038,6 @@
         503
       ],
       "expectedFields": [],
-      "expectedQuery": []
-    },
-    {
-      "key": "PATCH /api/v1/trace/document-archives/{id}",
-      "expectedStatuses": [
-        200,
-        400,
-        401,
-        403,
-        404,
-        409,
-        413,
-        415,
-        429,
-        500,
-        503
-      ],
-      "expectedFields": [
-        "entity_ref",
-        "before_value",
-        "after_value",
-        "employee_no",
-        "time_reason",
-        "remark"
-      ],
-      "expectedQuery": []
-    },
-    {
-      "key": "POST /api/v1/trace/document-archives/{id}/actions",
-      "expectedStatuses": [
-        200,
-        400,
-        401,
-        403,
-        404,
-        409,
-        413,
-        415,
-        429,
-        500,
-        503
-      ],
-      "expectedFields": [
-        "action",
-        "lines",
-        "data"
-      ],
       "expectedQuery": []
     },
     {
@@ -9116,32 +9059,6 @@
       ]
     },
     {
-      "key": "POST /api/v1/plat/authentication-sessions",
-      "expectedStatuses": [
-        201,
-        400,
-        401,
-        403,
-        409,
-        413,
-        415,
-        429,
-        500,
-        503
-      ],
-      "expectedFields": [
-        "session_id",
-        "employee_id",
-        "access_expires_at",
-        "refresh_expires_at",
-        "refresh_hash",
-        "previous_refresh_hash",
-        "rotated_at",
-        "revoked_at"
-      ],
-      "expectedQuery": []
-    },
-    {
       "key": "GET /api/v1/plat/authentication-sessions/{id}",
       "expectedStatuses": [
         200,
@@ -9155,33 +9072,6 @@
         503
       ],
       "expectedFields": [],
-      "expectedQuery": []
-    },
-    {
-      "key": "PATCH /api/v1/plat/authentication-sessions/{id}",
-      "expectedStatuses": [
-        200,
-        400,
-        401,
-        403,
-        404,
-        409,
-        413,
-        415,
-        429,
-        500,
-        503
-      ],
-      "expectedFields": [
-        "session_id",
-        "employee_id",
-        "access_expires_at",
-        "refresh_expires_at",
-        "refresh_hash",
-        "previous_refresh_hash",
-        "rotated_at",
-        "revoked_at"
-      ],
       "expectedQuery": []
     },
     {
@@ -10547,6 +10437,21 @@
       "expectedQuery": []
     },
     {
+      "key": "GET /api/v1/auth/companies",
+      "expectedStatuses": [
+        200,
+        400,
+        401,
+        403,
+        409,
+        429,
+        500,
+        503
+      ],
+      "expectedFields": [],
+      "expectedQuery": []
+    },
+    {
       "key": "POST /api/v1/auth/login",
       "expectedStatuses": [
         200,
@@ -11684,6 +11589,40 @@
         409,
         413,
         415,
+        429,
+        500,
+        503
+      ],
+      "expectedFields": [],
+      "expectedQuery": []
+    },
+    {
+      "key": "GET /api/v1/print/print-template",
+      "expectedStatuses": [
+        200,
+        400,
+        401,
+        403,
+        409,
+        429,
+        500,
+        503
+      ],
+      "expectedFields": [],
+      "expectedQuery": [
+        "page",
+        "pageSize"
+      ]
+    },
+    {
+      "key": "GET /api/v1/print/print-template/{id}",
+      "expectedStatuses": [
+        200,
+        400,
+        401,
+        403,
+        404,
+        409,
         429,
         500,
         503

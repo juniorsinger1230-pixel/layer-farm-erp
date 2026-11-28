@@ -1,14 +1,45 @@
 import { expect, type Page, type Response } from '@playwright/test';
+import rawFormSchemas from '../apps/web/src/generated/form-schemas.json' with { type: 'json' };
 
-export type FieldValue = string | number | boolean;
+export type FieldValue = string | number | boolean | Record<string, unknown>;
 export type FieldPair = readonly [string, FieldValue];
 
-export async function login(page: Page, account: string, password: string): Promise<void> {
+type FormFieldSchema = {
+  name: string;
+  label: string;
+  control: string;
+  reference?: { path: string; valueField: string; labelFields: string[] };
+  enum?: string[] | null;
+};
+type PageFormSchema = {
+  path: string;
+  fields: FormFieldSchema[];
+};
+type FormSchemas = {
+  pages: Record<string, PageFormSchema>;
+};
+
+const formSchemas = rawFormSchemas as FormSchemas;
+
+function formatFieldValue(value: FieldValue): string {
+  return typeof value === 'object' ? JSON.stringify(value) : String(value);
+}
+
+export async function login(page: Page, account: string, password: string, companyCode = 'THL'): Promise<void> {
+  const companyDirectory = page.waitForResponse((response) => new URL(response.url()).pathname === '/api/v1/auth/companies' && response.status() === 200);
   await page.goto('/');
+  if (companyCode !== 'THL') {
+    await companyDirectory;
+    await page.locator('.ant-select-selector').first().click();
+    const companyInput = page.getByLabel('公司');
+    await companyInput.press('ArrowUp');
+    await companyInput.press('Enter');
+    await expect(page.locator('.ant-select-selection-item')).toHaveAttribute('title', new RegExp(`^${companyCode}\\b`));
+  }
   await page.getByLabel('员工账号').fill(account);
   await page.getByLabel('密码').fill(password);
   await page.getByRole('button', { name: '登录工作台' }).click();
-  await expect(page.getByRole('menuitem', { name: '经营驾驶舱' })).toBeVisible();
+  await expect(page.getByRole('menuitem', { name: '我的工作台' })).toBeVisible();
 }
 
 const pageAliases: Record<string, string> = {
@@ -68,25 +99,109 @@ function waitForApiResponse(
   );
 }
 
+function getPageId(page: Page): string {
+  const match = /\/(?:app|h5)\/([^/?#]+)/.exec(page.url());
+  if (!match?.[1]) throw new Error('Unable to resolve page id');
+  return match[1];
+}
+
+function getSchema(page: Page): PageFormSchema {
+  const pageId = getPageId(page);
+  const schema = formSchemas.pages[pageId];
+  if (!schema) throw new Error(`Missing form schema for ${pageId}`);
+  return schema;
+}
+
+async function fillField(
+  page: Page,
+  dialog: ReturnType<Page['getByRole']>,
+  field: FormFieldSchema,
+  value: FieldValue,
+  fieldIndex: number,
+): Promise<void> {
+  const item = dialog.locator('.ant-form-item').nth(fieldIndex);
+  if (field.control === 'switch') {
+    const control = item.getByRole('switch');
+    const checked = (await control.getAttribute('aria-checked')) === 'true';
+    if (checked !== Boolean(value)) await control.click();
+    return;
+  }
+  if (field.control === 'select' || field.control === 'reference') {
+    let optionLabel = formatFieldValue(value);
+    let optionIndex = 0;
+    let records: Record<string, unknown>[] = [];
+    const reference = field.reference;
+    if (field.control === 'reference' && reference) {
+      records = await listItems<Record<string, unknown>>(page, reference.path);
+      optionIndex = records.findIndex((candidate) => {
+        const selected = candidate[reference.valueField];
+        return (typeof selected === 'string' || typeof selected === 'number') && String(selected) === optionLabel;
+      });
+      if (optionIndex < 0) throw new Error(`Reference value not found: ${field.name}=${optionLabel}`);
+      const record = records[optionIndex]!;
+      const labelField = reference.labelFields.find((name) => {
+        const candidate = record[name];
+        return (typeof candidate === 'string' || typeof candidate === 'number') && String(candidate) !== '';
+      });
+      optionLabel = labelField ? String(record[labelField]) : optionLabel;
+    }
+    const combobox = item.getByRole('combobox');
+    await combobox.click();
+    if (field.control === 'select') {
+      const selectOptionIndex = field.enum?.indexOf(optionLabel) ?? -1;
+      if (selectOptionIndex < 0) throw new Error(`Enum option not found: ${field.name}=${optionLabel}`);
+      for (let step = 0; step < selectOptionIndex; step += 1) {
+        await combobox.press('ArrowDown');
+      }
+      await combobox.press('Enter');
+      await expect(item.locator('.ant-select-selection-item')).toHaveAttribute('title', optionLabel);
+    } else {
+      const options = page.locator('.ant-select-dropdown:not(.ant-select-dropdown-hidden) .ant-select-item-option');
+      await expect(options).toHaveCount(records.length);
+      const option = options.nth(optionIndex);
+      await option.scrollIntoViewIfNeeded();
+      await option.click();
+    }
+    return;
+  }
+  if (field.control === 'number') {
+    await item.getByRole('spinbutton').fill(formatFieldValue(value));
+    return;
+  }
+  if (field.control === 'date' || field.control === 'date-time') {
+    const control = item.locator('input').first();
+    await control.fill(formatFieldValue(value));
+    await control.press('Tab');
+    return;
+  }
+  if (field.control === 'json' || field.control === 'textarea') {
+    const rendered = typeof value === 'object' ? JSON.stringify(value) : formatFieldValue(value);
+    await item.locator('textarea').first().fill(rendered);
+    return;
+  }
+  await item.getByRole('textbox').first().fill(formatFieldValue(value));
+}
+
 export async function createRecord(
   page: Page,
   buttonName: string,
   fields: readonly FieldPair[],
 ): Promise<void> {
+  const schema = getSchema(page);
   const responsePromise = waitForApiResponse(
     page,
     'POST',
     [200, 201],
-    (url) => url.includes('/api/v1/') && !url.includes('/actions'),
+    (url) => new URL(url).pathname === schema.path,
   );
   await page.getByRole('button', { name: buttonName }).click();
   const drawer = page.getByRole('dialog');
   await expect(drawer).toBeVisible();
-  for (const [index, [key, value]] of fields.entries()) {
-    await drawer.getByRole('button', { name: '添加字段' }).click();
-    const row = drawer.locator('.editor-row').nth(index);
-    await row.locator('input').nth(0).fill(key);
-    await row.locator('input').nth(1).fill(String(value));
+  for (const [name, value] of fields) {
+    const fieldIndex = schema.fields.findIndex((candidate) => candidate.name === name);
+    const field = schema.fields[fieldIndex];
+    if (!field) throw new Error(`Missing field schema for ${name}`);
+    await fillField(page, drawer, field, value, fieldIndex);
   }
   await drawer.getByRole('button', { name: /保\s*存/ }).click();
   await responsePromise;
@@ -126,7 +241,7 @@ export async function executeAction(
     if (index > 0) await drawer.getByRole('button', { name: '添加字段' }).click();
     const row = drawer.locator('.editor-row').nth(index);
     await row.locator('input').nth(0).fill(key);
-    await row.locator('input').nth(1).fill(String(value));
+    await row.locator('input').nth(1).fill(formatFieldValue(value));
   }
   await drawer.getByRole('button', { name: /执\s*行/ }).click();
   await responsePromise;

@@ -6,11 +6,12 @@ import {
   operationKey,
 } from './contract-model.mjs';
 import { buildExpected } from './contract-expected.mjs';
+import { getSourceRevision, sha256File } from './source-revision.mjs';
 
 const options = parseArgs(process.argv.slice(2));
 const context = loadContext(options);
-const openapiPath = resolve(context.root, options.openapi ?? '../../../SRS_需求规格化与基线/SRS08_OpenAPI3.1初版.json');
-const mappingPath = resolve(context.root, options.mapping ?? '../../../SRS_需求规格化与基线/SRS08_API需求操作映射.json');
+const openapiPath = resolve(context.root, options.openapi ?? 'contracts/openapi.json');
+const mappingPath = resolve(context.root, options.mapping ?? 'contracts/api-operation-map.json');
 const outputPath = resolve(context.root, options.out ?? 'openapi-contract-check-result.json');
 const openapi = JSON.parse(readFileSync(openapiPath, 'utf8'));
 const mappingDocument = JSON.parse(readFileSync(mappingPath, 'utf8'));
@@ -61,8 +62,17 @@ const fieldPass = schemaErrors.length === 0 && parameterErrors.length === 0;
 const statusPass = statusErrors.length === 0;
 const result = {
   checkedAt: new Date().toISOString(),
-  status: routePass && fieldPass && statusPass ? 'pass' : 'fail',
+  sourceRevision: getSourceRevision(context.root),
+  status: routePass && fieldPass && statusPass && readOnlyWriteExposures.length === 0 ? 'pass' : 'fail',
   scope: 'route, HTTP method, field-level schema, query parameters and status-code contract',
+  inputSha256: {
+    openapi: sha256File(openapiPath),
+    mapping: sha256File(mappingPath),
+    app: sha256File(context.paths.appPath),
+    resources: sha256File(context.paths.resourcesPath),
+    routePolicy: sha256File(context.paths.policyPath),
+    contractProcess: sha256File(context.paths.processPath),
+  },
   inputs: {
     openapiPath,
     mappingPath,

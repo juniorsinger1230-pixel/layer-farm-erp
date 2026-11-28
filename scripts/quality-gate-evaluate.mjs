@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { evaluateCoverage, loadPolicy, validateWaivers } from './quality-policy-lib.mjs';
+import { getSourceRevision, sha256File } from './source-revision.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const policy = loadPolicy(root);
@@ -23,6 +24,9 @@ const sbomChecks = {
 };
 const result = {
   evaluatedAt: new Date().toISOString(),
+  sourceRevision: getSourceRevision(root),
+  coverageSummarySha256: sha256File(join(root, 'coverage', 'coverage-summary.json')),
+  coverageScope: 'Only apps/api/src and packages files loaded by tests; apps/web and unloaded files are excluded.',
   coverage,
   sca: { pass: sca.pass === true, highRiskTracking: sca.highRiskTracking, waived: sca.waived },
   sbom: sbomChecks,

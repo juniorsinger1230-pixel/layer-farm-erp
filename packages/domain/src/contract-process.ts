@@ -84,8 +84,8 @@ const dataPermissionFields: Record<string, FieldDefinition> = {
 const dataPermissionReferences = {
   role_id: { table: 'app.system_role', companyKind: 'none' },
   employee_id: { table: 'app.employee', companyKind: 'code' },
-  house_id: { table: 'app.house_pen', companyKind: 'code' },
-  warehouse_id: { table: 'app.warehouse_location', companyKind: 'code' },
+  house_id: { table: 'app.house_pen', companyKind: 'id' },
+  warehouse_id: { table: 'app.warehouse_location', companyKind: 'id' },
 } satisfies Record<string, ReferenceDefinition>;
 
 const farmBatchFields: Record<string, FieldDefinition> = {
@@ -228,7 +228,7 @@ const printJobFields: Record<string, FieldDefinition> = {
   template_id: i(true),
   pdf_ref: i(true),
   batch_print: b(),
-  queue_status: e(true, ['pending', 'completed', 'failed', 'cancelled']),
+  queue_status: e(true, ['pending', 'printing', 'completed', 'failed', 'cancelled']),
   result: s(false, 500),
   printer_device_id: i(false),
   paper_size_code: s(false, 32),
@@ -375,6 +375,10 @@ export const contractProcessSpecs: readonly ProcessSpec[] = [
     domainActions: ['start', 'request_acceptance', 'accept', 'cancel'],
   },
   {
+    requirementId: 'SRS-FR-PRINT-001-BASE', path: '/api/v1/print/print-template', schema: 'app', table: 'print_template',
+    companyKind: 'code', itemKey: 'id', itemType: 'integer', fields: {}, readOnly: true,
+  },
+  {
     requirementId: 'SRS-FR-PRINT-001', path: '/api/v1/print/print-template-versions', schema: 'app_ops', table: 'print_template_design',
     companyKind: 'code', itemKey: 'id', itemType: 'integer', fields: designFields, domainActions: ['publish', 'archive'],
   },
@@ -423,7 +427,7 @@ export const contractProcessSpecs: readonly ProcessSpec[] = [
   },
   {
     requirementId: 'SRS-FR-PLAT-001', path: '/api/v1/plat/authentication-sessions', schema: 'app_auth', table: 'session',
-    companyKind: 'none', itemKey: 'session_id', itemType: 'string', fields: sessionFields, domainActions: ['revoke'],
+    companyKind: 'none', itemKey: 'session_id', itemType: 'string', fields: sessionFields, domainActions: ['revoke'], readOnly: true,
   },
 ];
 
@@ -562,16 +566,26 @@ export class ContractProcessService {
       return this.domain.create('mortality_cull_record', body, idempotencyKey);
     }
     if (spec.requirementId === 'SRS-FR-PROC-005') {
-      return this.procurement.returnReceipt(body, idempotencyKey);
+      return this.procurement.returnReceipt(withCamelAliases(body), idempotencyKey);
     }
     if (spec.requirementId === 'SRS-FR-SALES-006') {
-      return this.sales.createReturn(body, idempotencyKey);
+      return this.sales.createReturn(withCamelAliases(body), idempotencyKey);
     }
     if (spec.requirementId === 'SRS-FR-SALES-007') {
-      return this.sales.createLivestockSale(body, idempotencyKey);
+      return this.sales.createLivestockSale(withCamelAliases(body), idempotencyKey);
     }
     if (spec.requirementId === 'SRS-FR-LOG-003' || spec.requirementId === 'SRS-FR-LOG-006') {
-      return this.sales.dispatchDeliveryTask(body, idempotencyKey);
+      const deliveryBody = {
+        taskNo: body.task_no ?? body.taskNo,
+        salesOrderId: body.order_id ?? body.sales_order_id ?? body.salesOrderId,
+        vehicleId: body.vehicle_id ?? body.vehicleId,
+        routeId: body.route_id ?? body.routeId,
+        driverNo: body.driver_no ?? body.driverNo,
+        courierNo: body.courier_no ?? body.courierNo,
+        cargo: body.cargo,
+        remark: body.remark,
+      };
+      return this.sales.dispatchDeliveryTask(deliveryBody, idempotencyKey);
     }
     if (spec.requirementId === 'SRS-FR-EQP-001') {
       return this.domain.create('maintenance_work_order', body, idempotencyKey);
@@ -580,9 +594,7 @@ export class ContractProcessService {
       return this.print.saveDesign(String(body.template_id ?? body.templateId), body, idempotencyKey);
     }
     if (spec.printTypes) {
-      const submitted = await this.print.submit(body, idempotencyKey);
-      this.assertPrintType(spec, submitted);
-      return submitted;
+      return this.print.submit(body, idempotencyKey, spec.printTypes);
     }
     return undefined;
   }
@@ -646,7 +658,16 @@ export class ContractProcessService {
       return this.update(spec.path, id, { remark: `archived:${safeText(body.reason)}`.slice(0, 500) });
     }
     if (spec.requirementId === 'SRS-FR-PLAT-001') {
-      return this.update(spec.path, id, { revoked_at: new Date().toISOString().slice(0, 10) });
+      return withTransaction(this.pool, this.context, async (client) => {
+        const before = await this.findRow(client, spec, id, true);
+        const result = await client.query<Record<string, unknown>>(
+          'UPDATE app_auth.session SET revoked_at=$2 WHERE session_id=$1 RETURNING *',
+          [id, new Date().toISOString()],
+        );
+        const updated = result.rows[0]!;
+        await this.domain.recordMutation(client, spec.table, actionName, updated, before);
+        return updated;
+      });
     }
     return undefined;
   }
@@ -678,13 +699,6 @@ export class ContractProcessService {
     });
   }
 
-  private assertPrintType(spec: ProcessSpec, submitted: unknown): void {
-    const row = submitted as Record<string, unknown>;
-    if (!spec.printTypes?.includes(safeText(row.template_type).toLowerCase())) {
-      throw new AppError(409, 'CONFLICT', '打印模板类型与当前业务入口不匹配');
-    }
-  }
-
   private async findRow(client: Queryable, spec: ProcessSpec, id: string, lock = false): Promise<Record<string, unknown>> {
     const parsedId = spec.itemType === 'integer' ? parseId(id) : parseKey(id);
     const values: unknown[] = [parsedId];
@@ -705,8 +719,8 @@ export class ContractProcessService {
   }
 
   private async insertRow(client: Queryable, spec: ProcessSpec, values: Record<string, unknown>): Promise<Record<string, unknown>> {
-    const data = { ...values };
-    if (spec.companyKind !== 'none') data[this.companyColumn(spec)] = this.companyValue(spec);
+    const data = { ...values, ...spec.fixedValues };
+    if (spec.companyKind !== 'none' && !(spec.table === 'company' && typeof values.company_code === 'string')) data[this.companyColumn(spec)] = this.companyValue(spec);
     const keys = Object.keys(data);
     const columns = keys.map((key) => `"${key}"`).join(',');
     const params = keys.map((_, index) => `$${index + 1}`).join(',');
@@ -731,7 +745,7 @@ export class ContractProcessService {
     const whereValues: unknown[] = [];
     let scope = '';
     if (spec.companyKind !== 'none') {
-      const companyPlaceholder = idIndex + 1 + whereValues.length;
+      const companyPlaceholder = idIndex + 2 + whereValues.length;
       whereValues.push(this.companyValue(spec));
       scope = ` AND ${this.companyColumn(spec)}=$${companyPlaceholder}`;
     }
@@ -741,7 +755,7 @@ export class ContractProcessService {
     const result = await client.query(
       `UPDATE ${qualifiedTable(spec)} SET ${assignments}, updated_by=$${idIndex}, updated_at=now()
        WHERE ${this.itemColumn(spec)}=$${idIndex + 1}${scope}${scopeSql} RETURNING *`,
-      [...changeValues, this.context.actorId, before[this.itemColumn(spec)], ...whereValues],
+      [...changeValues, this.context.actorId, before[spec.itemKey], ...whereValues],
     );
     if (result.rowCount !== 1) throw new AppError(409, 'CONFLICT', '记录已被其他用户修改');
     return result.rows[0] as Record<string, unknown>;
@@ -779,7 +793,12 @@ export class ContractProcessService {
         scope = ' AND company_code=$2';
       } else if (reference.companyKind === 'id') {
         params.push(this.context.companyId);
-        scope = ' AND company_id=$2';
+        const tableName = reference.table.split('.').at(-1) ?? reference.table;
+        const model = tableCatalogByName.get(tableName);
+        const columns = new Set(model?.columns.map((column) => column.name));
+        const companyColumn = columns.has('company_id') ? 'company_id' : columns.has('company_code') ? 'company_code' : undefined;
+        if (!companyColumn) throw new AppError(500, 'INTERNAL_ERROR', `引用表缺少公司隔离字段: ${tableName}`);
+        scope = ` AND ${companyColumn}=$2`;
       }
       const result = await client.query(`SELECT 1 FROM ${reference.table} WHERE id=$1${scope}`, params);
       if (result.rowCount !== 1) throw new AppError(400, 'VALIDATION_ERROR', `引用记录不存在: ${key}`);
@@ -789,7 +808,7 @@ export class ContractProcessService {
   private async auditView(client: Queryable, spec: ProcessSpec, operation: string): Promise<void> {
     await client.query(
       'INSERT INTO app.audit_log (employee_no,login_ref,operation,permission_ref,sensitive_op,company_code,created_by) VALUES ($1,$2,$3,$4,$5,$6,$7)',
-      [this.context.employeeId, spec.path, `${spec.requirementId}.${operation}`, 'report:read', 'report_view', this.context.companyCode, this.context.actorId],
+      [this.context.employeeId, spec.path, `${spec.requirementId.replace(/^SRS-FR-/, '')}.${operation}`, 'report:read', 'report_view', this.context.companyCode, this.context.actorId],
     );
   }
 
@@ -819,6 +838,15 @@ export class ContractProcessService {
     if (this.context.companyId === undefined) throw new AppError(500, 'INTERNAL_ERROR', '公司数字标识未初始化');
     return spec.companyKind === 'id' ? this.context.companyId : this.context.companyCode;
   }
+}
+
+function withCamelAliases(body: Record<string, unknown>): Record<string, unknown> {
+  const result: Record<string, unknown> = { ...body };
+  for (const [key, value] of Object.entries(body)) {
+    const camelKey = key.replace(/_([a-z0-9])/g, (_match, character: string) => character.toUpperCase());
+    if (camelKey !== key && result[camelKey] === undefined) result[camelKey] = value;
+  }
+  return result;
 }
 
 function requiredSpec(path: string): ProcessSpec {
